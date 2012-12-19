@@ -1,0 +1,20 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet context="setup" author="ict4h" id="1">
+        <createTable tableName="event_records" schemaName="atomfeed">
+            <column name="id" type="serial">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="uuid" type="varchar(40)"/>
+            <column name="title" type="varchar(255)"/>
+            <column name="timestamp" type="date"/>
+            <column name="uri" type="varchar(255)"/>
+            <!-- Change to CLOB -->
+            <column name="object" type="varchar(1000)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
