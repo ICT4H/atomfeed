@@ -5,6 +5,13 @@ import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import java.io.StringWriter;
 import java.net.URI;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -12,29 +19,40 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "event_records")
-@NamedQuery(name = EventRecord.FIND_BY_UUID, query = "select e from EventRecord e where e.uuid=:uuid")
+@NamedQueries({
+        @NamedQuery(name = EventRecord.FIND_BY_UUID, query = "select e from EventRecord e where e.uuid=:uuid")
+})
+@XmlRootElement(name = "event", namespace = EventRecord.EVENT_NAMESPACE)
 public class EventRecord {
 
     public static final String FIND_BY_UUID = "find.by.uuid";
 
+    public static final String EVENT_NAMESPACE = "http://schemas.atomfeed.ict4h.org/events";
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @XmlTransient
     private Integer id;
 
     @Column(name = "uuid")
+    @XmlTransient
     private String uuid;
 
     @Column(name = "title")
+    @XmlTransient
     private String title;
 
     @Column(name = "timestamp")
+    @XmlTransient
     private Date timeStamp;
 
     @Column(name = "uri")
+    @XmlAttribute
     private String uri;
 
     @Column(name = "object")
+    @XmlElement
     private String object;
 
     public EventRecord() { }
@@ -63,6 +81,10 @@ public class EventRecord {
         return timeStamp;
     }
 
+    public String getTagUri() {
+        return "tag.atomfeed.ict4h.org:" + uuid;
+    }
+
     public String getUri() {
         return uri;
     }
@@ -70,4 +92,19 @@ public class EventRecord {
     public String getObject() {
         return object;
     }
+
+    public String toXmlString() {
+        try {
+            JAXBContext context = JAXBContext.newInstance(EventRecord.class);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+            StringWriter stringWriter = new StringWriter();
+            marshaller.marshal(this, stringWriter);
+
+            return stringWriter.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
