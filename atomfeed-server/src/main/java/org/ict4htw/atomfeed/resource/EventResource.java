@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class EventResource {
-
     private EventFeedService eventFeedService;
 
     @Autowired
@@ -35,5 +34,4 @@ public class EventResource {
         Feed feed = eventFeedService.getEventFeed(startPos, endPos);
         return Util.stringifyFeed(feed);
     }
-
 }

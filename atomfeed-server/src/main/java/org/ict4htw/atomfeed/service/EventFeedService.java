@@ -130,7 +130,7 @@ public class EventFeedService {
     }
 
     private List<Link> generatePagingLinks(int currentFeedStart, int totalNumberOfEvents) {
-        ArrayList<Link> links = new ArrayList<Link>();
+        ArrayList<Link> links = new ArrayList<>();
 
         if (hasNewerFeed(currentFeedStart, totalNumberOfEvents)) {
             Link next = new Link();
@@ -152,12 +152,8 @@ public class EventFeedService {
     }
 
     private boolean invalidStartAndEndPos(int startPos, int endPos, int totalNumberOfEvents) {
-        if (startPos % ENTRIES_PER_FEED != 0 || endPos != startPos + ENTRIES_PER_FEED - 1)
-            return false;
+        return !(startPos % ENTRIES_PER_FEED != 0 || endPos != startPos + ENTRIES_PER_FEED - 1) && !(startPos < 0 || startPos > totalNumberOfEvents);
 
-        if (startPos < 0 || startPos > totalNumberOfEvents) return false;
-
-        return true;
     }
 
     private List<Entry> getEntries(List<EventRecord> eventRecordList) {
@@ -177,7 +173,7 @@ public class EventFeedService {
     }
 
     private List<Link> generateLinks(EventRecord eventRecord) {
-        ArrayList<Link> links = new ArrayList<Link>();
+        ArrayList<Link> links = new ArrayList<>();
 
         Link self = new Link();
         self.setHref(getServiceUri() + "/events/" + eventRecord.getId());
@@ -194,7 +190,7 @@ public class EventFeedService {
     }
 
     private List<Content> generateContents(EventRecord eventRecord) {
-        ArrayList<Content> contents = new ArrayList<Content>();
+        ArrayList<Content> contents = new ArrayList<>();
 
         Content content = new Content();
         content.setType(ATOMFEED_MEDIA_TYPE);
