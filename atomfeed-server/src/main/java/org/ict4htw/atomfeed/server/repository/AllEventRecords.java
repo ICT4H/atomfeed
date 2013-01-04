@@ -1,11 +1,9 @@
-package org.ict4htw.atomfeed.repository;
+package org.ict4htw.atomfeed.server.repository;
 
-import org.hibernate.criterion.Projections;
-import org.ict4htw.atomfeed.domain.EventRecord;
+import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ public class AllEventRecords {
 
     private DataAccessTemplate template;
 
-    public AllEventRecords() { }
+    protected AllEventRecords() { }
 
     @Autowired
     public AllEventRecords(DataAccessTemplate template) {

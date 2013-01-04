@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.repository;
+package org.ict4htw.atomfeed.server.repository;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;

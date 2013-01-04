@@ -1,25 +1,19 @@
-package org.ict4htw.atomfeed.IT;
+package org.ict4htw.atomfeed.server.service;
 
 import com.sun.syndication.feed.atom.Feed;
-import org.ict4htw.atomfeed.SpringIntegrationIT;
-import org.ict4htw.atomfeed.domain.EventRecord;
-import org.ict4htw.atomfeed.repository.AllEventRecords;
-import org.ict4htw.atomfeed.service.EventFeedService;
-import org.ict4htw.atomfeed.util.Util;
+import org.ict4htw.atomfeed.server.domain.EventRecord;
+import org.ict4htw.atomfeed.server.repository.AllEventRecords;
+import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
+import org.ict4htw.atomfeed.server.service.EventFeedService;
+import org.ict4htw.atomfeed.server.util.Util;
 import org.joda.time.DateTime;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class EventFeedServiceIT extends SpringIntegrationIT {
-
-    @Autowired
-    private AllEventRecords allEventRecords;
-
+public class EventFeedServiceTest {
     private EventFeedService eventFeedService;
 
     @Before
@@ -32,31 +26,27 @@ public class EventFeedServiceIT extends SpringIntegrationIT {
         EventRecord eventRecordAdded6 = new EventRecord("uuid6", "title", DateTime.now(), new URI("http://uri"), "asdasd");
         EventRecord eventRecordAdded7 = new EventRecord("uuid7", "title", DateTime.now(), new URI("http://uri"), "asdasd");
 
-        template.save(eventRecordAdded1);
-        template.save(eventRecordAdded2);
-        template.save(eventRecordAdded3);
-        template.save(eventRecordAdded4);
-        template.save(eventRecordAdded5);
-        template.save(eventRecordAdded6);
-        template.save(eventRecordAdded7);
-    }
+        AllEventRecords allEventRecords = new AllEventRecordsStub();
+        allEventRecords.add(eventRecordAdded1);
+        allEventRecords.add(eventRecordAdded2);
+        allEventRecords.add(eventRecordAdded3);
+        allEventRecords.add(eventRecordAdded4);
+        allEventRecords.add(eventRecordAdded5);
+        allEventRecords.add(eventRecordAdded6);
+        allEventRecords.add(eventRecordAdded7);
 
-    @After
-    public void cleanEventRecords() {
-        template.deleteAll(template.loadAll(EventRecord.class));
+        eventFeedService = new EventFeedService(allEventRecords);
     }
 
     @Test
-    public void shouldGetRecentFeed() {
-        eventFeedService = new EventFeedService("http://hostname/events/recent", allEventRecords);
-        Feed feed = eventFeedService.getRecentFeed();
+    public void shouldGetRecentFeed() throws URISyntaxException {
+        Feed feed = eventFeedService.getRecentFeed(new URI("http://hostname/events/recent"));
         System.out.println(Util.stringifyFeed(feed));
     }
 
     @Test
-    public void shouldGetEventFeed() {
-        eventFeedService = new EventFeedService("http://hostname/events/5,10", allEventRecords);
-        Feed feed = eventFeedService.getEventFeed(5, 10);
+    public void shouldGetEventFeed() throws URISyntaxException {
+        Feed feed = eventFeedService.getEventFeed(5, 10, new URI("http://hostname/events/5,10"));
         System.out.println(Util.stringifyFeed(feed));
     }
 }

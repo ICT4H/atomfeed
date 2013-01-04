@@ -1,7 +1,6 @@
-package org.ict4htw.atomfeed.feed;
+package org.ict4htw.atomfeed.server.feed;
 
 import com.sun.syndication.feed.atom.*;
-import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;

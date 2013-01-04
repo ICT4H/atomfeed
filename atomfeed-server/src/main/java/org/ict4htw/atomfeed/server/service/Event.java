@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.service;
+package org.ict4htw.atomfeed.server.service;
 
 import org.joda.time.DateTime;
 

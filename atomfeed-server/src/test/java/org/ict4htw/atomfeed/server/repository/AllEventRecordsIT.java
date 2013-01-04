@@ -1,7 +1,7 @@
-package org.ict4htw.atomfeed.repository;
+package org.ict4htw.atomfeed.server.repository;
 
 import org.ict4htw.atomfeed.SpringIntegrationIT;
-import org.ict4htw.atomfeed.domain.EventRecord;
+import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Assert;

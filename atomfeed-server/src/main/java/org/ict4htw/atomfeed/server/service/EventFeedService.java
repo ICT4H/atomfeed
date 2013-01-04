@@ -1,19 +1,16 @@
-package org.ict4htw.atomfeed.service;
+package org.ict4htw.atomfeed.server.service;
 
 import com.sun.syndication.feed.atom.*;
-import org.ict4htw.atomfeed.domain.EventRecord;
-import org.ict4htw.atomfeed.feed.FeedBuilder;
-import org.ict4htw.atomfeed.repository.AllEventRecords;
+import org.ict4htw.atomfeed.server.domain.EventRecord;
+import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
+import org.ict4htw.atomfeed.server.feed.FeedBuilder;
+import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 
 public class EventFeedService {
-
     private AllEventRecords allEventRecords;
-
-    private URI requestUri;
 
     private final int ENTRIES_PER_FEED = 5;
 
@@ -22,16 +19,11 @@ public class EventFeedService {
     private static final String LINK_TYPE_VIA = "via";
     private static final String ATOMFEED_MEDIA_TYPE = "application/vnd.atomfeed+xml";
 
-    public EventFeedService(String requestURI, AllEventRecords allEventRecords) {
-        try {
-            this.requestUri = new URI(requestURI);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Bad URI", e);
-        }
+    public EventFeedService(AllEventRecords allEventRecords) {
         this.allEventRecords = allEventRecords;
     }
 
-    public Feed getRecentFeed() {
+    public Feed getRecentFeed(URI requestUri) {
         int totalNumberOfEvents = allEventRecords.getTotalCount();
 
         int numberOfEventsInFeed = totalNumberOfEvents % ENTRIES_PER_FEED;
@@ -48,16 +40,16 @@ public class EventFeedService {
                 .title("TITLE") // TODO: This should be dictated by the application using it.
                 .generator(getGenerator())
 //                .authors() // TODO : Use Person class or rome and link to OpenMRS URI for user
-                .entries(getEntries(eventRecordList))
+                .entries(getEntries(eventRecordList, requestUri))
                 .updated(newestEventDate(eventRecordList))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
-                .link(getLink(generateCanonicalUri(startEventNumber), LINK_TYPE_VIA, ATOM_MEDIA_TYPE))
-                .links(generatePagingLinks(startEventNumber, totalNumberOfEvents))
+                .link(getLink(generateCanonicalUri(startEventNumber, requestUri), LINK_TYPE_VIA, ATOM_MEDIA_TYPE))
+                .links(generatePagingLinks(startEventNumber, totalNumberOfEvents, requestUri))
                 .build();
 
     }
 
-    public Feed getEventFeed(int startPos, int endPos) {
+    public Feed getEventFeed(int startPos, int endPos, URI requestUri) {
         int totalNumberOfEvents = allEventRecords.getTotalCount();
 
         if (invalidStartAndEndPos(startPos, endPos, totalNumberOfEvents))
@@ -70,10 +62,10 @@ public class EventFeedService {
                 .id("urn:uuid:" + UUID.randomUUID().toString())
                 .title("TITLE")
                 .generator(getGenerator())
-                .entries(getEntries(eventRecordList))
+                .entries(getEntries(eventRecordList, requestUri))
                 .updated(newestEventDate(eventRecordList))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
-                .links(generatePagingLinks(startPos, totalNumberOfEvents))
+                .links(generatePagingLinks(startPos, totalNumberOfEvents, requestUri))
                 .build();
 
     }
@@ -86,12 +78,7 @@ public class EventFeedService {
     }
 
     private Date newestEventDate(List<EventRecord> eventRecordList) {
-        return Collections.max(eventRecordList, new Comparator<EventRecord>() {
-            @Override
-            public int compare(EventRecord o1, EventRecord o2) {
-                return o1.getTimeStamp().compareTo(o2.getTimeStamp());
-            }
-        }).getTimeStamp();
+        return Collections.max(eventRecordList, new EventRecordComparator()).getTimeStamp();
     }
 
     private Link getLink(String href, String rel, String type) {
@@ -104,7 +91,7 @@ public class EventFeedService {
         return link;
     }
 
-    private String getServiceUri() {
+    private String getServiceUri(URI requestUri) {
         String scheme = requestUri.getScheme();
         String hostname = requestUri.getHost();
         int port = requestUri.getPort();
@@ -117,8 +104,8 @@ public class EventFeedService {
         }
     }
 
-    private String generateCanonicalUri(int startFrom) {
-        return getServiceUri() + "/" + startFrom + "," + (startFrom + ENTRIES_PER_FEED - 1);
+    private String generateCanonicalUri(int startFrom, URI requestUri) {
+        return getServiceUri(requestUri) + "/" + startFrom + "," + (startFrom + ENTRIES_PER_FEED - 1);
     }
 
     private boolean hasOlderFeed(int currentPosition) {
@@ -129,14 +116,14 @@ public class EventFeedService {
         return startFrom + ENTRIES_PER_FEED < totalNumberOfEvents;
     }
 
-    private List<Link> generatePagingLinks(int currentFeedStart, int totalNumberOfEvents) {
+    private List<Link> generatePagingLinks(int currentFeedStart, int totalNumberOfEvents, URI requestUri) {
         ArrayList<Link> links = new ArrayList<>();
 
         if (hasNewerFeed(currentFeedStart, totalNumberOfEvents)) {
             Link next = new Link();
             next.setRel("next-archive");
             next.setType(ATOM_MEDIA_TYPE);
-            next.setHref(generateCanonicalUri(currentFeedStart + ENTRIES_PER_FEED));
+            next.setHref(generateCanonicalUri(currentFeedStart + ENTRIES_PER_FEED, requestUri));
             links.add(next);
         }
 
@@ -144,7 +131,7 @@ public class EventFeedService {
             Link prev = new Link();
             prev.setRel("prev-archive");
             prev.setType(ATOM_MEDIA_TYPE);
-            prev.setHref(generateCanonicalUri(currentFeedStart - ENTRIES_PER_FEED));
+            prev.setHref(generateCanonicalUri(currentFeedStart - ENTRIES_PER_FEED, requestUri));
             links.add(prev);
         }
 
@@ -156,7 +143,7 @@ public class EventFeedService {
 
     }
 
-    private List<Entry> getEntries(List<EventRecord> eventRecordList) {
+    private List<Entry> getEntries(List<EventRecord> eventRecordList, URI requestUri) {
         List<Entry> entryList = new ArrayList<>();
 
         for (EventRecord eventRecord : eventRecordList) {
@@ -164,7 +151,7 @@ public class EventFeedService {
             entry.setId(eventRecord.getTagUri());
             entry.setTitle(eventRecord.getTitle());
             entry.setUpdated(eventRecord.getTimeStamp());
-            entry.setAlternateLinks(generateLinks(eventRecord));
+            entry.setAlternateLinks(generateLinks(eventRecord, requestUri));
             entry.setContents(generateContents(eventRecord));
             entryList.add(entry);
         }
@@ -172,11 +159,11 @@ public class EventFeedService {
         return entryList;
     }
 
-    private List<Link> generateLinks(EventRecord eventRecord) {
+    private List<Link> generateLinks(EventRecord eventRecord, URI requestUri) {
         ArrayList<Link> links = new ArrayList<>();
 
         Link self = new Link();
-        self.setHref(getServiceUri() + "/events/" + eventRecord.getId());
+        self.setHref(getServiceUri(requestUri) + "/events/" + eventRecord.getId());
         self.setRel("self");
 
         Link related = new Link();

@@ -1,11 +1,7 @@
-package org.ict4htw.atomfeed.mapper;
+package org.ict4htw.atomfeed.server.mapper;
 
-import com.sun.syndication.feed.atom.Entry;
-import org.ict4htw.atomfeed.domain.EventRecord;
-import org.ict4htw.atomfeed.service.Event;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.ict4htw.atomfeed.server.domain.EventRecord;
+import org.ict4htw.atomfeed.server.service.Event;
 
 public class EventRecordMapper {
 

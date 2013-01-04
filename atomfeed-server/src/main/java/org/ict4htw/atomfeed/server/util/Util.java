@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.util;
+package org.ict4htw.atomfeed.server.util;
 
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.WireFeedOutput;

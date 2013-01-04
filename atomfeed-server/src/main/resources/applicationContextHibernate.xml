@@ -13,7 +13,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="annotatedClasses">
             <list>
-                <value>org.ict4htw.atomfeed.domain.EventRecord</value>
+                <value>org.ict4htw.atomfeed.server.domain.EventRecord</value>
             </list>
         </property>
 

@@ -1,10 +1,5 @@
 package org.ict4htw.atomfeed.client;
 
-import java.io.StringReader;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
 import com.sun.syndication.feed.WireFeed;
 import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
@@ -12,6 +7,11 @@ import com.sun.syndication.feed.atom.Link;
 import com.sun.syndication.io.WireFeedInput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.StringReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 public class Consumer {
     private static final String ATOM_MEDIA_TYPE = "application/atom+xml";
@@ -26,7 +26,6 @@ public class Consumer {
 
         feedUri = consumer.navigateForwardThroughFeeds(feedUri);
         System.out.println(String.format("Finished navigating forwards through feeds, terminated at [%s]", feedUri.toString()));
-
     }
 
     private URI navigateForwardThroughFeeds(URI feedUri) throws URISyntaxException {
@@ -62,7 +61,7 @@ public class Consumer {
     }
 
     private static URI processCommandLineArgs(String[] args) throws URISyntaxException {
-        if(args.length != 1) {
+        if (args.length != 1) {
             System.out.println("Must specify entry point URI as the only command line argument ");
             System.exit(1);
         } else {
@@ -102,7 +101,7 @@ public class Consumer {
         //some UTF-8 encoded files include a three-byte UTF-8 Byte-order mark
         //strip this off (otherwise we get 'org.xml.sax.SAXParseException: Content is not allowed in prolog')
         String responseString = response.getBody();
-        responseString = responseString.trim().replaceFirst("^([\\W]+)<","<");
+        responseString = responseString.trim().replaceFirst("^([\\W]+)<", "<");
 
         WireFeedInput wfi = new WireFeedInput();
         WireFeed wireFeed;

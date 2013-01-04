@@ -1,8 +1,6 @@
-package org.ict4htw.atomfeed.domain;
+package org.ict4htw.atomfeed.server.domain;
 
-import org.ict4htw.atomfeed.util.Util;
 import org.joda.time.DateTime;
-import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
 import javax.xml.bind.JAXBContext;
@@ -13,9 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.StringWriter;
 import java.net.URI;
-import java.sql.Blob;
-import java.sql.Clob;
 import java.sql.Date;
+import org.ict4htw.atomfeed.server.util.*;
 
 @Entity
 @Table(name = "event_records")
