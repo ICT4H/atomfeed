@@ -5,6 +5,7 @@ import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
 import org.ict4htw.atomfeed.server.feed.FeedBuilder;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -21,6 +22,7 @@ public class EventFeedService {
     private static final String LINK_TYPE_VIA = "via";
     private static final String ATOMFEED_MEDIA_TYPE = "application/vnd.atomfeed+xml";
 
+    @Autowired
     public EventFeedService(AllEventRecords allEventRecords) {
         this.allEventRecords = allEventRecords;
     }
