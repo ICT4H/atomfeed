@@ -2,6 +2,7 @@ package org.ict4htw.atomfeed.server.util;
 
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.WireFeedOutput;
+import org.ict4htw.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.postgresql.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -17,9 +18,15 @@ public class Util {
         try {
             oos = new ObjectOutputStream(baos);
             oos.writeObject(object);
-            oos.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        finally {
+            try {
+                oos.close();
+            } catch (IOException e) {
+                throw new AtomFeedRuntimeException();
+            }
         }
         // TODO: specify proper encoding here
         return Base64.encodeBytes(baos.toByteArray());

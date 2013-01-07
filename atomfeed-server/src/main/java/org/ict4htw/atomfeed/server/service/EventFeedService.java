@@ -5,10 +5,12 @@ import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
 import org.ict4htw.atomfeed.server.feed.FeedBuilder;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
+import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.util.*;
 
+@Service
 public class EventFeedService {
     private AllEventRecords allEventRecords;
 
@@ -32,7 +34,6 @@ public class EventFeedService {
         int startEventNumber = totalNumberOfEvents - numberOfEventsInFeed;
 
         List<EventRecord> eventRecordList = allEventRecords.getEventsFromNumber(startEventNumber, ENTRIES_PER_FEED);
-
         return new FeedBuilder()
                 .type("atom_1.0")
                         // Presence of feed ID not necessary. We might choose to remove it
@@ -46,7 +47,6 @@ public class EventFeedService {
                 .link(getLink(generateCanonicalUri(startEventNumber, requestUri), LINK_TYPE_VIA, ATOM_MEDIA_TYPE))
                 .links(generatePagingLinks(startEventNumber, totalNumberOfEvents, requestUri))
                 .build();
-
     }
 
     public Feed getEventFeed(int startPos, int endPos, URI requestUri) {
