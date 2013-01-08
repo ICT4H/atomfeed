@@ -46,7 +46,7 @@ public class EventFeedServiceTest {
 
     @Test
     public void shouldGetEventFeed() throws URISyntaxException {
-        Feed feed = eventFeedService.getEventFeed(5, 10, new URI("http://hostname/events/5,10"));
+        Feed feed = eventFeedService.getEventFeed(5, 9, new URI("http://hostname/events/5,10"));
         System.out.println(Util.stringifyFeed(feed));
     }
 }

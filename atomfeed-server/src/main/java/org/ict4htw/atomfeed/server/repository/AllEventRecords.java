@@ -39,6 +39,6 @@ public class AllEventRecords {
 
         return (List<EventRecord>) template.getSessionFactory().openSession().createQuery(
                 "select e from EventRecord e order by e.timeStamp desc")
-                .setFirstResult(startNumber - 1).setMaxResults(numberOfEvents).list();
+                .setFirstResult(startNumber).setMaxResults(numberOfEvents).list();
     }
 }

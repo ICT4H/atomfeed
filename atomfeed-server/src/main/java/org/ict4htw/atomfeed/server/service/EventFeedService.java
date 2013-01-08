@@ -141,8 +141,11 @@ public class EventFeedService {
     }
 
     private boolean invalidStartAndEndPos(int startPos, int endPos, int totalNumberOfEvents) {
-        return !(startPos % ENTRIES_PER_FEED != 0 || endPos != startPos + ENTRIES_PER_FEED - 1) && !(startPos < 0 || startPos > totalNumberOfEvents);
-
+        return
+                startPos % ENTRIES_PER_FEED != 0 ||
+                endPos != startPos + ENTRIES_PER_FEED - 1 ||
+                startPos < 0 ||
+                startPos > totalNumberOfEvents;
     }
 
     private List<Entry> getEntries(List<EventRecord> eventRecordList, URI requestUri) {
