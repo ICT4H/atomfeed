@@ -1,6 +1,7 @@
 package org.ict4htw.atomfeed.server.service;
 
 import com.sun.syndication.feed.atom.*;
+import org.apache.log4j.Logger;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
 import org.ict4htw.atomfeed.server.feed.FeedBuilder;
@@ -14,6 +15,7 @@ import java.util.*;
 @Service
 public class EventFeedService {
     private AllEventRecords allEventRecords;
+    private static Logger logger = Logger.getLogger(EventFeedService.class);
 
     private final int ENTRIES_PER_FEED = 5;
 
@@ -29,6 +31,7 @@ public class EventFeedService {
 
     public Feed getRecentFeed(URI requestUri) {
         int totalNumberOfEvents = allEventRecords.getTotalCount();
+        logger.info("Total number of events: " + totalNumberOfEvents);
 
         int numberOfEventsInFeed = totalNumberOfEvents % ENTRIES_PER_FEED;
         if (numberOfEventsInFeed == 0) numberOfEventsInFeed = ENTRIES_PER_FEED;

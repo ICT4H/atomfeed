@@ -4,7 +4,7 @@ import com.sun.syndication.feed.atom.Feed;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
-import org.ict4htw.atomfeed.server.service.EventFeedService;
+import org.ict4htw.atomfeed.server.repository.InMemoryEventRecordCreator;
 import org.ict4htw.atomfeed.server.util.Util;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -18,23 +18,9 @@ public class EventFeedServiceTest {
 
     @Before
     public void setupEventRecords() throws URISyntaxException {
-        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title",  new URI("http://uri"), "asdasd");
-        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title",  new URI("http://uri"), "dadsas");
-        EventRecord eventRecordAdded3 = new EventRecord("uuid3", "title",  new URI("http://uri"), "asdasd");
-        EventRecord eventRecordAdded4 = new EventRecord("uuid4", "title",  new URI("http://uri"), "asdasd");
-        EventRecord eventRecordAdded5 = new EventRecord("uuid5", "title",  new URI("http://uri"), "asdasd");
-        EventRecord eventRecordAdded6 = new EventRecord("uuid6", "title",  new URI("http://uri"), "asdasd");
-        EventRecord eventRecordAdded7 = new EventRecord("uuid7", "title",  new URI("http://uri"), "asdasd");
-
-        AllEventRecords allEventRecords = new AllEventRecordsStub();
-        allEventRecords.add(eventRecordAdded1);
-        allEventRecords.add(eventRecordAdded2);
-        allEventRecords.add(eventRecordAdded3);
-        allEventRecords.add(eventRecordAdded4);
-        allEventRecords.add(eventRecordAdded5);
-        allEventRecords.add(eventRecordAdded6);
-        allEventRecords.add(eventRecordAdded7);
-
+        AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
+        InMemoryEventRecordCreator inMemoryEventRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
+        inMemoryEventRecordCreator.create();
         eventFeedService = new EventFeedService(allEventRecords);
     }
 

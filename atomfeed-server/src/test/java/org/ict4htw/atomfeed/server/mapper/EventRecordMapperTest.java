@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import static junit.framework.Assert.assertEquals;
 
 public class EventRecordMapperTest {
-
     @Test
     public void shouldMapEventToEventRecord() throws URISyntaxException {
         Event event = new Event("uuid", "title", DateTime.now(), "http://uri", new ArrayList<String>());

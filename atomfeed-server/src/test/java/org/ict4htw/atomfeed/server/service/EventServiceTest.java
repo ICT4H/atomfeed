@@ -2,8 +2,6 @@ package org.ict4htw.atomfeed.server.service;
 
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
-import org.ict4htw.atomfeed.server.service.Event;
-import org.ict4htw.atomfeed.server.service.EventService;
 import org.joda.time.DateTime;
 import org.junit.Test;
 

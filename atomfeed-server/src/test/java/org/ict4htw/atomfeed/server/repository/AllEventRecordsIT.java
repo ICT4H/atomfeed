@@ -76,5 +76,4 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
         assertEquals(eventRecordAdded4.getUuid(), eventRecordList.get(0).getUuid());
         assertEquals(eventRecordAdded5.getUuid(), eventRecordList.get(1).getUuid());
     }
-
 }
