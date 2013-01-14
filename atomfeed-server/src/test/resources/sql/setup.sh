@@ -1,10 +1,10 @@
 
-psql -c "drop database atomfeed"
+psql -c "drop database atomfeed" -U postgres
 
-psql -c "create database atomfeed"
+psql -c "create database atomfeed" -U postgres
 
-psql -d "atomfeed" -c "drop schema if exists atomfeed cascade"
+psql -d "atomfeed" -c "drop schema if exists atomfeed cascade" -U postgres
 
-psql -d "atomfeed" -c "create schema atomfeed authorization pulkitb"
+psql -d "atomfeed" -c "create schema atomfeed authorization postgres" -U postgres
 
-psql -d "atomfeed" -c "grant all on schema atomfeed to pulkitb"
+psql -d "atomfeed" -c "grant all on schema atomfeed to postgres" -U postgres

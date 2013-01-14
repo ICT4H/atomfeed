@@ -1,18 +1,27 @@
 package org.ict4htw.atomfeed.server.domain;
 
-import org.joda.time.DateTime;
+import java.io.StringWriter;
+import java.net.URI;
+import java.util.Date;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.io.StringWriter;
-import java.net.URI;
-import java.sql.Date;
-import org.ict4htw.atomfeed.server.util.*;
+
+import org.ict4htw.atomfeed.server.util.Util;
 
 @Entity
 @Table(name = "event_records")
@@ -40,7 +49,8 @@ public class EventRecord {
     @XmlTransient
     private String title;
 
-    @Column(name = "timestamp")
+    @Column(name = "timestamp", insertable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @XmlTransient
     private Date timeStamp;
 
@@ -51,15 +61,20 @@ public class EventRecord {
     @Column(name = "object")
     @XmlElement
     private String object;
+    
+    @Column(name = "archive_id")
+    @XmlElement
+    private String archiveId;
 
     public EventRecord() { }
 
-    public EventRecord(String uuid, String title, DateTime timeStamp, URI uri, Object eventObject) {
+    public EventRecord(String uuid, String title, URI uri, Object eventObject) {
         this.uuid = uuid;
         this.title = title;
-        this.timeStamp = new Date(timeStamp.getMillis());
         this.uri = uri.toString();
         this.object = Util.stringify(eventObject);
+        //note: this is not the date used. the date will be assigned by database
+        this.timeStamp = new Date();  
     }
 
     public Integer getId() {
@@ -103,5 +118,11 @@ public class EventRecord {
             throw new RuntimeException(e);
         }
     }
+
+	public String getArchiveId() {
+		return archiveId;
+	}
+
+	
 
 }

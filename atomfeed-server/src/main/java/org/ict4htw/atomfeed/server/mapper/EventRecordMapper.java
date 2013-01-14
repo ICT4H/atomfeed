@@ -7,7 +7,7 @@ public class EventRecordMapper {
 
     public static EventRecord map (Event event) {
         return new EventRecord(event.getUuid(), event.getTitle(),
-                event.getTimeStamp(), event.getUri(), event.getEventObject());
+                event.getUri(), event.getEventObject());
     }
 
 }

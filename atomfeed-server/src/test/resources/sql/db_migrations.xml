@@ -16,5 +16,24 @@
             <column name="object" type="varchar(1000)"/>
         </createTable>
     </changeSet>
+    <changeSet context="setup" author="ict4h" id="2">
+        <addColumn tableName="event_records" schemaName="atomfeed">
+    		<column name="archive_id" type="varchar(255)"/>
+		</addColumn>
+		<dropColumn tableName="event_records" schemaName="atomfeed" columnName="timestamp"/>
+		<addColumn tableName="event_records" schemaName="atomfeed">
+    		<column name="timestamp" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP"/>
+		</addColumn>
+    </changeSet>
+    <changeSet context="setup" author="ict4h" id="3">
+        <createTable tableName="event_archive" schemaName="atomfeed">
+            <column name="id" type="serial">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="timestamp" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP"/>
+            <column name="archive_id" type="varchar(255)"/>
+            <column name="parent_id" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
