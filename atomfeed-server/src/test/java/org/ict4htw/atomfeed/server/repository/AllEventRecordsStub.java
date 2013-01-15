@@ -56,4 +56,16 @@ public class AllEventRecordsStub implements AllEventRecords {
 		// TODO Auto-generated method stub
 		
 	}
+
+    public EventArchive findArchiveById(String archive_id) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public EventArchive getWorkingArchive() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public EventArchive getArchiveWithId(String archiveId) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

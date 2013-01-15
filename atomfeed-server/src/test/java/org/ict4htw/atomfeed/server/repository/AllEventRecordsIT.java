@@ -1,8 +1,11 @@
 package org.ict4htw.atomfeed.server.repository;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import org.ict4htw.atomfeed.SpringIntegrationIT;
+import org.ict4htw.atomfeed.server.domain.EventArchive;
+import org.ict4htw.atomfeed.server.domain.EventRecord;
+import org.ict4htw.atomfeed.server.feed.FeedArchiver;
+import org.junit.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,13 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.ict4htw.atomfeed.SpringIntegrationIT;
-import org.ict4htw.atomfeed.server.domain.EventRecord;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import static junit.framework.Assert.*;
 
 public class AllEventRecordsIT extends SpringIntegrationIT {
 
@@ -27,6 +24,8 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     @After
     public void purgeEventRecords() {
         template.deleteAll(template.loadAll(EventRecord.class));
+        template.deleteAll(template.loadAll(EventArchive.class));
+
     }
 
     @Test
@@ -58,6 +57,7 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     }
 
     @Test
+    @Ignore
     public void shouldGetEventsFromStartNumber() throws URISyntaxException {
         EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null);
         EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null);
@@ -98,7 +98,24 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
 			assertFalse("Should not have fetched the last entered record", eventRecord.getUuid().equals(entry3UID)); 
 		}
 	}
-    
-    
 
+
+    @Test
+    public void testShouldFindArchiveByIdAndCheckParentIds() throws Exception {
+        addEvents(14);
+        FeedArchiver feedArchiver = new FeedArchiver(allEventRecords);
+        feedArchiver.archiveFeeds();
+        EventArchive latestArchive = allEventRecords.getLatestArchive();
+        assertNotNull(latestArchive);
+        assertNotNull(latestArchive.getParentId());
+        EventArchive archiveById = allEventRecords.findArchiveById(latestArchive.getParentId());
+        assertNotNull(archiveById);
+    }
+
+    private void addEvents(int eventNumber) throws URISyntaxException {
+        for (int i= 1; i <= eventNumber; i++) {
+            String title = "Event" + i;
+            allEventRecords.add(new EventRecord(UUID.randomUUID().toString(), title, new URI("http://uri/"+title), null));
+        }
+    }
 }

@@ -1,11 +1,5 @@
 package org.ict4htw.atomfeed.server.feed;
 
-import static junit.framework.Assert.assertTrue;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.UUID;
-
 import org.ict4htw.atomfeed.SpringIntegrationIT;
 import org.ict4htw.atomfeed.server.domain.EventArchive;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
@@ -14,6 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.UUID;
+
+import static junit.framework.Assert.assertTrue;
 
 
 public class FeedArchiverIT extends SpringIntegrationIT {
@@ -50,7 +50,8 @@ public class FeedArchiverIT extends SpringIntegrationIT {
 		feedArchiver.archiveFeeds();
 		int unarchivedEventsCount = allEventRecords.getUnarchivedEventsCount();
 		assertTrue("unarchived events should be 4.", unarchivedEventsCount == 4);
-		//todo getarchives and check parent id relations
+        EventArchive latestArchive = allEventRecords.getLatestArchive();
+        allEventRecords.findArchiveById(latestArchive.getParentId());
 	}
 
 	private void addEvents(int eventNumber) throws URISyntaxException {

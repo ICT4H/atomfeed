@@ -93,4 +93,10 @@ public class AllEventRecordsImpl implements AllEventRecords {
 	public void save(List<EventRecord> eventRecords) {
 		template.saveOrUpdateAll(eventRecords);
 	}
+
+    public EventArchive findArchiveById(String archive_id) {
+        List<EventArchive> archives = template.getSessionFactory().openSession().createQuery(
+                "select ea from EventArchive ea where ea.archiveId = '"+archive_id+"'").setMaxResults(1).list();
+        return ((archives != null) && (archives.size() > 0)) ? archives.get(0) : null;
+    }
 }
