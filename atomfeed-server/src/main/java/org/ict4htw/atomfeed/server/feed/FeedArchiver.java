@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FeedGenerator {
+public class FeedArchiver {
 	
 	private AllEventRecords eventRecords;
 	
@@ -18,7 +18,7 @@ public class FeedGenerator {
 	private final int ENTRIES_PER_FEED = 5;
 	
     @Autowired
-	public FeedGenerator(AllEventRecords eventRecords) {
+	public FeedArchiver(AllEventRecords eventRecords) {
     	 this.eventRecords = eventRecords;
 	}
 
@@ -39,16 +39,26 @@ public class FeedGenerator {
 		int possiblefeedCount = unarchivedCount / ENTRIES_PER_FEED;
 		for (int idx = 0; idx < possiblefeedCount; idx++) {
 			List<EventRecord> unarchivedEvents = eventRecords.getUnarchivedEvents(ENTRIES_PER_FEED);
-			EventArchive eventArchive = createEventArchive(unarchivedEvents);
+			archive(unarchivedEvents);
 		}
-		
 		
 	}
 
-	private EventArchive createEventArchive(List<EventRecord> unarchivedEvents) {
-		String archiveID = UUID.randomUUID().toString();
-		EventArchive eventArchive = new EventArchive(archiveID);
+	private void archive(List<EventRecord> unarchivedEvents) {
+		EventArchive newArchive = createNewArchive();
+		newArchive.addEvents(unarchivedEvents);
+		eventRecords.save(unarchivedEvents);
+	}
+
+	private EventArchive createNewArchive() {
+		EventArchive eventArchive = new EventArchive(UUID.randomUUID().toString(), getParentArchiveId());
+		eventRecords.save(eventArchive);
 		return eventArchive;
+	}
+
+	private String getParentArchiveId() {
+		EventArchive latestArchive = eventRecords.getLatestArchive();
+		return (latestArchive != null) ? latestArchive.getArchiveId() : null;
 	}
 
 	private boolean isWorkingFeed(int eventsCount) {

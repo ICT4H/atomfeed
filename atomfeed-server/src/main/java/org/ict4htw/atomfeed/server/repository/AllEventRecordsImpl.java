@@ -1,5 +1,6 @@
 package org.ict4htw.atomfeed.server.repository;
 
+import org.ict4htw.atomfeed.server.domain.EventArchive;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -72,5 +73,24 @@ public class AllEventRecordsImpl implements AllEventRecords {
 		return (List<EventRecord>) template.getSessionFactory().openSession().createQuery(
 				"select e from EventRecord e order by e.timeStamp asc").setMaxResults(limit).list();
 		
+	}
+
+	@Override
+	public void save(EventArchive eventArchive) {
+		template.save(eventArchive);
+	}
+
+	@Override
+	public EventArchive getLatestArchive() {
+		List<EventArchive> archives = template.getSessionFactory().openSession().createQuery(
+                "select ea from EventArchive ea order by ea.timeStamp desc").setMaxResults(1).list();
+		return ((archives != null) && (archives.size() > 0)) ? archives.get(0) : null;
+		
+		
+	}
+
+	@Override
+	public void save(List<EventRecord> eventRecords) {
+		template.saveOrUpdateAll(eventRecords);
 	}
 }

@@ -1,5 +1,6 @@
 package org.ict4htw.atomfeed.server.repository;
 
+import org.ict4htw.atomfeed.server.domain.EventArchive;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
 
@@ -36,5 +37,23 @@ public class AllEventRecordsStub implements AllEventRecords {
 	@Override
 	public List<EventRecord> getUnarchivedEvents(int limit) {
 		return null; //should not return null
+	}
+
+	@Override
+	public void save(EventArchive eventArchive) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public EventArchive getLatestArchive() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void save(List<EventRecord> eventRecords) {
+		// TODO Auto-generated method stub
+		
 	}
 }

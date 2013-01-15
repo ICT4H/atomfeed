@@ -2,21 +2,27 @@ package org.ict4htw.atomfeed.server.repository;
 
 import java.util.List;
 
+import org.ict4htw.atomfeed.server.domain.EventArchive;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 
 public interface AllEventRecords {
 
-	public abstract void add(EventRecord eventRecord);
+	void add(EventRecord eventRecord);
 
-	public abstract EventRecord get(String uuid);
+	EventRecord get(String uuid);
 
-	public abstract int getTotalCount();
+	int getTotalCount();
 
-	public abstract List<EventRecord> getEventsFromNumber(int startNumber,
-			int numberOfEvents);
+	List<EventRecord> getEventsFromNumber(int startNumber, int numberOfEvents);
 
-	public abstract int getUnarchivedEventsCount();
+	int getUnarchivedEventsCount();
 
-	public abstract List<EventRecord> getUnarchivedEvents(int limit);
+	List<EventRecord> getUnarchivedEvents(int limit);
+
+	void save(EventArchive eventArchive);
+
+	EventArchive getLatestArchive();
+
+	void save(List<EventRecord> eventRecords);
 
 }

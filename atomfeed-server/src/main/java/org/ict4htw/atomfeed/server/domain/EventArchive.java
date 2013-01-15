@@ -1,27 +1,21 @@
 package org.ict4htw.atomfeed.server.domain;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "event_archive")
-@NamedQueries({
-        @NamedQuery(name = EventRecord.FIND_BY_UUID, query = "select e from EventRecord e where e.uuid=:uuid")
-})
-@XmlRootElement(name = "event", namespace = EventRecord.EVENT_NAMESPACE)
 public class EventArchive {
 
 	@Id
@@ -43,8 +37,12 @@ public class EventArchive {
     @XmlTransient
     private Date timeStamp;
 
-	public EventArchive(String archiveId) {
+	public EventArchive() {
+		super();
+	}
+	public EventArchive(String archiveId, String parentArchiveId) {
 		this.archiveId = archiveId;
+		this.parentId = parentArchiveId;
 	}
 
 	public String getArchiveId() {
@@ -61,6 +59,14 @@ public class EventArchive {
 
 	public Integer getId() {
 		return id;
-	}		
+	}
+
+	public void addEvents(List<EventRecord> unarchivedEvents) {
+		for (EventRecord record : unarchivedEvents) {
+			record.setArchiveId(this.archiveId);
+		}
+		
+	}	
+		
 
 }

@@ -1,7 +1,7 @@
 package org.ict4htw.atomfeed.server.repository;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -72,8 +72,18 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
 
         List<EventRecord> eventRecordList = allEventRecords.getEventsFromNumber(3, 2);
 
-        Assert.assertEquals(2, eventRecordList.size());
+        assertEquals(2, eventRecordList.size());
         assertEquals(eventRecordAdded4.getUuid(), eventRecordList.get(0).getUuid());
         assertEquals(eventRecordAdded5.getUuid(), eventRecordList.get(1).getUuid());
     }
+
+    @Test
+	public void shouldCheckRecentFeedEntries() {
+		int unarchivedCount = allEventRecords.getUnarchivedEventsCount();
+		int totalCount = allEventRecords.getTotalCount();
+		if (totalCount > 0) {
+			assertTrue("Unarchived events must be greater than zero", unarchivedCount > 0);    
+		}
+	}
+
 }

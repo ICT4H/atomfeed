@@ -122,6 +122,11 @@ public class EventRecord {
 	public String getArchiveId() {
 		return archiveId;
 	}
+	
+	//package private
+	void setArchiveId(String archiveId) {
+		this.archiveId = archiveId;
+	}
 
 	
 
