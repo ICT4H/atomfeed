@@ -25,4 +25,6 @@ public interface AllEventRecords {
 
 	void save(List<EventRecord> eventRecords);
 
+	EventArchive findArchiveById(String archiveId);
+
 }

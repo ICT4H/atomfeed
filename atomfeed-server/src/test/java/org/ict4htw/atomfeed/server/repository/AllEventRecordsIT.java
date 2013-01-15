@@ -1,11 +1,8 @@
 package org.ict4htw.atomfeed.server.repository;
 
-import org.ict4htw.atomfeed.SpringIntegrationIT;
-import org.ict4htw.atomfeed.server.domain.EventArchive;
-import org.ict4htw.atomfeed.server.domain.EventRecord;
-import org.ict4htw.atomfeed.server.feed.FeedArchiver;
-import org.junit.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,7 +10,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static junit.framework.Assert.*;
+import org.ict4htw.atomfeed.SpringIntegrationIT;
+import org.ict4htw.atomfeed.server.domain.EventArchive;
+import org.ict4htw.atomfeed.server.domain.EventRecord;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AllEventRecordsIT extends SpringIntegrationIT {
 
@@ -56,6 +61,8 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
         Assert.assertEquals(2, totalCount);
     }
 
+    //ignoring the test temporarily, as the event chunking logic will be done by a archiver. 
+    //the test might not be needed or needs to be altered
     @Test
     @Ignore
     public void shouldGetEventsFromStartNumber() throws URISyntaxException {
@@ -89,28 +96,14 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     
     @Test
 	public void shouldGetEventsInOrderOfCreation() throws URISyntaxException {
-        allEventRecords.add(new EventRecord(UUID.randomUUID().toString(), "entry 1", new URI("http://uri/entry1"), null));
-        allEventRecords.add(new EventRecord(UUID.randomUUID().toString(), "entry 2", new URI("http://uri/entry2"), null));
+    	addEvents(2);
         String entry3UID = UUID.randomUUID().toString();
 		allEventRecords.add(new EventRecord(entry3UID, "entry 3", new URI("http://uri/entry3"), null));
 		List<EventRecord> recentFeed = allEventRecords.getUnarchivedEvents(2);
 		for (EventRecord eventRecord : recentFeed) {
 			assertFalse("Should not have fetched the last entered record", eventRecord.getUuid().equals(entry3UID)); 
 		}
-	}
-
-
-    @Test
-    public void testShouldFindArchiveByIdAndCheckParentIds() throws Exception {
-        addEvents(14);
-        FeedArchiver feedArchiver = new FeedArchiver(allEventRecords);
-        feedArchiver.archiveFeeds();
-        EventArchive latestArchive = allEventRecords.getLatestArchive();
-        assertNotNull(latestArchive);
-        assertNotNull(latestArchive.getParentId());
-        EventArchive archiveById = allEventRecords.findArchiveById(latestArchive.getParentId());
-        assertNotNull(archiveById);
-    }
+	}    
 
     private void addEvents(int eventNumber) throws URISyntaxException {
         for (int i= 1; i <= eventNumber; i++) {
