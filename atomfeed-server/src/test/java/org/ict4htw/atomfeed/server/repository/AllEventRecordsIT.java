@@ -1,6 +1,7 @@
 package org.ict4htw.atomfeed.server.repository;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import java.net.URI;
@@ -85,5 +86,19 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
 			assertTrue("Unarchived events must be greater than zero", unarchivedCount > 0);    
 		}
 	}
+    
+    @Test
+	public void shouldGetEventsInOrderOfCreation() throws URISyntaxException {
+        allEventRecords.add(new EventRecord(UUID.randomUUID().toString(), "entry 1", new URI("http://uri/entry1"), null));
+        allEventRecords.add(new EventRecord(UUID.randomUUID().toString(), "entry 2", new URI("http://uri/entry2"), null));
+        String entry3UID = UUID.randomUUID().toString();
+		allEventRecords.add(new EventRecord(entry3UID, "entry 3", new URI("http://uri/entry3"), null));
+		List<EventRecord> recentFeed = allEventRecords.getUnarchivedEvents(2);
+		for (EventRecord eventRecord : recentFeed) {
+			assertFalse("Should not have fetched the last entered record", eventRecord.getUuid().equals(entry3UID)); 
+		}
+	}
+    
+    
 
 }
