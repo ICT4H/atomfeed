@@ -71,7 +71,7 @@ public class AllEventRecordsImpl implements AllEventRecords {
 	@Override
 	public List<EventRecord> getUnarchivedEvents(int limit) {
 		return (List<EventRecord>) template.getSessionFactory().openSession().createQuery(
-				"select e from EventRecord e order by e.timeStamp asc").setMaxResults(limit).list();
+				"select e from EventRecord e where e.archiveId is null order by e.timeStamp asc").setMaxResults(limit).list();
 		
 	}
 
