@@ -28,11 +28,7 @@ public class Event {
     }
 
     public Event(String uuid, String title, DateTime timeStamp, String uriString, Object eventObject) throws URISyntaxException {
-        this.uuid = uuid;
-        this.timeStamp = timeStamp;
-        this.title = title;
-        this.uri = new URI(uriString);
-        this.eventObject = eventObject;
+        this(uuid, title, timeStamp, new URI(uriString), eventObject);
     }
 
     public String getUuid() {
