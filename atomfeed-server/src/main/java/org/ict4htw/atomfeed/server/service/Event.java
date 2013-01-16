@@ -2,11 +2,10 @@ package org.ict4htw.atomfeed.server.service;
 
 import org.joda.time.DateTime;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class Event implements Serializable {
+public class Event {
 
     private String uuid;
 
