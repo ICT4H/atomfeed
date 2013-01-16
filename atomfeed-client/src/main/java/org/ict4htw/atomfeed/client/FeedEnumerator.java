@@ -36,7 +36,7 @@ public class FeedEnumerator {
     }
 
     public List<Entry> newerEntries(String lastReadEntryId) throws URISyntaxException {
-        List<Entry> entryList = new ArrayList<>();
+        List<Entry> entryList = new ArrayList<Entry>();
         Feed feed = navigateToFeedEntry(lastReadEntryId);
         if (feed == null) return entryList;
 

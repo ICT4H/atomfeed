@@ -7,7 +7,7 @@ import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
 import java.util.*;
 
 public class AllEventRecordsStub implements AllEventRecords {
-    private Map<String, EventRecord> eventRecords = new HashMap<>();
+    private Map<String, EventRecord> eventRecords = new HashMap<String, EventRecord>();
 
     public void add(EventRecord eventRecord) {
         eventRecords.put(eventRecord.getUuid(), eventRecord);
@@ -23,7 +23,7 @@ public class AllEventRecordsStub implements AllEventRecords {
 
     public List<EventRecord> getEventsFromNumber(int startNumber, int numberOfEvents) {
         Collection<EventRecord> values = eventRecords.values();
-        ArrayList<EventRecord> eventRecordList = new ArrayList<>(values);
+        ArrayList<EventRecord> eventRecordList = new ArrayList<EventRecord>(values);
         Collections.sort(eventRecordList, new EventRecordComparator());
         int numberOfItems = (startNumber + numberOfEvents) > eventRecordList.size() ? (eventRecordList.size() - startNumber) : numberOfEvents;
         return eventRecordList.subList(startNumber, startNumber + numberOfItems);

@@ -5,7 +5,7 @@ import org.ict4htw.atomfeed.client.domain.Marker;
 import java.util.HashMap;
 
 public class InMemoryMarkers implements MarkerDataSource {
-    private HashMap<String, Marker> markers = new HashMap<>();
+    private HashMap<String, Marker> markers = new HashMap<String, Marker>();
 
     @Override
     public Marker get(String consumerId) {

@@ -32,7 +32,7 @@ public class FeedClientImpl implements FeedClient {
             Marker marker = allMarkers.get(consumerId);
             FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, new URI(url));
             List<Entry> entries = feedEnumerator.newerEntries(marker.getEntryId());
-            ArrayList<Event> events = new ArrayList<>();
+            ArrayList<Event> events = new ArrayList<Event>();
             for (Entry entry : entries) {
                 events.add(new Event());
             }

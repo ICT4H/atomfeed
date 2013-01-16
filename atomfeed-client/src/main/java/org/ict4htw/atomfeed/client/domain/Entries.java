@@ -25,7 +25,7 @@ public class Entries {
     }
 
     public List<Entry> newerEntries(String feedEntryId) {
-        List<Entry> entries = new ArrayList<>();
+        List<Entry> entries = new ArrayList<Entry>();
         for (Object object : list) {
             Entry entry = (Entry) object;
             entries.add(entry);
