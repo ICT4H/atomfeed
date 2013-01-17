@@ -25,7 +25,7 @@ public class Util {
             try {
                 oos.close();
             } catch (IOException e) {
-                throw new AtomFeedRuntimeException();
+                throw new AtomFeedRuntimeException(e);
             }
         }
         // TODO: specify proper encoding here
