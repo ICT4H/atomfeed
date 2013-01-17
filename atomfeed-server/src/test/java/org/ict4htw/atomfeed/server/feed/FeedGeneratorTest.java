@@ -1,13 +1,16 @@
 package org.ict4htw.atomfeed.server.feed;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.UUID;
+
 import junit.framework.Assert;
 
+import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.sun.syndication.feed.atom.Feed;
 
 
 public class FeedGeneratorTest {
@@ -33,11 +36,19 @@ public class FeedGeneratorTest {
 	}
 	
 	@Test
-	public void shouldRetrieveGivenFeed() {
+	public void shouldRetrieveGivenFeed() throws Exception {
+		addEvents(11);
 		EventFeed feed = feedGenerator.getFeedForId("1");
 		Assert.assertEquals("1", feed.getId());
 		Assert.assertEquals(5, feed.getEvents().size());
 		
+	}
+	
+	private void addEvents(int eventNumber) throws URISyntaxException {
+		for (int i= 1; i <= eventNumber; i++) {
+			String title = "Event" + i;
+			eventsRecord.add(new EventRecord(UUID.randomUUID().toString(), title, new URI("http://uri/"+title), null));
+		}
 	}
 	
 	

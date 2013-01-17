@@ -71,7 +71,6 @@ public class AllEventRecordsStub implements AllEventRecords {
 
 	@Override
 	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
-		// TODO Auto-generated method stub
-		return null;
+		return getEventsFromNumber(first, (last-first +1));
 	}
 }
