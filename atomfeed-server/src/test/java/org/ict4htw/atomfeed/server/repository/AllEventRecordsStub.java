@@ -68,4 +68,10 @@ public class AllEventRecordsStub implements AllEventRecords {
     public EventArchive getArchiveWithId(String archiveId) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+	@Override
+	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

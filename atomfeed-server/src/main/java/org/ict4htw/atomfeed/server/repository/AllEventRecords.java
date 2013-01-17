@@ -27,4 +27,6 @@ public interface AllEventRecords {
 
 	EventArchive findArchiveById(String archiveId);
 
+	List<EventRecord> getEventsFromRange(Integer first, Integer last);
+
 }

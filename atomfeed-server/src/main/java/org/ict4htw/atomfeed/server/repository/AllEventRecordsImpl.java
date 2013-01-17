@@ -1,5 +1,6 @@
 package org.ict4htw.atomfeed.server.repository;
 
+import org.hibernate.Query;
 import org.ict4htw.atomfeed.server.domain.EventArchive;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,4 +101,13 @@ public class AllEventRecordsImpl implements AllEventRecords {
                 "select ea from EventArchive ea where ea.archiveId = '"+ archive_id +"'").setMaxResults(1).list();
         return ((archives != null) && (archives.size() > 0)) ? archives.get(0) : null;
     }
+
+	@Override
+	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
+		Query query = template.getSessionFactory().openSession().createQuery(
+                "select er from EventRecord er where er.id >= :first and er.id <= :last order by er.timeStamp asc");
+		query.setParameter("first", first);
+		query.setParameter("last", last);
+		return query.list();
+	}
 }
