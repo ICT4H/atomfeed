@@ -1,14 +1,13 @@
 package org.ict4htw.atomfeed.server.feed;
 
 import junit.framework.Assert;
-
 import org.junit.Test;
 
 public class ChunkingHistoryTest {
 	
 	@Test
 	public void shouldGetFeedCountGivenTotalNumRecordsFromSingleHistory() {
-		ChunkingHistory history = getSingleEntryHisotry();
+		ChunkingHistory history = getSingleEntryHistory();
 		Assert.assertEquals(3, history.getNumberOfFeeds(12));
 		Assert.assertEquals(2, history.getNumberOfFeeds(10));
 		Assert.assertEquals(0, history.getNumberOfFeeds(0));
@@ -16,7 +15,7 @@ public class ChunkingHistoryTest {
 	
 	@Test
 	public void shouldGetFeedCountGivenTotalNumRecordsFromMultipleHistory() {
-		ChunkingHistory history = getMultiEntryHisotry();
+		ChunkingHistory history = getMultiEntryHistory();
 		Assert.assertEquals(4, history.getNumberOfFeeds(18));
 		Assert.assertEquals(5, history.getNumberOfFeeds(21));
 		Assert.assertEquals(3, history.getNumberOfFeeds(13));
@@ -25,45 +24,32 @@ public class ChunkingHistoryTest {
 	
 	@Test
 	public void shouldFindRangeForAGivenFeedWithSingleHistory() {
-		ChunkingHistory history = getSingleEntryHisotry();
-		ChunkingHistory.Range range2 = history.findRange(2, 11);
-		Assert.assertEquals(6, range2.first.intValue());
-		Assert.assertEquals(10, range2.last.intValue());
-		
-		ChunkingHistory.Range range1 = history.findRange(1, 11);
-		Assert.assertEquals(1, range1.first.intValue());
-		Assert.assertEquals(5, range1.last.intValue());
+		ChunkingHistory history = getSingleEntryHistory();
+		assertRange(6, 10, history.findRange(2, 11));
+		assertRange(1, 5, history.findRange(1, 11));
 	}
 	
 	@Test
 	public void shouldFindRangeForAGivenFeedWithMultiHistory() {
-		ChunkingHistory history = getMultiEntryHisotry();
-		ChunkingHistory.Range range2 = history.findRange(2, 11);
-		Assert.assertEquals(6, range2.first.intValue());
-		Assert.assertEquals(10, range2.last.intValue());
-		
-		ChunkingHistory.Range range3 = history.findRange(3, 11);
-		Assert.assertEquals(11, range3.first.intValue());
-		Assert.assertEquals(11, range3.last.intValue());
-		
-		ChunkingHistory.Range range3a = history.findRange(3, 100);
-		Assert.assertEquals(11, range3a.first.intValue());
-		Assert.assertEquals(13, range3a.last.intValue());
-		
-		ChunkingHistory.Range range4 = history.findRange(4, 100);
-		Assert.assertEquals(14, range4.first.intValue());
-		Assert.assertEquals(20, range4.last.intValue());
+		ChunkingHistory history = getMultiEntryHistory();		
+		assertRange(6, 10, history.findRange(2, 11));	
+		assertRange(11, 11, history.findRange(3, 11));	
+		assertRange(11, 13, history.findRange(3, 100));		
+		assertRange(14, 20, history.findRange(4, 100));
+	}
+
+	private void assertRange(int first, int last, ChunkingHistory.Range range) {
+		Assert.assertEquals(first, range.first.intValue());
+		Assert.assertEquals(last, range.last.intValue());
 	}
 	
-	
-	
-	private ChunkingHistory getSingleEntryHisotry() {
+	private ChunkingHistory getSingleEntryHistory() {
 		ChunkingHistory history = new ChunkingHistory();
 		history.add(1, 5, 1);
 		return history;
 	}
 
-	private ChunkingHistory getMultiEntryHisotry() {
+	private ChunkingHistory getMultiEntryHistory() {
 		ChunkingHistory history = new ChunkingHistory();
 		history.add(1, 5, 1);
 		history.add(2, 7, 14);
@@ -71,3 +57,4 @@ public class ChunkingHistoryTest {
 	}
 
 }
+
