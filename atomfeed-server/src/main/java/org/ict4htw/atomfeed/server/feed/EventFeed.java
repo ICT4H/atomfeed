@@ -6,15 +6,15 @@ import org.ict4htw.atomfeed.server.domain.EventRecord;
 
 public class EventFeed {
 
-	private String feedId;
+	private Integer feedId;
 	private List<EventRecord> events;
 
-	public EventFeed(String feedId, List<EventRecord> events) {
+	public EventFeed(Integer feedId, List<EventRecord> events) {
 		this.feedId = feedId;
 		this.events = events;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return feedId;
 	}
 

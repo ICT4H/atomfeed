@@ -22,11 +22,12 @@ public class AllEventRecordsStub implements AllEventRecords {
     }
 
     public List<EventRecord> getEventsFromNumber(int startNumber, int numberOfEvents) {
-        Collection<EventRecord> values = eventRecords.values();
-        ArrayList<EventRecord> eventRecordList = new ArrayList<EventRecord>(values);
+        ArrayList<EventRecord> eventRecordList = new ArrayList<EventRecord>(eventRecords.values());
         Collections.sort(eventRecordList, new EventRecordComparator());
-        int numberOfItems = (startNumber + numberOfEvents) > eventRecordList.size() ? (eventRecordList.size() - startNumber) : numberOfEvents;
-        return eventRecordList.subList(startNumber, startNumber + numberOfItems);
+        //13 total, starting 11 get 5
+        //15 total, starting 11 get 5
+        int numberOfItems = (startNumber + numberOfEvents-1) > eventRecordList.size() ? (eventRecordList.size() - (startNumber-1)) : numberOfEvents;
+        return eventRecordList.subList(startNumber-1, startNumber + numberOfItems-1);
     }
 
 	@Override
