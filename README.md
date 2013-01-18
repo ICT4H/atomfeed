@@ -8,7 +8,7 @@ To build:
 * mvn test
 
 To install (assuming a Postgres DB is already created):
-* mvn install
+* mvn install -P IT -DskipTests
 
 design
 ------
