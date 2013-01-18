@@ -26,6 +26,10 @@
             <column name="end_pos" type="int"/>
         </createTable>
     </changeSet>
+    <changeSet id="5" author="maha">
+        <!--  We should move this to a separate mvn execution or profile -->
+        <sqlFile path="src/test/resources/sql/chunk_history.dml.sql"/>
+    </changeSet>
     
     
 
