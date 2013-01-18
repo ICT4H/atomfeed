@@ -7,6 +7,9 @@ To build:
 * mvn compile
 * mvn test
 
+To install (assuming a Postgres DB is already created):
+* mvn install
+
 design
 ------
 Our design assumes:
