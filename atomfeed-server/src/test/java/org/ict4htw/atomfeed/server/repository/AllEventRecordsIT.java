@@ -1,7 +1,6 @@
 package org.ict4htw.atomfeed.server.repository;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import java.net.URI;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.ict4htw.atomfeed.SpringIntegrationIT;
-import org.ict4htw.atomfeed.server.domain.EventArchive;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.junit.After;
 import org.junit.Assert;
@@ -29,8 +27,6 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     @After
     public void purgeEventRecords() {
         template.deleteAll(template.loadAll(EventRecord.class));
-        template.deleteAll(template.loadAll(EventArchive.class));
-
     }
 
     @Test
@@ -84,26 +80,6 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
         assertEquals(eventRecordAdded4.getUuid(), eventRecordList.get(0).getUuid());
         assertEquals(eventRecordAdded5.getUuid(), eventRecordList.get(1).getUuid());
     }
-
-    @Test
-	public void shouldCheckRecentFeedEntries() {
-		int unarchivedCount = allEventRecords.getUnarchivedEventsCount();
-		int totalCount = allEventRecords.getTotalCount();
-		if (totalCount > 0) {
-			assertTrue("Unarchived events must be greater than zero", unarchivedCount > 0);    
-		}
-	}
-    
-    @Test
-	public void shouldGetEventsInOrderOfCreation() throws URISyntaxException {
-    	addEvents(2);
-        String entry3UID = UUID.randomUUID().toString();
-		allEventRecords.add(new EventRecord(entry3UID, "entry 3", new URI("http://uri/entry3"), null));
-		List<EventRecord> recentFeed = allEventRecords.getUnarchivedEvents(2);
-		for (EventRecord eventRecord : recentFeed) {
-			assertFalse("Should not have fetched the last entered record", eventRecord.getUuid().equals(entry3UID)); 
-		}
-	}    
 
     private void addEvents(int eventNumber) throws URISyntaxException {
         for (int i= 1; i <= eventNumber; i++) {

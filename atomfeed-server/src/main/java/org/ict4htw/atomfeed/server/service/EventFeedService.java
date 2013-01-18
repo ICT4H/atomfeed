@@ -4,7 +4,9 @@ import com.sun.syndication.feed.atom.*;
 import org.apache.log4j.Logger;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
+import org.ict4htw.atomfeed.server.feed.ChunkingHistory;
 import org.ict4htw.atomfeed.server.feed.FeedBuilder;
+import org.ict4htw.atomfeed.server.feed.FeedGenerator;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,12 @@ public class EventFeedService {
     private static final String LINK_TYPE_SELF = "self";
     private static final String LINK_TYPE_VIA = "via";
     private static final String ATOMFEED_MEDIA_TYPE = "application/vnd.atomfeed+xml";
+	private FeedGenerator feedGenerator;
 
     @Autowired
     public EventFeedService(AllEventRecords allEventRecords) {
         this.allEventRecords = allEventRecords;
+        feedGenerator = new FeedGenerator(allEventRecords, new ChunkingHistory());
     }
 
     public Feed getRecentFeed(URI requestUri) {

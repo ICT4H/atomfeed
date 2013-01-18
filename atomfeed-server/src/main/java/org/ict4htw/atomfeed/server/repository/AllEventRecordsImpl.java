@@ -1,13 +1,12 @@
 package org.ict4htw.atomfeed.server.repository;
 
+import java.util.List;
+
 import org.hibernate.Query;
-import org.ict4htw.atomfeed.server.domain.EventArchive;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Repository
 @Transactional
@@ -52,55 +51,16 @@ public class AllEventRecordsImpl implements AllEventRecords {
 	 */
     @Override
 	public List<EventRecord> getEventsFromNumber(int startNumber, int numberOfEvents) {
-//        return (List<EventRecord>)template.findByNamedQueryAndNamedParam(EventRecord.FIND_FROM_START_NUMBER,
-//                new String[] { "limit", "offset" }, new Object[] { numberOfEvents, startNumber });
-
         return (List<EventRecord>) template.getSessionFactory().openSession().createQuery(
                 "select e from EventRecord e order by e.timeStamp desc")
                 .setFirstResult(startNumber).setMaxResults(numberOfEvents).list();
     }
 
-	/* (non-Javadoc)
-	 * @see org.ict4htw.atomfeed.server.repository.AllEventRecords#getRecentFeedCount()
-	 */
-	@Override
-	public int getUnarchivedEventsCount() {
-		Long totalCount = (Long)template.getSessionFactory().openSession().createQuery("select count(*) from EventRecord where archiveId is null").uniqueResult();
-        return totalCount.intValue();
-	}
-
-	@Override
-	public List<EventRecord> getUnarchivedEvents(int limit) {
-		return (List<EventRecord>) template.getSessionFactory().openSession().createQuery(
-				"select e from EventRecord e where e.archiveId is null order by e.timeStamp asc").setMaxResults(limit).list();
-		
-	}
-
-	@Override
-	public void save(EventArchive eventArchive) {
-		template.save(eventArchive);
-	}
-
-	@Override
-	public EventArchive getLatestArchive() {
-		List<EventArchive> archives = template.getSessionFactory().openSession().createQuery(
-                "select ea from EventArchive ea order by ea.timeStamp desc").setMaxResults(1).list();
-		return ((archives != null) && (archives.size() > 0)) ? archives.get(0) : null;
-		
-		
-	}
-
+	
 	@Override
 	public void save(List<EventRecord> eventRecords) {
 		template.saveOrUpdateAll(eventRecords);
 	}
-
-	@Override
-	public EventArchive findArchiveById(String archive_id) {
-        List<EventArchive> archives = template.getSessionFactory().openSession().createQuery(
-                "select ea from EventArchive ea where ea.archiveId = '"+ archive_id +"'").setMaxResults(1).list();
-        return ((archives != null) && (archives.size() > 0)) ? archives.get(0) : null;
-    }
 
 	@Override
 	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {

@@ -61,10 +61,6 @@ public class EventRecord {
     @Column(name = "object")
     @XmlElement
     private String object;
-    
-    @Column(name = "archive_id")
-    @XmlElement
-    private String archiveId;
 
     public EventRecord() { }
 
@@ -118,16 +114,5 @@ public class EventRecord {
             throw new RuntimeException(e);
         }
     }
-
-	public String getArchiveId() {
-		return archiveId;
-	}
 	
-	//package private
-	void setArchiveId(String archiveId) {
-		this.archiveId = archiveId;
-	}
-
-	
-
 }

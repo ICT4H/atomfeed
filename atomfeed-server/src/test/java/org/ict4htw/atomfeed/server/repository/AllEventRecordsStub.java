@@ -1,10 +1,13 @@
 package org.ict4htw.atomfeed.server.repository;
 
-import org.ict4htw.atomfeed.server.domain.EventArchive;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
-
-import java.util.*;
 
 public class AllEventRecordsStub implements AllEventRecords {
     private Map<String, EventRecord> eventRecords = new HashMap<String, EventRecord>();
@@ -31,45 +34,10 @@ public class AllEventRecordsStub implements AllEventRecords {
     }
 
 	@Override
-	public int getUnarchivedEventsCount() {
-		return 0; //should not return 0
-	}
-
-	@Override
-	public List<EventRecord> getUnarchivedEvents(int limit) {
-		return null; //should not return null
-	}
-
-	@Override
-	public void save(EventArchive eventArchive) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public EventArchive getLatestArchive() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void save(List<EventRecord> eventRecords) {
 		// TODO Auto-generated method stub
-		
 	}
-
-    public EventArchive findArchiveById(String archive_id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public EventArchive getWorkingArchive() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public EventArchive getArchiveWithId(String archiveId) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
+    
 	@Override
 	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
 		return getEventsFromNumber(first, (last-first +1));

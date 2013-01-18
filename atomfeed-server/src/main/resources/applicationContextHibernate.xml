@@ -14,7 +14,6 @@
         <property name="annotatedClasses">
             <list>
                 <value>org.ict4htw.atomfeed.server.domain.EventRecord</value>
-                <value>org.ict4htw.atomfeed.server.domain.EventArchive</value>
             </list>
         </property>
 
