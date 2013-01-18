@@ -1,6 +1,8 @@
 package org.ict4htw.atomfeed.server.resource;
 
 import com.sun.syndication.feed.atom.Feed;
+
+import org.apache.log4j.Logger;
 import org.ict4htw.atomfeed.server.service.Event;
 import org.ict4htw.atomfeed.server.service.EventFeedService;
 import org.ict4htw.atomfeed.server.service.EventService;
@@ -17,6 +19,7 @@ import java.net.URISyntaxException;
 public class EventResource {
     private EventFeedService eventFeedService;
     private EventService eventService;
+    private static Logger logger = Logger.getLogger(EventResource.class);
 
     @Autowired
     public EventResource(EventFeedService eventFeedService, EventService eventService) {
@@ -32,19 +35,25 @@ public class EventResource {
             return Util.stringifyFeed(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);
+        } catch (Exception e) {
+        	logger.error("error occurred while getting recent feed", e);
+        	//TODO: should throw exception that should be either contextual error like bad request
+        	//to be resolved by an exception resolver to  return error code 400 or so
+        	throw new RuntimeException("Unexpected error", e); //TODO
         }
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/events/{startPos},{endPos}")
+    @RequestMapping(method = RequestMethod.GET, value = "/events/{feedId}")
     @ResponseBody
-    public String getEventFeed(HttpServletRequest httpServletRequest, @PathVariable int startPos, @PathVariable int endPos) {
+    public String getEventFeed(HttpServletRequest httpServletRequest, @PathVariable int feedId) {
         try {
-            Feed feed = eventFeedService.getEventFeed(startPos, endPos, new URI(httpServletRequest.getRequestURI()));
+            Feed feed = eventFeedService.getEventFeed(new URI(httpServletRequest.getRequestURI()), feedId);
             return Util.stringifyFeed(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);
-        }
+        } 
+        //TODO: check comments in getRecentFeed()
     }
 
 

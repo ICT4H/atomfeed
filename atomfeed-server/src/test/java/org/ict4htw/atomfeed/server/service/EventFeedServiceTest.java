@@ -29,7 +29,7 @@ public class EventFeedServiceTest {
 
     @Test
     public void shouldGetRecentFeed() throws URISyntaxException {
-        String recentUrl = "http://hostname/events/recent";
+        String recentUrl = "http://hostname/feed/recent";
 		Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
         HashMap<String, Link> links = getAllFeedLinks(feed);
         Assert.assertNull(links.get("next-archive"));
@@ -49,8 +49,13 @@ public class EventFeedServiceTest {
 
 	@Test
     public void shouldGetEventFeed() throws URISyntaxException {
-        Feed feed = eventFeedService.getEventFeed(5, 9, new URI("http://hostname/events/5,10"));
-        System.out.println(Util.stringifyFeed(feed));
+        String feedUrl = "http://hostname/feed/1";
+		Feed feed = eventFeedService.getEventFeed(new URI(feedUrl), 1);
+        HashMap<String, Link> links = getAllFeedLinks(feed);
+        Assert.assertNotNull(links.get("next-archive"));
+        Assert.assertNull(links.get("prev-archive"));
+        Assert.assertEquals(feedUrl, links.get("self").getHref());
+        //System.out.println(Util.stringifyFeed(feed));
     }
     
     private void addEvents(int eventNumber) throws URISyntaxException {
