@@ -33,7 +33,7 @@ public class ChunkingHistoryTest {
 	public void shouldFindRangeForAGivenFeedWithMultiHistory() {
 		ChunkingHistory history = getMultiEntryHistory();		
 		assertRange(6, 10, history.findRange(2, 11));	
-		assertRange(11, 11, history.findRange(3, 11));	
+		assertRange(11, 13, history.findRange(3, 11));	
 		assertRange(11, 13, history.findRange(3, 100));		
 		assertRange(14, 20, history.findRange(4, 100));
 	}
