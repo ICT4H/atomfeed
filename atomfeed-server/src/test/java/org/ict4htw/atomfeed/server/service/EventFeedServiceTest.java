@@ -1,20 +1,20 @@
 package org.ict4htw.atomfeed.server.service;
 
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.List;
 
-import org.ict4htw.atomfeed.server.domain.EventRecord;
-import org.ict4htw.atomfeed.server.repository.AllEventRecords;
+import junit.framework.Assert;
+
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4htw.atomfeed.server.repository.InMemoryEventRecordCreator;
 import org.ict4htw.atomfeed.server.util.Util;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
+import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.feed.atom.Link;
 
 public class EventFeedServiceTest {
     private EventFeedService eventFeedService;
@@ -29,19 +29,34 @@ public class EventFeedServiceTest {
 
     @Test
     public void shouldGetRecentFeed() throws URISyntaxException {
-        Feed feed = eventFeedService.getRecentFeed(new URI("http://hostname/events/recent"));
-        List alternateLinks = feed.getAlternateLinks();
-        for (Object link : alternateLinks) {
-        	//System.out.println("link " + ((Link) link).getRel());
-        	//TODO: verify that it has a via rel and prev-archive link
-			
-		}
-        System.out.println(Util.stringifyFeed(feed));
+        String recentUrl = "http://hostname/events/recent";
+		Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        HashMap<String, Link> links = getAllFeedLinks(feed);
+        Assert.assertNull(links.get("next-archive"));
+        Assert.assertNotNull(links.get("prev-archive"));
+        Assert.assertEquals(recentUrl, links.get("self").getHref());
+        //System.out.println(Util.stringifyFeed(feed));
     }
 
-    @Test
+    private HashMap<String, Link> getAllFeedLinks(Feed feed) {
+		HashMap<String, Link> hashMap = new HashMap<String, Link>();
+		List<Link> alternateLinks = feed.getAlternateLinks();
+		for (Link link : alternateLinks) {
+			hashMap.put(link.getRel(), link);
+		}
+		return hashMap;
+	}
+
+	@Test
     public void shouldGetEventFeed() throws URISyntaxException {
         Feed feed = eventFeedService.getEventFeed(5, 9, new URI("http://hostname/events/5,10"));
         System.out.println(Util.stringifyFeed(feed));
     }
+    
+    private void addEvents(int eventNumber) throws URISyntaxException {
+		for (int i= 1; i <= eventNumber; i++) {
+			String title = "Event" + i;
+			//eventsRecord.add(new EventRecord(UUID.randomUUID().toString(), title, new URI("http://uri/"+title), null));
+		}
+	}
 }

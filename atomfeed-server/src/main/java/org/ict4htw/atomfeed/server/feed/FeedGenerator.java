@@ -46,6 +46,10 @@ public class FeedGenerator {
 		}
 	}
 
+	public int getFeedCount(int limit) {
+		return history.getNumberOfFeeds(limit);
+	}
+
 	
 
 }

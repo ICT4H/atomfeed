@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
 import org.ict4htw.atomfeed.server.feed.ChunkingHistory;
+import org.ict4htw.atomfeed.server.feed.EventFeed;
 import org.ict4htw.atomfeed.server.feed.FeedBuilder;
 import org.ict4htw.atomfeed.server.feed.FeedGenerator;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
@@ -30,19 +31,28 @@ public class EventFeedService {
     @Autowired
     public EventFeedService(AllEventRecords allEventRecords) {
         this.allEventRecords = allEventRecords;
-        feedGenerator = new FeedGenerator(allEventRecords, new ChunkingHistory());
+        feedGenerator = new FeedGenerator(allEventRecords, getChunkingHistory());
     }
 
+	private ChunkingHistory getChunkingHistory() {
+		ChunkingHistory history = new ChunkingHistory();
+		history.add(1, 5, 1);
+		return history;
+	}
+
     public Feed getRecentFeed(URI requestUri) {
-        int totalNumberOfEvents = allEventRecords.getTotalCount();
-        logger.info("Total number of events: " + totalNumberOfEvents);
-
-        int numberOfEventsInFeed = totalNumberOfEvents % ENTRIES_PER_FEED;
-        if (numberOfEventsInFeed == 0) numberOfEventsInFeed = ENTRIES_PER_FEED;
-
-        int startEventNumber = totalNumberOfEvents - numberOfEventsInFeed;
-
-        List<EventRecord> eventRecordList = allEventRecords.getEventsFromNumber(startEventNumber, ENTRIES_PER_FEED);
+    	EventFeed recentFeed = feedGenerator.getRecentFeed();
+    	
+    	//
+//        int totalNumberOfEvents = allEventRecords.getTotalCount();
+//        logger.info("Total number of events: " + totalNumberOfEvents);
+//
+//        int numberOfEventsInFeed = totalNumberOfEvents % ENTRIES_PER_FEED;
+//        if (numberOfEventsInFeed == 0) numberOfEventsInFeed = ENTRIES_PER_FEED;
+//
+//        int startEventNumber = totalNumberOfEvents - numberOfEventsInFeed;
+//
+//        List<EventRecord> eventRecordList = allEventRecords.getEventsFromNumber(startEventNumber, ENTRIES_PER_FEED);
         return new FeedBuilder()
                 .type("atom_1.0")
                         // Presence of feed ID not necessary. We might choose to remove it
@@ -50,13 +60,40 @@ public class EventFeedService {
                 .title("TITLE") // TODO: This should be dictated by the application using it.
                 .generator(getGenerator())
 //                .authors() // TODO : Use Person class or rome and link to OpenMRS URI for user
-                .entries(getEntries(eventRecordList, requestUri))
-                .updated(newestEventDate(eventRecordList))
+                .entries(getEntries(recentFeed.getEvents(), requestUri))
+                .updated(newestEventDate(recentFeed.getEvents()))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
-                .link(getLink(generateCanonicalUri(startEventNumber, requestUri), LINK_TYPE_VIA, ATOM_MEDIA_TYPE))
-                .links(generatePagingLinks(startEventNumber, totalNumberOfEvents, requestUri))
+                .link(getLink(generateCanonicalUri(requestUri, recentFeed.getId()), LINK_TYPE_VIA, ATOM_MEDIA_TYPE))
+                .links(generatePagingLinks(requestUri, recentFeed))
                 .build();
     }
+    
+    private String generateCanonicalUri(URI requestUri, Integer feedId) {
+        return getServiceUri(requestUri) + "/" + feedId;
+    }
+    
+    private List<Link> generatePagingLinks(URI requestUri, EventFeed feed) {
+         ArrayList<Link> links = new ArrayList<Link>();
+         int feedCount = feedGenerator.getFeedCount(allEventRecords.getTotalCount());
+
+        if (feed.getId() < feedCount) {
+            Link next = new Link();
+            next.setRel("next-archive");
+            next.setType(ATOM_MEDIA_TYPE);
+            next.setHref(generateCanonicalUri(requestUri, feed.getId()+1));
+            links.add(next);
+        }
+
+        if (feed.getId() > 1) {
+            Link prev = new Link();
+            prev.setRel("prev-archive");
+            prev.setType(ATOM_MEDIA_TYPE);
+            prev.setHref(generateCanonicalUri(requestUri, feed.getId()-1));
+            links.add(prev);
+        }
+        return links;
+    }
+    
 
     public Feed getEventFeed(int startPos, int endPos, URI requestUri) {
         int totalNumberOfEvents = allEventRecords.getTotalCount();
