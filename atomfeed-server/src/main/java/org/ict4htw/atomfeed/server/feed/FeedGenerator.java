@@ -3,7 +3,7 @@ package org.ict4htw.atomfeed.server.feed;
 import java.util.List;
 
 import org.ict4htw.atomfeed.server.domain.EventRecord;
-import org.ict4htw.atomfeed.server.feed.ChunkingHistory.Range;
+import org.ict4htw.atomfeed.server.feed.ChunkingEntry.Range;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 
 public class FeedGenerator {

@@ -38,7 +38,7 @@ public class ChunkingHistoryTest {
 		assertRange(14, 20, history.findRange(4, 100));
 	}
 
-	private void assertRange(int first, int last, ChunkingHistory.Range range) {
+	private void assertRange(int first, int last, ChunkingEntry.Range range) {
 		Assert.assertEquals(first, range.first.intValue());
 		Assert.assertEquals(last, range.last.intValue());
 	}

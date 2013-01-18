@@ -15,7 +15,18 @@
             <!-- Change to CLOB -->
             <column name="object" type="varchar(1000)"/>
         </createTable>
+        <createTable tableName="chunking_history" schemaName="atomfeed">
+            <column name="id" type="serial">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="chunk_size" type="int"/>
+            <column name="start_pos" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_pos" type="int"/>
+        </createTable>
     </changeSet>
+    
     
 
 </databaseChangeLog>
