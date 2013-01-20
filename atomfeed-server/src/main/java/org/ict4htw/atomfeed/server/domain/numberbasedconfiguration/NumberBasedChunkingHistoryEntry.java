@@ -1,7 +1,7 @@
 package org.ict4htw.atomfeed.server.domain.numberbasedconfiguration;
 
 
-public class ChunkingEntry {
+public class NumberBasedChunkingHistoryEntry {
     public class Range {
         public final Integer first;
         public final Integer last;
@@ -19,7 +19,7 @@ public class ChunkingEntry {
 
     private static final int UNBOUNDED = -1;
 
-    public ChunkingEntry(int seqNum, int chunkSize, Integer startPos) {
+    public NumberBasedChunkingHistoryEntry(int seqNum, int chunkSize, Integer startPos) {
         this.seqNum = seqNum;
         this.chunkSize = chunkSize;
         this.startPos = (startPos == null) ? 1 : startPos;

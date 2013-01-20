@@ -4,12 +4,12 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
 
-public class TimeBasedConfigurationItem {
+public class TimeBasedChunkingHistoryEntry {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Duration duration;
 
-    public TimeBasedConfigurationItem(LocalDateTime startTime, LocalDateTime endTime, Duration duration) {
+    public TimeBasedChunkingHistoryEntry(LocalDateTime startTime, LocalDateTime endTime, Duration duration) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = duration;
@@ -33,7 +33,7 @@ public class TimeBasedConfigurationItem {
 
     @Override
     public String toString() {
-        return "TimeBasedConfigurationItem{" +
+        return "TimeBasedChunkingHistoryEntry{" +
                 "startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", duration=" + duration +

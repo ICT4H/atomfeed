@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class ChunkingHistory {
+public class NumberBasedChunkingHistory {
 	List<ChunkingEntry> entries = new ArrayList<ChunkingEntry>();
 	
 	public void add(int seqNum, int chunkSize, int startPosition) {

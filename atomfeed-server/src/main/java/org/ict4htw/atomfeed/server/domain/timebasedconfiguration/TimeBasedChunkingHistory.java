@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TimeBasedConfigurationHistory {
+public class TimeBasedChunkingHistory {
     private List<TimeBasedConfigurationItem> configurationItems;
 
-    public TimeBasedConfigurationHistory(TimeBasedConfigurationItem... configurationItems) {
+    public TimeBasedChunkingHistory(TimeBasedConfigurationItem... configurationItems) {
         this.configurationItems = new ArrayList<TimeBasedConfigurationItem>();
         Collections.addAll(this.configurationItems, configurationItems);
     }
