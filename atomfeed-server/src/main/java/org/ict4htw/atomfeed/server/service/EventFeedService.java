@@ -9,10 +9,10 @@ import java.util.UUID;
 
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
-import org.ict4htw.atomfeed.server.feed.ChunkingHistory;
-import org.ict4htw.atomfeed.server.feed.EventFeed;
-import org.ict4htw.atomfeed.server.feed.FeedBuilder;
-import org.ict4htw.atomfeed.server.feed.FeedGenerator;
+import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
+import org.ict4htw.atomfeed.server.domain.EventFeed;
+import org.ict4htw.atomfeed.server.domain.FeedBuilder;
+import org.ict4htw.atomfeed.server.service.feedgenerator.FeedGeneratorBasedOnNumberBasedChunking;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,25 +31,25 @@ public class EventFeedService {
     private static final String LINK_TYPE_SELF = "self";
     private static final String LINK_TYPE_VIA = "via";
     private static final String ATOMFEED_MEDIA_TYPE = "application/vnd.atomfeed+xml";
-	private FeedGenerator feedGenerator;
+	private FeedGeneratorBasedOnNumberBasedChunking feedGenerator;
 
     @Autowired
     public EventFeedService(AllEventRecords allEventRecords) {
         this.allEventRecords = allEventRecords;
-        feedGenerator = new FeedGenerator(allEventRecords, getChunkingHistory());
+        feedGenerator = new FeedGeneratorBasedOnNumberBasedChunking(allEventRecords, getChunkingHistory());
     }
 
-	private ChunkingHistory getChunkingHistory() {
-		ChunkingHistory history = new ChunkingHistory();
-		history.add(1, 5, 1);
-		return history;
+	private NumberBasedChunkingHistory getChunkingHistory() {
+		NumberBasedChunkingHistory historyNumberBased = new NumberBasedChunkingHistory();
+		historyNumberBased.add(1, 5, 1);
+		return historyNumberBased;
 	}
 
     public Feed getRecentFeed(URI requestUri) {
     	EventFeed recentFeed = feedGenerator.getRecentFeed();
         return new FeedBuilder()
                 .type("atom_1.0")
-                        // Presence of feed ID not necessary. We might choose to remove it
+                        // Presence of feedgenerator ID not necessary. We might choose to remove it
                 .id("urn:uuid:" + UUID.randomUUID().toString())
                 .title("TITLE") // TODO: This should be dictated by the application using it.
                 .generator(getGenerator())

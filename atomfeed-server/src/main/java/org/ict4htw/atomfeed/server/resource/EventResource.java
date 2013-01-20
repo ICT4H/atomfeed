@@ -36,7 +36,7 @@ public class EventResource {
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);
         } catch (Exception e) {
-        	logger.error("error occurred while getting recent feed", e);
+        	logger.error("error occurred while getting recent feedgenerator", e);
         	//TODO: should throw exception that should be either contextual error like bad request
         	//to be resolved by an exception resolver to  return error code 400 or so
         	throw new RuntimeException("Unexpected error", e); //TODO

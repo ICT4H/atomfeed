@@ -1,8 +1,5 @@
-package org.ict4htw.atomfeed.server.domain.timebaseconfiguration;
+package org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration;
 
-import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeBasedChunkingHistory;
-import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeBasedChunkingHistoryEntry;
-import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.junit.Assert;

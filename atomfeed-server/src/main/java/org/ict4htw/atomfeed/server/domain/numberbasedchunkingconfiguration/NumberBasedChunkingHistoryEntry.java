@@ -30,8 +30,8 @@ public class NumberBasedChunkingHistoryEntry {
         int endPosition = isOpen() ? upperBound : endPos;
         int count = ((Math.min(endPosition, upperBound) - startPos) + 1);
         if (count <= 0) return 0;
-        Double feedCnt = Math.ceil((count * 1.0) / chunkSize);
-        return feedCnt.intValue();
+        Double feedCount = Math.ceil((count * 1.0) / chunkSize);
+        return feedCount.intValue();
     }
 
     public Range getRange(Integer relativeFeedId) {

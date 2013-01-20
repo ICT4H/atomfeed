@@ -40,7 +40,7 @@ public class FeedEnumerator {
         Feed feed = navigateToFeedEntry(lastReadEntryId);
         if (feed == null) return entryList;
 
-        // Add all the entries in that feed which are newer
+        // Add all the entries in that feedgenerator which are newer
         Entries entries = new Entries(feed.getEntries());
         entryList.addAll(entries.newerEntries(lastReadEntryId));
 

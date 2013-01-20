@@ -33,11 +33,11 @@ public class NumberBasedChunkingHistory {
 	}
 	
 	public int getNumberOfFeeds(int limit) {
-		int feedCnt = 0;
+		int feedCount = 0;
 		for (NumberBasedChunkingHistoryEntry entryNumberBasedHistory : entryNumberBasedHistories) {
-			feedCnt += entryNumberBasedHistory.getFeedCount(limit);
+			feedCount += entryNumberBasedHistory.getFeedCount(limit);
 		}
-		return feedCnt;
+		return feedCount;
 	}
 
 	private void closeOffCurrent(int endPosition) {
