@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.server.domain;
+package org.ict4htw.atomfeed.server.domain.timebaseconfiguration;
 
 import org.ict4htw.atomfeed.server.domain.timebasedconfiguration.TimeBasedConfigurationHistory;
 import org.ict4htw.atomfeed.server.domain.timebasedconfiguration.TimeBasedConfigurationItem;

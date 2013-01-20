@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.server.feed;
+package org.ict4htw.atomfeed.server.domain.numberbasedconfiguration;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -7,6 +7,9 @@ import java.util.UUID;
 import junit.framework.Assert;
 
 import org.ict4htw.atomfeed.server.domain.EventRecord;
+import org.ict4htw.atomfeed.server.domain.numberbasedconfiguration.ChunkingHistory;
+import org.ict4htw.atomfeed.server.feed.EventFeed;
+import org.ict4htw.atomfeed.server.feed.FeedGenerator;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.junit.Before;

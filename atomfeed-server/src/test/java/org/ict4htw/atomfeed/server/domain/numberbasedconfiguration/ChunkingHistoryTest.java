@@ -1,10 +1,11 @@
-package org.ict4htw.atomfeed.server.feed;
+package org.ict4htw.atomfeed.server.domain.numberbasedconfiguration;
 
 import junit.framework.Assert;
+import org.ict4htw.atomfeed.server.domain.numberbasedconfiguration.ChunkingEntry;
+import org.ict4htw.atomfeed.server.domain.numberbasedconfiguration.ChunkingHistory;
 import org.junit.Test;
 
 public class ChunkingHistoryTest {
-	
 	@Test
 	public void shouldGetFeedCountGivenTotalNumRecordsFromSingleHistory() {
 		ChunkingHistory history = getSingleEntryHistory();
