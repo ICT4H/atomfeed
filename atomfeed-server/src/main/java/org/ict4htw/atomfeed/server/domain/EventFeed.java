@@ -1,11 +1,10 @@
-package org.ict4htw.atomfeed.server.feed;
+package org.ict4htw.atomfeed.server.domain;
 
 import java.util.List;
 
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 
 public class EventFeed {
-
 	private Integer feedId;
 	private List<EventRecord> events;
 
@@ -21,5 +20,4 @@ public class EventFeed {
 	public List<EventRecord> getEvents() {
 		return events;
 	}
-
 }

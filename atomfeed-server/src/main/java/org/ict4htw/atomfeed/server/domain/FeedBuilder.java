@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.server.feed;
+package org.ict4htw.atomfeed.server.domain;
 
 import com.sun.syndication.feed.atom.*;
 
