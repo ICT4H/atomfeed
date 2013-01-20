@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.server.domain.numberbasedconfiguration;
+package org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -7,7 +7,6 @@ import java.util.UUID;
 import junit.framework.Assert;
 
 import org.ict4htw.atomfeed.server.domain.EventRecord;
-import org.ict4htw.atomfeed.server.domain.numberbasedconfiguration.ChunkingHistory;
 import org.ict4htw.atomfeed.server.feed.EventFeed;
 import org.ict4htw.atomfeed.server.feed.FeedGenerator;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
@@ -18,12 +17,12 @@ import org.junit.Test;
 
 public class FeedGeneratorTest {
 	AllEventRecords eventsRecord = new AllEventRecordsStub();
-	private ChunkingHistory config;
+	private NumberBasedChunkingHistory config;
 	private FeedGenerator feedGenerator;
 	
 	@Before
 	public void setUp() {
-		config = new ChunkingHistory();
+		config = new NumberBasedChunkingHistory();
 		config.add(1, 5, 1);
 		feedGenerator = new FeedGenerator(eventsRecord, config);
 	}

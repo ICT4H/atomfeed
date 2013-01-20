@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.server.domain.numberbasedconfiguration;
+package org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration;
 
 import junit.framework.Assert;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class NumberBasedChunkingHistoryTest {
 		assertRange(14, 20, historyNumberBased.findRange(4, 100));
 	}
 
-	private void assertRange(int first, int last, ChunkingEntry.Range range) {
+	private void assertRange(int first, int last, NumberBasedChunkingHistoryEntry.Range range) {
 		Assert.assertEquals(first, range.first.intValue());
 		Assert.assertEquals(last, range.last.intValue());
 	}

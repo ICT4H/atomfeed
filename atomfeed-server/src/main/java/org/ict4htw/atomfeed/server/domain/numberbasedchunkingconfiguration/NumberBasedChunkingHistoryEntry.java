@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.server.domain.numberbasedconfiguration;
+package org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration;
 
 
 public class NumberBasedChunkingHistoryEntry {
