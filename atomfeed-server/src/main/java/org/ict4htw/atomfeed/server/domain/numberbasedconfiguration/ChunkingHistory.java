@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.server.feed;
+package org.ict4htw.atomfeed.server.domain.numberbasedconfiguration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ChunkingHistory {
-	
 	List<ChunkingEntry> entries = new ArrayList<ChunkingEntry>();
 	
 	public void add(int seqNum, int chunkSize, int startPosition) {
