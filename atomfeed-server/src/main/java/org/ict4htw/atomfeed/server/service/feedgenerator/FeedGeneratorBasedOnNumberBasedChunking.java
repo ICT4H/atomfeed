@@ -48,9 +48,4 @@ public class FeedGeneratorBasedOnNumberBasedChunking implements FeedGenerator {
 			throw new RuntimeException("feedgenerator does not exist");
 		}
 	}
-
-	@Override
-    public int getFeedCount(int limit) {
-		return numberBasedChunkingHistory.getNumberOfFeeds(limit);
-	}
 }

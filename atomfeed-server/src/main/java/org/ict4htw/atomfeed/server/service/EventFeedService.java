@@ -67,8 +67,8 @@ public class EventFeedService {
     }
     
     private List<Link> generatePagingLinks(URI requestUri, EventFeed feed) {
-         ArrayList<Link> links = new ArrayList<Link>();
-         int feedCount = feedGenerator.getFeedCount(allEventRecords.getTotalCount());
+        ArrayList<Link> links = new ArrayList<Link>();
+        int feedCount = feedGenerator.getRecentFeed().getId();
 
         if (feed.getId() < feedCount) {
             Link next = new Link();
