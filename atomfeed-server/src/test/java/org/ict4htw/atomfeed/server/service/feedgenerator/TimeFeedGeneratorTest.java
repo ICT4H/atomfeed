@@ -1,6 +1,5 @@
 package org.ict4htw.atomfeed.server.service.feedgenerator;
 
-import com.sun.xml.internal.xsom.impl.util.Uri;
 import junit.framework.Assert;
 import org.ict4htw.atomfeed.server.domain.EventFeed;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
@@ -10,7 +9,6 @@ import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.junit.Test;
-import org.ict4htw.atomfeed.server.domain.timebaseconfiguration.*;
 
 import java.net.URI;
 
