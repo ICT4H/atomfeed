@@ -1,6 +1,5 @@
 package org.ict4htw.atomfeed.server.repository;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,18 +48,8 @@ public class AllEventRecordsImpl implements AllEventRecords {
         return totalCount.intValue();
     }
 
-    /* (non-Javadoc)
-	 * @see org.ict4htw.atomfeed.server.repository.AllEventRecords#getEventsFromNumber(int, int)
-	 */
-    @Override
-	public List<EventRecord> getEventsFromNumber(int startNumber, int numberOfEvents) {
-        return (List<EventRecord>) template.getSessionFactory().openSession().createQuery(
-                "select e from EventRecord e order by e.timeStamp desc")
-                .setFirstResult(startNumber).setMaxResults(numberOfEvents).list();
-    }
 
-	
-	@Override
+    @Override
 	public void save(List<EventRecord> eventRecords) {
 		template.saveOrUpdateAll(eventRecords);
 	}
