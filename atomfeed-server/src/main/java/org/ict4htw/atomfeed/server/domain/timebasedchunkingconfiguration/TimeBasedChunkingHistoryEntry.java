@@ -1,5 +1,6 @@
 package org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration;
 
+import org.ict4htw.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
@@ -16,9 +17,16 @@ public class TimeBasedChunkingHistoryEntry {
     }
 
     public int numberOfFeeds() {
-        LocalDateTime effectiveEndTime = endTime == null ? LocalDateTime.now() : endTime;
+        if (isUnbounded()) throw new AtomFeedRuntimeException("Number of feeds is not defined for an unbounded entry.");
+        return numberOfFeeds(startTime, endTime);
+    }
 
-        int minutesElapsed = Minutes.minutesBetween(startTime, effectiveEndTime).getMinutes();
+    public int numberOfFeedsUpTo(LocalDateTime cutoff) {
+        return numberOfFeeds(startTime, LocalDateTime.now());
+    }
+
+    private int numberOfFeeds(LocalDateTime start, LocalDateTime end) {
+        int minutesElapsed = Minutes.minutesBetween(start, end).getMinutes();
         long minutesInTheDuration = duration.getStandardMinutes();
         return (int) (minutesElapsed / minutesInTheDuration);
     }
@@ -38,5 +46,9 @@ public class TimeBasedChunkingHistoryEntry {
                 ", endTime=" + endTime +
                 ", duration=" + duration +
                 '}';
+    }
+
+    public boolean isUnbounded() {
+        return endTime == null;
     }
 }

@@ -38,4 +38,13 @@ public class TimeBasedChunkingHistoryTest {
         Assert.assertEquals(new TimeRange(startOfGame, startOfGame.plusHours(2)), timeBasedChunkingHistory.timeRangeFor(1));
         Assert.assertEquals(new TimeRange(startOfGame.plusHours(4), startOfGame.plusHours(9)), timeBasedChunkingHistory.timeRangeFor(3));
     }
+
+    @Test
+    public void timeRangeForWorkingSequence() {
+        LocalDateTime startOfGame = LocalDateTime.now().minusHours(1);
+        TimeBasedChunkingHistoryEntry entry = new TimeBasedChunkingHistoryEntry(startOfGame, null, Duration.standardHours(2));
+        TimeBasedChunkingHistory history = new TimeBasedChunkingHistory(entry);
+        long workingFeedId = history.currentSequenceNumber();
+        Assert.assertEquals(new TimeRange(startOfGame, startOfGame.plusHours(2)), history.timeRangeFor((int) workingFeedId));
+    }
 }

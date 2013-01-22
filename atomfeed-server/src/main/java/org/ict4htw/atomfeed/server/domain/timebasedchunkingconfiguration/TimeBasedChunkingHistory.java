@@ -1,6 +1,7 @@
 package org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration;
 
 import org.ict4htw.atomfeed.server.exceptions.AtomFeedRuntimeException;
+import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,20 +16,29 @@ public class TimeBasedChunkingHistory {
     }
 
     public long currentSequenceNumber() {
-        int totalNumberOfFeeds = 0;
+        int completedFeeds = 0;
         for (int i = 0; i < chunkingHistoryEntries.size(); i++) {
-            totalNumberOfFeeds += chunkingHistoryEntries.get(i).numberOfFeeds();
+            if (chunkingHistoryEntries.get(i).isUnbounded()) {
+                completedFeeds += chunkingHistoryEntries.get(i).numberOfFeedsUpTo(LocalDateTime.now());
+            } else {
+                completedFeeds += chunkingHistoryEntries.get(i).numberOfFeeds();
+            }
         }
 
-        return totalNumberOfFeeds + 1;
+        return completedFeeds + 1;
     }
 
     public TimeRange timeRangeFor(int sequenceNumber) {
-        int totalNumberOfFeeds = 0;
+        int feedsSoFar = 0;
         for (TimeBasedChunkingHistoryEntry timeBasedChunkingHistoryEntry : chunkingHistoryEntries) {
-            int numberOfFeedsInCurrentConfigurationItem = timeBasedChunkingHistoryEntry.numberOfFeeds();
-            if (sequenceNumber <= numberOfFeedsInCurrentConfigurationItem + totalNumberOfFeeds) return timeBasedChunkingHistoryEntry.getTimeRangeForChunk(sequenceNumber - totalNumberOfFeeds);
-            totalNumberOfFeeds += numberOfFeedsInCurrentConfigurationItem;
+            int relativeSequenceNumber = sequenceNumber - feedsSoFar;
+
+            if (timeBasedChunkingHistoryEntry.isUnbounded()
+             || sequenceNumber <= timeBasedChunkingHistoryEntry.numberOfFeeds() + feedsSoFar) {
+                return timeBasedChunkingHistoryEntry.getTimeRangeForChunk(relativeSequenceNumber);
+            }
+
+            feedsSoFar += timeBasedChunkingHistoryEntry.numberOfFeeds();
         }
         throw new AtomFeedRuntimeException(String.format("The sequence number:%d lies in future", sequenceNumber));
     }
