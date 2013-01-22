@@ -1,9 +1,12 @@
 package org.ict4htw.atomfeed.server.repository;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Query;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
+import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,4 +73,9 @@ public class AllEventRecordsImpl implements AllEventRecords {
 		query.setParameter("last", last);
 		return query.list();
 	}
+
+    @Override
+    public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange) {
+        return Collections.emptyList();
+    }
 }

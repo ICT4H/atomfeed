@@ -1,5 +1,6 @@
 package org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration;
 
+import org.ict4htw.atomfeed.server.domain.EventFeed;
 import org.ict4htw.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.joda.time.LocalDateTime;
 
@@ -24,7 +25,6 @@ public class TimeBasedChunkingHistory {
                 completedFeeds += chunkingHistoryEntries.get(i).numberOfFeeds();
             }
         }
-
         return completedFeeds + 1;
     }
 
@@ -37,9 +37,12 @@ public class TimeBasedChunkingHistory {
              || sequenceNumber <= timeBasedChunkingHistoryEntry.numberOfFeeds() + feedsSoFar) {
                 return timeBasedChunkingHistoryEntry.getTimeRangeForChunk(relativeSequenceNumber);
             }
-
             feedsSoFar += timeBasedChunkingHistoryEntry.numberOfFeeds();
         }
         throw new AtomFeedRuntimeException(String.format("The sequence number:%d lies in future", sequenceNumber));
+    }
+
+    public Integer getWorkingFeedId() {
+        return new Long(currentSequenceNumber()).intValue();
     }
 }

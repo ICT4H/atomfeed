@@ -22,7 +22,7 @@ public class TimeBasedChunkingHistoryEntry {
     }
 
     public int numberOfFeedsUpTo(LocalDateTime cutoff) {
-        return numberOfFeeds(startTime, LocalDateTime.now());
+        return numberOfFeeds(startTime, cutoff);
     }
 
     private int numberOfFeeds(LocalDateTime start, LocalDateTime end) {

@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
+import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
+import org.joda.time.LocalDateTime;
 
 public class AllEventRecordsStub implements AllEventRecords {
     private Map<String, EventRecord> eventRecords = new HashMap<String, EventRecord>();
@@ -42,4 +44,17 @@ public class AllEventRecordsStub implements AllEventRecords {
 	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
 		return getEventsFromNumber(first, (last-first +1));
 	}
+
+    @Override
+    public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange) {
+        ArrayList<EventRecord> recordsWithinTimeRange = new ArrayList<EventRecord>();
+        for (EventRecord record : eventRecords.values()) {
+            //LocalDateTime recordTime = new LocalDateTime(record.getTimeStamp().getTime());
+            if (timeRange.getStartTime().toDate().before(record.getTimeStamp())
+                    && timeRange.getEndTime().toDate().after(record.getTimeStamp())) {
+                recordsWithinTimeRange.add(record);
+            }
+        }
+        return recordsWithinTimeRange;
+    }
 }
