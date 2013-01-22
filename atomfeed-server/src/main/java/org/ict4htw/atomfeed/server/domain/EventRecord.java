@@ -65,12 +65,15 @@ public class EventRecord {
     public EventRecord() { }
 
     public EventRecord(String uuid, String title, URI uri, Object eventObject) {
+        this(uuid, title, uri, eventObject,new Date());
+    }
+    public EventRecord(String uuid, String title, URI uri, Object eventObject, Date timeStamp) {
         this.uuid = uuid;
         this.title = title;
         this.uri = uri.toString();
         this.object = Util.stringify(eventObject);
         //note: this is not the date used. the date will be assigned by database
-        this.timeStamp = new Date();  
+        this.timeStamp = timeStamp;
     }
 
     public Integer getId() {

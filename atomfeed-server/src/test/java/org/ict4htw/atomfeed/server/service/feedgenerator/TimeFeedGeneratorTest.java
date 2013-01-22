@@ -5,6 +5,8 @@ import org.ict4htw.atomfeed.server.domain.EventFeed;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeBasedChunkingHistory;
 import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeBasedChunkingHistoryEntry;
+import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeBasedChunkingHistoryStub;
+import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
@@ -16,19 +18,20 @@ import java.net.URI;
 public class TimeFeedGeneratorTest {
     @Test
     public void shouldGetWorkingFeed() throws Exception {
-         Duration duration = Duration.standardHours(2);
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startTime = LocalDateTime.now().minusHours(3);
 
-        TimeBasedChunkingHistoryEntry timeBasedChunkingHistoryEntry = new TimeBasedChunkingHistoryEntry(now.minusHours(3), null, duration);
-        TimeBasedChunkingHistory timeBasedChunkingHistory = new TimeBasedChunkingHistory(timeBasedChunkingHistoryEntry);
+        TimeBasedChunkingHistoryStub history = new TimeBasedChunkingHistoryStub(4);
+        history.setTimeRange(4, new TimeRange(startTime,startTime.plusHours(2)));
+
         AllEventRecordsStub allEventRecordsStub = new AllEventRecordsStub();
-        FeedGenerator generator = new TimeFeedGenerator(timeBasedChunkingHistory,allEventRecordsStub);
-
-        EventRecord eventRecord = new EventRecord(null, null, new URI(""), null);
+        EventRecord eventRecord = new EventRecord(null, null, new URI(""), null, startTime.plusHours(1).toDate());
         allEventRecordsStub.add(eventRecord);
-        EventFeed recentFeed = generator.getRecentFeed();
 
-        Assert.assertEquals(2, recentFeed.getId().intValue());
+        FeedGenerator generator = new TimeFeedGenerator(history,allEventRecordsStub);
+
+        EventFeed recentFeed = generator.getRecentFeed();
+        Assert.assertEquals(4, recentFeed.getId().intValue());
+        Assert.assertSame(eventRecord, recentFeed.getEvents().get(0));
     }
 
     @Test
