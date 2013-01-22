@@ -3,3 +3,5 @@
 target/
 .DS_Store
 */.DS_Store
+atomfeed.ipr
+atomfeed.iws
