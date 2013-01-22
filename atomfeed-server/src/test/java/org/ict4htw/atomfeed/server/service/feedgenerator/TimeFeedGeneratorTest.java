@@ -31,9 +31,4 @@ public class TimeFeedGeneratorTest {
         Assert.assertEquals(4, recentFeed.getId().intValue());
         Assert.assertSame(eventRecord, recentFeed.getEvents().get(0));
     }
-
-    @Test
-    public void testGetRecentFeed() throws Exception {
-
-    }
 }
