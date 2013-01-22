@@ -25,11 +25,11 @@ public class FeedEnumeratorTest {
         WebClientStub webClientStub = new WebClientStub(new EventResource(eventFeedService, eventService));
 
         InMemoryEventRecordCreator feedRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
-        int count = feedRecordCreator.create();
+        feedRecordCreator.create(7);
 
         AllFeeds allFeeds = new AllFeeds(webClientStub);
         FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, new URI("http://foo.bar/baz"));
         List<Entry> entries = feedEnumerator.newerEntries(null);
-        Assert.assertEquals(count, entries.size());
+        Assert.assertEquals(7, entries.size());
     }
 }

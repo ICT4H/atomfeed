@@ -20,7 +20,7 @@ public class EventFeedServiceTest {
     public void setupEventRecords() throws URISyntaxException {
         AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
         InMemoryEventRecordCreator inMemoryEventRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
-        inMemoryEventRecordCreator.create();
+        inMemoryEventRecordCreator.create(7);
         eventFeedService = new EventFeedService(allEventRecords);
     }
 
