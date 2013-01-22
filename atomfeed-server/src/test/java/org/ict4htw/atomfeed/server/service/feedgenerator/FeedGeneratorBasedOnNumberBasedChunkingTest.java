@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.UUID;
 
 
@@ -59,7 +60,7 @@ public class FeedGeneratorBasedOnNumberBasedChunkingTest {
     private void addEvents(int eventNumber) throws URISyntaxException {
         for (int i = 1; i <= eventNumber; i++) {
             String title = "Event" + i;
-            eventsRecord.add(new EventRecord(UUID.randomUUID().toString(), title, new URI("http://uri/" + title), null));
+            eventsRecord.add(new EventRecord(UUID.randomUUID().toString(), title, new URI("http://uri/" + title), null,new Date()));
         }
     }
 

@@ -33,7 +33,7 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     public void shouldAddEventRecordAndFetchByUUID() throws URISyntaxException {
         String uuid = UUID.randomUUID().toString();
 
-        EventRecord eventRecordAdded = new EventRecord(uuid, "title", new URI("http://uri"), null);
+        EventRecord eventRecordAdded = new EventRecord(uuid, "title", new URI("http://uri"), null,new Date());
 
         allEventRecords.add(eventRecordAdded);
 
@@ -46,8 +46,8 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
 
     @Test
     public void shouldGetTotalCountOfEventRecords() throws URISyntaxException {
-        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null);
-        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null);
+        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null,new Date());
+        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null,new Date());
 
         allEventRecords.add(eventRecordAdded1);
         allEventRecords.add(eventRecordAdded2);
@@ -62,11 +62,11 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     @Test
     @Ignore
     public void shouldGetEventsFromStartNumber() throws URISyntaxException {
-        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null);
-        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null);
-        EventRecord eventRecordAdded3 = new EventRecord("uuid3", "title", new URI("http://uri"), null);
-        EventRecord eventRecordAdded4 = new EventRecord("uuid4", "title", new URI("http://uri"), null);
-        EventRecord eventRecordAdded5 = new EventRecord("uuid5", "title", new URI("http://uri"), null);
+        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null,new Date());
+        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null,new Date());
+        EventRecord eventRecordAdded3 = new EventRecord("uuid3", "title", new URI("http://uri"), null,new Date());
+        EventRecord eventRecordAdded4 = new EventRecord("uuid4", "title", new URI("http://uri"), null,new Date());
+        EventRecord eventRecordAdded5 = new EventRecord("uuid5", "title", new URI("http://uri"), null,new Date());
 
         allEventRecords.add(eventRecordAdded1);
         allEventRecords.add(eventRecordAdded2);
@@ -84,7 +84,7 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     private void addEvents(int eventNumber) throws URISyntaxException {
         for (int i= 1; i <= eventNumber; i++) {
             String title = "Event" + i;
-            allEventRecords.add(new EventRecord(UUID.randomUUID().toString(), title, new URI("http://uri/"+title), null));
+            allEventRecords.add(new EventRecord(UUID.randomUUID().toString(), title, new URI("http://uri/"+title), null,new Date()));
         }
     }
 }
