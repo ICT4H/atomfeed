@@ -64,6 +64,9 @@ public class EventRecord {
 
     public EventRecord() { }
 
+    public EventRecord(String uuid, String title, URI uri, Object eventObject) {
+        this(uuid, title, uri, eventObject, new Date());
+    }
     public EventRecord(String uuid, String title, URI uri, Object eventObject, Date timeStamp) {
         this.uuid = uuid;
         this.title = title;

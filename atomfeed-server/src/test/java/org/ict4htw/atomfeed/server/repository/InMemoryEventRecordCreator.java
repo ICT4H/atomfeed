@@ -1,10 +1,10 @@
 package org.ict4htw.atomfeed.server.repository;
 
-import org.ict4htw.atomfeed.server.domain.EventRecord;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
+import java.util.Calendar;
+
+import org.ict4htw.atomfeed.server.domain.EventRecord;
 
 public class InMemoryEventRecordCreator {
     private AllEventRecords allEventRecords;
@@ -19,11 +19,13 @@ public class InMemoryEventRecordCreator {
     }
     
     private void addEvents(int numOfEvents) throws URISyntaxException {
+    	Calendar cal = Calendar.getInstance();
         for (int idx= 1; idx <= numOfEvents; idx++) {
+        	cal.add(Calendar.SECOND, 1);
             allEventRecords.add(new EventRecord(
             		"uuid" + idx, "title" + idx, 
-            		new URI("http://uri/"+idx), 
-            		"Event" + idx, new Date()));
+            		new URI("http://foo.bar/"+idx), 
+            		"Event" + idx, cal.getTime()) );
         }
     }
 }

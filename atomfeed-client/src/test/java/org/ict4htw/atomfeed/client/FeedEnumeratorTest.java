@@ -37,8 +37,10 @@ public class FeedEnumeratorTest {
     public void shouldGetAllEntries() throws URISyntaxException {
         feedRecordCreator.create(7);
         FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, new URI("http://foo.bar/2"));
-        List<Entry> entries = feedEnumerator.newerEntries(null);
+        List<Entry> entries = feedEnumerator.getAllEntries();
         Assert.assertEquals(7, entries.size());
+        Assert.assertEquals("tag.atomfeed.ict4h.org:uuid1", entries.get(0).getId());
+        Assert.assertEquals("tag.atomfeed.ict4h.org:uuid7", entries.get(6).getId());
     }
     
     @Test
@@ -48,5 +50,28 @@ public class FeedEnumeratorTest {
         //the IDs are created by feedRecordCreator as uuid1, uuid2 etc 
         List<Entry> entries = feedEnumerator.newerEntries("tag.atomfeed.ict4h.org:uuid5");
         Assert.assertEquals(2, entries.size());
+    }
+    
+    @Test
+    public void shouldGetNotFindAnyNewEntry() throws URISyntaxException {
+    	feedRecordCreator.create(7);
+        FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, new URI("http://foo.bar/2"));
+        //the IDs are created by feedRecordCreator as uuid1, uuid2 etc 
+        List<Entry> entries = feedEnumerator.newerEntries("tag.atomfeed.ict4h.org:uuid7");
+        Assert.assertEquals(0, entries.size());
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void shouldErrorOutOnInvalidStartingURL() throws URISyntaxException {
+    	feedRecordCreator.create(7);
+        FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, new URI("http://foo.bar/4"));
+        feedEnumerator.newerEntries("tag.atomfeed.ict4h.org:uuid7");
+    }
+    
+    @Test(expected=RuntimeException.class)
+    public void shouldErrorOutForInvalidEntry() throws URISyntaxException {
+    	feedRecordCreator.create(7);
+        FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, new URI("http://foo.bar/2"));
+        feedEnumerator.newerEntries("invalidentryid");
     }
 }

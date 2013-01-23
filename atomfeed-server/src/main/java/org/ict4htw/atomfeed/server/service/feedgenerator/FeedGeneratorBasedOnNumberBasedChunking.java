@@ -45,7 +45,7 @@ public class FeedGeneratorBasedOnNumberBasedChunking implements FeedGenerator {
 		}
 		int numberOfFeeds = numberBasedChunkingHistory.getNumberOfFeeds(allEventRecords.getTotalCount());
 		if (feedId > numberOfFeeds) {
-			throw new RuntimeException("feedgenerator does not exist");
+			throw new RuntimeException("feed does not exist");
 		}
 	}
 }

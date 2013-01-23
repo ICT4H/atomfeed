@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -82,6 +83,8 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     }
 
     private void addEvents(int eventNumber) throws URISyntaxException {
+    	Calendar c = Calendar.getInstance();
+    	c.add(Calendar.SECOND, 10);
         for (int i= 1; i <= eventNumber; i++) {
             String title = "Event" + i;
             allEventRecords.add(new EventRecord(UUID.randomUUID().toString(), title, new URI("http://uri/"+title), null,new Date()));

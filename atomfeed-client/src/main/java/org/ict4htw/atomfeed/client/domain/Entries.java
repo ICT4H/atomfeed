@@ -1,9 +1,9 @@
 package org.ict4htw.atomfeed.client.domain;
 
-import com.sun.syndication.feed.atom.Entry;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sun.syndication.feed.atom.Entry;
 
 public class Entries {
     private List list;
@@ -25,14 +25,14 @@ public class Entries {
     }
 
     public List<Entry> newerEntries(String feedEntryId) {
-    	List<Entry> entries = new ArrayList<Entry>();
-    	for (Object object : list) {
-    		Entry entry = (Entry) object;
+    	List<Entry> newEntries = new ArrayList<Entry>();
+    	for (int i=list.size()-1; i>=0; i--) {
+    		Entry entry = (Entry) list.get(i);
     		if ((feedEntryId != null) && feedEntryId.equals(entry.getId())) {
                 break;
             }
-            entries.add(entry);
-        }
-        return entries;
+            newEntries.add(entry);
+    	}
+    	return newEntries;
     }
 }

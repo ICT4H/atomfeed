@@ -1,17 +1,17 @@
 package org.ict4htw.atomfeed.client;
 
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
-import org.apache.log4j.Logger;
-import org.ict4htw.atomfeed.client.domain.Entries;
-import org.ict4htw.atomfeed.client.repository.AllFeeds;
-import org.springframework.util.StringUtils;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.ict4htw.atomfeed.client.domain.Entries;
+import org.ict4htw.atomfeed.client.repository.AllFeeds;
+
+import com.sun.syndication.feed.atom.Entry;
+import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.feed.atom.Link;
 
 public class FeedEnumerator {
     private AllFeeds allFeeds;
@@ -33,7 +33,10 @@ public class FeedEnumerator {
         if (feedEntries.getEntryWith(feedEntryId) != null)
             return feed;
         URI prevArchiveURI = getPrevArchiveURI(feed);
-		return (prevArchiveURI != null) ? feedWith(prevArchiveURI, feedEntryId) : feed;
+		if (prevArchiveURI != null)
+			return feedWith(prevArchiveURI, feedEntryId);
+		else
+			throw new RuntimeException("Entry does not exist in any feed.");
     }    
 
 	public List<Entry> newerEntries(String lastReadEntryId) throws URISyntaxException {
@@ -49,6 +52,22 @@ public class FeedEnumerator {
         addNewerEntries(feed, entryList);
         return entryList;
     }
+	
+	public List<Entry> getAllEntries() throws URISyntaxException {
+		URI feedURI = startingURI;
+		List<Entry> entries = new ArrayList<Entry>();
+		do {
+			Feed feed = allFeeds.getFor(feedURI);
+			List<Entry> updatedList = feed.getEntries();
+			updatedList.addAll(entries);
+			entries = updatedList;
+			feedURI = getPrevArchiveURI(feed);
+		} while (feedURI != null);
+		return entries;
+	}
+	
+	
+	
 
     private void addNewerEntries(Feed feed, List<Entry> entryList) throws URISyntaxException {
         URI uri = getNextArchive(feed);
@@ -77,5 +96,5 @@ public class FeedEnumerator {
             }
         }
         return null;
-    }
+    }	
 }
