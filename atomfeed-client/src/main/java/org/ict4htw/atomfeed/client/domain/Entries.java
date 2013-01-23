@@ -25,13 +25,13 @@ public class Entries {
     }
 
     public List<Entry> newerEntries(String feedEntryId) {
-        List<Entry> entries = new ArrayList<Entry>();
-        for (Object object : list) {
-            Entry entry = (Entry) object;
-            entries.add(entry);
-            if (feedEntryId.equals(entry.getId())) {
+    	List<Entry> entries = new ArrayList<Entry>();
+    	for (Object object : list) {
+    		Entry entry = (Entry) object;
+    		if ((feedEntryId != null) && feedEntryId.equals(entry.getId())) {
                 break;
             }
+            entries.add(entry);
         }
         return entries;
     }

@@ -18,6 +18,7 @@ public class AllFeeds {
     }
 
     public Feed getFor(URI uri) {
+    	if (uri == null) return null;
         String responseString = webClient.fetch(uri);
         logger.debug(responseString);
         responseString.trim().replaceFirst("^([\\W]+)<", "<");

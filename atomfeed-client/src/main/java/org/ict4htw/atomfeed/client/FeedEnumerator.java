@@ -6,6 +6,7 @@ import com.sun.syndication.feed.atom.Link;
 import org.apache.log4j.Logger;
 import org.ict4htw.atomfeed.client.domain.Entries;
 import org.ict4htw.atomfeed.client.repository.AllFeeds;
+import org.springframework.util.StringUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,13 +30,13 @@ public class FeedEnumerator {
     private Feed feedWith(URI uri, String feedEntryId) throws URISyntaxException {
         Feed feed = allFeeds.getFor(uri);
         Entries feedEntries = new Entries(feed.getEntries());
-        Entry matchingEntry = feedEntries.getEntryWith(feedEntryId);
-        if (matchingEntry != null)
+        if (feedEntries.getEntryWith(feedEntryId) != null)
             return feed;
-        return feedWith(getPrevArchive(feed), feedEntryId);
-    }
+        URI prevArchiveURI = getPrevArchiveURI(feed);
+		return (prevArchiveURI != null) ? feedWith(prevArchiveURI, feedEntryId) : feed;
+    }    
 
-    public List<Entry> newerEntries(String lastReadEntryId) throws URISyntaxException {
+	public List<Entry> newerEntries(String lastReadEntryId) throws URISyntaxException {
         List<Entry> entryList = new ArrayList<Entry>();
         Feed feed = navigateToFeedEntry(lastReadEntryId);
         if (feed == null) return entryList;
@@ -58,7 +59,7 @@ public class FeedEnumerator {
         }
     }
 
-    private URI getPrevArchive(Feed feed) throws URISyntaxException {
+    private URI getPrevArchiveURI(Feed feed) throws URISyntaxException {
         URI uriFromNamedLink = getUriFromNamedLink("prev-archive", feed);
         logger.info("prev-link URI: " + uriFromNamedLink);
         return uriFromNamedLink;
