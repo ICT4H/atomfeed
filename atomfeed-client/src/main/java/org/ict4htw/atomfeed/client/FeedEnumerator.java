@@ -33,13 +33,12 @@ public class FeedEnumerator implements Iterable<Entry> {
             entries.add(entry);
         }
 		throw new RuntimeException("Entry not found.");
-
     }
 	
 	public List<Entry> getAllEntries() throws URISyntaxException {
         List<Entry> entries = new ArrayList<Entry>();
-        for (Entry feed : this) {
-            entries.add(feed);
+        for (Entry entry : this) {
+            entries.add(entry);
         }
         Collections.reverse(entries);
 		return entries;
