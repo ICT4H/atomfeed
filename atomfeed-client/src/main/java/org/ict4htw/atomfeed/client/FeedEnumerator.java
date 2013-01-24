@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class FeedEnumerator implements Iterable<Entry> {
+public class FeedEnumerator {
     private AllFeeds allFeeds;
     private URI startingURI;
     private static Logger logger = Logger.getLogger(FeedEnumerator.class);
@@ -25,24 +25,24 @@ public class FeedEnumerator implements Iterable<Entry> {
 
     public List<Entry> newerEntries(String lastReadEntryId) throws URISyntaxException {
         List<Entry> entries = new ArrayList<Entry>();
-        for (Entry entry : this) {
-            if(entry.getId().equals(lastReadEntryId)) {
+        for (Entry entry : history()) {
+            if (entry.getId().equals(lastReadEntryId)) {
                 Collections.reverse(entries);
                 return entries;
             }
             entries.add(entry);
         }
-		throw new RuntimeException("Entry not found.");
+        throw new RuntimeException("Entry not found.");
     }
-	
-	public List<Entry> getAllEntries() throws URISyntaxException {
+
+    public List<Entry> getAllEntries() throws URISyntaxException {
         List<Entry> entries = new ArrayList<Entry>();
-        for (Entry entry : this) {
+        for (Entry entry : history()) {
             entries.add(entry);
         }
         Collections.reverse(entries);
-		return entries;
-	}
+        return entries;
+    }
 
     private URI getUriFromNamedLink(String relValue, Feed feed) throws URISyntaxException {
         for (Object obj : feed.getOtherLinks()) {
@@ -54,50 +54,54 @@ public class FeedEnumerator implements Iterable<Entry> {
         return null;
     }
 
-    @Override
-    public Iterator<Entry> iterator() {
-        return new Iterator<Entry>() {
-
-            Feed feed = allFeeds.getFor(startingURI);
-            List<Entry> entries;
-
-            {
-                setEntries();
-            }
-
-            private void setEntries() {
-                entries = feed.getEntries();
-                Collections.reverse(entries);
-            }
-
-            private URI prev() {
-                try {
-                    return getUriFromNamedLink("prev-archive", feed);
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException("Bad prev link.");
-                }
-            }
-
+    private Iterable<Entry> history() {
+        return new Iterable<Entry>() {
             @Override
-            public boolean hasNext() {
-                return !entries.isEmpty();
-            }
+            public Iterator<Entry> iterator() {
+                return new Iterator<Entry>() {
 
-            @Override
-            public Entry next() {
-                Entry entry = entries.get(0);
-                remove();
-                return entry;
-            }
+                    Feed feed = allFeeds.getFor(startingURI);
+                    List<Entry> entries;
 
-            @Override
-            public void remove() {
-               entries.remove(0);
-               if (prev() != null && entries.isEmpty()) {
-                   feed = allFeeds.getFor(prev());
-                   setEntries();
-               }
-            };
+                    {
+                        setEntries();
+                    }
+
+                    private void setEntries() {
+                        entries = feed.getEntries();
+                        Collections.reverse(entries);
+                    }
+
+                    private URI prev() {
+                        try {
+                            return getUriFromNamedLink("prev-archive", feed);
+                        } catch (URISyntaxException e) {
+                            throw new RuntimeException("Bad prev link.");
+                        }
+                    }
+
+                    @Override
+                    public boolean hasNext() {
+                        return !entries.isEmpty();
+                    }
+
+                    @Override
+                    public Entry next() {
+                        Entry entry = entries.get(0);
+                        remove();
+                        return entry;
+                    }
+
+                    @Override
+                    public void remove() {
+                        entries.remove(0);
+                        if (prev() != null && entries.isEmpty()) {
+                            feed = allFeeds.getFor(prev());
+                            setEntries();
+                        }
+                    };
+                };
+            }
         };
     }
 }
