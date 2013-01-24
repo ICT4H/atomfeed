@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
+@Repository(value = "allEventRecords")
 @Transactional
 public class AllEventRecordsImpl implements AllEventRecords {
 
