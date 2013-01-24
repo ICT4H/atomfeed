@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>atomfeed</artifactId>
+        <groupId>org.ict4htw</groupId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>motech-atomfeed-client</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>org.ict4htw</groupId>
+            <artifactId>atomfeed-client</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-platform-event</artifactId>
+            <version>0.17-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.test</artifactId>
+            <version>3.1.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ict4htw</groupId>
+            <artifactId>atomfeed-server</artifactId>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ict4htw</groupId>
+            <artifactId>atomfeed-server</artifactId>
+            <scope>test</scope>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>com.springsource.org.mockito</artifactId>
+            <version>1.8.4</version>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -20,7 +20,7 @@ public class FeedClientImpl implements FeedClient {
     private AllFeeds allFeeds;
     private AllMarkers allMarkers;
 
-    @Autowired
+    //@Autowired
     public FeedClientImpl(AllFeeds allFeeds, AllMarkers allMarkers) {
         this.allFeeds = allFeeds;
         this.allMarkers = allMarkers;

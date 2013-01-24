@@ -16,7 +16,8 @@ import java.util.UUID;
 public class EventHandler {
     @Autowired
     private EventService eventService;
-    @MotechListener(subjects = "atomFeedSubject")
+
+    @MotechListener(subjects = "*")
     public void testHandler(MotechEvent event) throws URISyntaxException {
         UUID uuid=event.getId();
         String title=event.getSubject();

@@ -25,7 +25,8 @@ public class FeedEnumerator {
 
     public List<Entry> newerEntries(String lastReadEntryId) throws URISyntaxException {
         List<Entry> entries = new ArrayList<Entry>();
-        for (Entry entry : history()) {
+        Iterable<Entry> history = history();
+        for (Entry entry : history) {
             if (entry.getId().equals(lastReadEntryId)) {
                 Collections.reverse(entries);
                 return entries;
