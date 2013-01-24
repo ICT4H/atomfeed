@@ -1,6 +1,9 @@
 package org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration;
 
+import javax.persistence.*;
 
+@Entity
+@Table(name ="chunking_history")
 public class NumberBasedChunkingHistoryEntry {
     public class Range {
         public final Integer first;
@@ -12,11 +15,19 @@ public class NumberBasedChunkingHistoryEntry {
         }
     }
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int seqNum;
+
+    @Column(name = "chunk_size")
     private int chunkSize;
-    private int endPos;
+
+    @Column(name = "start_pos")
     private int startPos;
 
+    @Transient
+    private int endPos;
     private static final int UNBOUNDED = -1;
 
     public NumberBasedChunkingHistoryEntry(int seqNum, int chunkSize, Integer startPos) {
@@ -25,6 +36,8 @@ public class NumberBasedChunkingHistoryEntry {
         this.startPos = (startPos == null) ? 1 : startPos;
         this.endPos = UNBOUNDED;
     }
+
+    public NumberBasedChunkingHistoryEntry(){}
 
     public int getFeedCount(int upperBound) {
         int endPosition = isOpen() ? upperBound : endPos;

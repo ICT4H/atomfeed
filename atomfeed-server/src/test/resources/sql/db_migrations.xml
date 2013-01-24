@@ -30,7 +30,5 @@
         <!--  We should move this to a separate mvn execution or profile. Must have atleast one -->
         <sqlFile path="src/test/resources/sql/chunk_history.dml.sql"/>
     </changeSet>
-    
-    
 
 </databaseChangeLog>

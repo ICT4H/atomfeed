@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import org.ict4htw.atomfeed.SpringIntegrationIT;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
+import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistoryEntry;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

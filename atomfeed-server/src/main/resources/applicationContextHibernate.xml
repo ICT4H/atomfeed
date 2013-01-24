@@ -11,6 +11,7 @@
         <property name="annotatedClasses">
             <list>
                 <value>org.ict4htw.atomfeed.server.domain.EventRecord</value>
+                <value>org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistoryEntry</value>
             </list>
         </property>
 
