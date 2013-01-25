@@ -3,7 +3,7 @@ package org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration;
 import javax.persistence.*;
 
 @Entity
-@Table(name ="chunking_history")
+@Table(name ="number_based_chunking_histories")
 public class NumberBasedChunkingHistoryEntry {
     public class Range {
         public final Integer first;

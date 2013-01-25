@@ -30,5 +30,10 @@
         <!--  We should move this to a separate mvn execution or profile. Must have atleast one -->
         <sqlFile path="src/test/resources/sql/chunk_history.dml.sql"/>
     </changeSet>
-
+    <changeSet id="3" author="ict4h">
+        <dropColumn tableName="chunking_history" columnName="end_pos"/>
+    </changeSet>
+    <changeSet id="4" author="ict4h">
+        <renameTable oldTableName="chunking_history" newTableName="number_based_chunking_histories"/>
+    </changeSet>
 </databaseChangeLog>
