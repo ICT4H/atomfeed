@@ -1,5 +1,8 @@
 package org.ict4htw.atomfeed.client.domain;
 
+/**
+ * 
+ */
 public class Marker {
     private String entryId;
     private String consumerId;

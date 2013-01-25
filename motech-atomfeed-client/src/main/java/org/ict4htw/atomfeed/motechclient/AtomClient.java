@@ -18,7 +18,7 @@ public class AtomClient {
 
     //should be persisted
     private String lastRecordId;
-    private MotechEventMapper motechEventMapper;
+    private EventToMotechEventMapper eventToMotechEventMapper;
 
     public EventRelay getEventRelay() {
         return eventRelay;
@@ -33,8 +33,8 @@ public class AtomClient {
     private FeedEnumerator feedEnumerator;
 
 
-    public AtomClient(String startingURL, WebClient webClient, MotechEventMapper motechEventMapper) throws URISyntaxException {
-        this.motechEventMapper = motechEventMapper;
+    public AtomClient(String startingURL, WebClient webClient, EventToMotechEventMapper eventToMotechEventMapper) throws URISyntaxException {
+        this.eventToMotechEventMapper = eventToMotechEventMapper;
         AllFeeds allFeeds = new AllFeeds(webClient);
         feedEnumerator = new FeedEnumerator(allFeeds, new URI(startingURL));
 
@@ -50,7 +50,7 @@ public class AtomClient {
             entries=feedEnumerator.newerEntries(lastRecordId);
         for (Entry entry : entries) {
             //need to know if they need any change
-            MotechEvent event =motechEventMapper.map(entry);
+            MotechEvent event = eventToMotechEventMapper.map(entry);
             eventRelay.sendEventMessage(event);
         }
         setLastRecordId(entries);

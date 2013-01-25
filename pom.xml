@@ -11,8 +11,10 @@
     <modules>
         <module>atomfeed-server</module>
         <module>atomfeed-client</module>
-<!--        <module>motech-atomfeed-client</module>
-        <module>motech-atomfeed-server</module> -->
+        <module>openmrs-atomfeed-server</module>
+        <module>openmrs-atomfeed-client</module>
+        <!--        <module>motech-atomfeed-client</module>
+       <module>motech-atomfeed-server</module> -->
     </modules>
 
     <properties>

@@ -3,7 +3,7 @@ package org.ict4htw.atomfeed.server.domain;
 import com.sun.syndication.feed.atom.Entry;
 import org.ict4htw.atomfeed.client.repository.datasource.WebClient;
 import org.ict4htw.atomfeed.motechclient.AtomClient;
-import org.ict4htw.atomfeed.motechclient.MotechEventMapper;
+import org.ict4htw.atomfeed.motechclient.EventToMotechEventMapper;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4htw.atomfeed.server.repository.InMemoryEventRecordCreator;
 import org.ict4htw.atomfeed.server.resource.EventResource;
@@ -32,14 +32,14 @@ public class AtomClientTest {
         EventService eventService = new EventService(allEventRecords);
         EventFeedService eventFeedService = new EventFeedService(allEventRecords);
         WebClient webClientStub = new WebClientStub(new EventResource(eventFeedService, eventService));
-        MotechEventMapper eventMapper=new MotechEventMapper(){
+        EventToMotechEventMapper eventMapperEventTo =new EventToMotechEventMapper(){
             @Override
             public MotechEvent map(Entry entry) {
                 MotechEvent event = new MotechEvent("com.atomfeed.entry."+entry.getId());
                 return event;
             }
         };
-        atomClient=new AtomClient("http://foo.bar/2", webClientStub, eventMapper);
+        atomClient=new AtomClient("http://foo.bar/2", webClientStub, eventMapperEventTo);
         atomClient.setEventRelay(mock(EventRelay.class));
     }
 
