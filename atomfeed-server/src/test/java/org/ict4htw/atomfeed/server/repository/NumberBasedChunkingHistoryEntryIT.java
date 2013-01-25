@@ -13,8 +13,8 @@ public class NumberBasedChunkingHistoryEntryIT extends SpringIntegrationIT{
 
     @Test
     public void shouldGetAllNumberBasedChunkingHistoryEntries(){
-        ChunkingHistoryEntryImpl entry = new ChunkingHistoryEntryImpl(template);
-        List<NumberBasedChunkingHistoryEntry> items = entry.all();
+        ChunkingHistoryEntry entry = new ChunkingHistoryEntry(template);
+        List<?> items = entry.all(NumberBasedChunkingHistoryEntry.class);
         assertNotNull(items);
         assertTrue(items.size() > 0);
     }
