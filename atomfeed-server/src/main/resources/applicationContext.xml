@@ -21,5 +21,6 @@
     <bean id="feedGeneratorBasedOnNumberBasedChunking"
           factory-bean="generatorFactory" factory-method="getObject">
         <constructor-arg ref="allEventRecords"/>
+        <constructor-arg ref="allChunkingEntries"/>
     </bean>
 </beans>

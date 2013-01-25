@@ -62,6 +62,15 @@ public class NumberBasedChunkingHistoryEntry {
         return seqNum;
     }
 
+    public int getChunkSize() {
+        return chunkSize;
+    }
+
+    public int getStartPosition() {
+        return startPos;
+    }
+
+
     public void close(int endPosition) {
         this.endPos = endPosition;
     }
