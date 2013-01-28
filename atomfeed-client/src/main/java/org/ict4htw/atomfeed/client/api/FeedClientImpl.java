@@ -2,7 +2,6 @@ package org.ict4htw.atomfeed.client.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class FeedClientImpl implements FeedClient {
     }
 
     @Override
-    public void confirmProcessed(URI feedUri, String feedEntryId) {
-        allMarkers.update(new Marker(feedUri, feedEntryId), feedEntryId);
+    public void processedTo(URI feedUri, String entryId) {
+        allMarkers.processedTo(feedUri, entryId);
     }
 }

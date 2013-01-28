@@ -1,49 +1,67 @@
 package org.ict4htw.atomfeed.client.api;
 
+import com.sun.syndication.feed.atom.Entry;
+import com.sun.syndication.feed.atom.Feed;
 import org.ict4htw.atomfeed.client.domain.Marker;
 import org.ict4htw.atomfeed.client.repository.AllFeeds;
 import org.ict4htw.atomfeed.client.repository.AllMarkers;
-import org.ict4htw.atomfeed.client.repository.datasource.InMemoryMarkers;
-import org.ict4htw.atomfeed.client.repository.datasource.WebClientStub;
-import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
-import org.ict4htw.atomfeed.server.repository.InMemoryEventRecordCreator;
-import org.ict4htw.atomfeed.server.resource.EventResource;
-import org.ict4htw.atomfeed.server.service.EventFeedService;
-import org.ict4htw.atomfeed.server.service.EventService;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class FeedClientImplTest {
 
-    FeedClient feedClient;
-    private InMemoryEventRecordCreator feedRecordCreator;
+    @Test
+    public void findsNoUnprocessedEventsWhenTheMostRecentIsProcessed() throws Exception {
+        URI feedUri = new URI("www.example.com/feed/working");
+        Entry latest = new Entry();
+        latest.setId("latest");
+        Feed feed = getFeed(latest);
 
-    @Before
-    public void setup() throws Exception {
-        AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
-        EventService eventService = new EventService(allEventRecords);
-        EventFeedService eventFeedService = new EventFeedService(allEventRecords);
-        WebClientStub webClientStub = new WebClientStub(new EventResource(eventFeedService, eventService));
-        AllFeeds allFeeds = new AllFeeds(webClientStub);
-        feedRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
-        InMemoryMarkers markerDataSource = new InMemoryMarkers();
+        FeedClient client = new FeedClientImpl(getAllFeeds(feedUri, feed), getSingleMarker(feedUri, latest.getId()));
 
-        markerDataSource.put(new Marker(new URI("example.com/atom/working"), "someEntryId"));
-        feedClient=new FeedClientImpl(allFeeds, new AllMarkers(markerDataSource));
+        assertTrue(client.unprocessedEvents(feedUri).isEmpty());
     }
 
     @Test
-    @Ignore(value = "compilation error")
-    public void testUnprocessedEvents() throws Exception {
-        feedRecordCreator.create(7);
-//        feedClient.unprocessedEvents();
+    public void findsASingleUnprocessedEvent() throws Exception {
+        URI feedUri = new URI("www.example.com/feed/working");
+
+        Entry lastProcessed = new Entry();
+        lastProcessed.setId("lastProcessed");
+
+        Entry latest = new Entry();
+        latest.setId("latest");
+
+        Feed feed = getFeed(lastProcessed, latest);
+        FeedClient client = new FeedClientImpl(getAllFeeds(feedUri, feed), getSingleMarker(feedUri, lastProcessed.getId()));
+
+        assertSame(1, client.unprocessedEvents(feedUri).size());
     }
 
-    @Test
-    public void testConfirmProcessed() throws Exception {
+    private Feed getFeed(Entry... entries) {
+        ArrayList mutableEntries = new ArrayList();
+        mutableEntries.addAll(Arrays.asList(entries));
+        Feed feed = new Feed();
+        feed.setEntries(mutableEntries);
+        return feed;
+    }
 
+    private AllFeeds getAllFeeds(URI feedUri, Feed feed) {
+        AllFeeds feeds = mock(AllFeeds.class);
+        when(feeds.getFor(feedUri)).thenReturn(feed);
+        return feeds;
+    }
+
+    private AllMarkers getSingleMarker(URI feedUri, String entryId) throws Exception {
+        AllMarkers markers = mock(AllMarkers.class);
+        when(markers.get(feedUri)).thenReturn(new Marker(feedUri, entryId));
+        return markers;
     }
 }

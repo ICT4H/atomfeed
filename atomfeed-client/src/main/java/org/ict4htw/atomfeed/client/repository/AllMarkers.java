@@ -12,12 +12,11 @@ public class AllMarkers {
         this.markerDataSource = markerDataSource;
     }
 
-    public Marker get(URI workingFeed) {
-        return markerDataSource.get(workingFeed);
+    public Marker get(URI feedUri) {
+        return markerDataSource.get(feedUri);
     }
 
-    public void update(Marker marker, String entryId) {
-        Marker to = marker.updateTo(entryId);
-        markerDataSource.put(to);
+    public void processedTo(URI feedUri, String entryId) {
+        markerDataSource.put(new Marker(feedUri, entryId));
     }
 }

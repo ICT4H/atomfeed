@@ -18,8 +18,4 @@ public class Marker {
 	public URI getFeedUri() {
 		return feedUri;
 	}
-
-    public Marker updateTo(String entryId) {
-        return new Marker(feedUri, entryId);
-    }
 }

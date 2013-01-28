@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface FeedClient {
     List<Event> unprocessedEvents(URI feedUri);
-    void confirmProcessed(URI feedUri, String feedEntryId);
+    void processedTo(URI feedUri, String entryId);
 }
