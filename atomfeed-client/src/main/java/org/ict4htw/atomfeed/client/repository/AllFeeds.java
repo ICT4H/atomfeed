@@ -23,14 +23,11 @@ public class AllFeeds {
         logger.debug(responseString);
         responseString.trim().replaceFirst("^([\\W]+)<", "<");
 
-        WireFeedInput wfi = new WireFeedInput();
-        WireFeed wireFeed;
         try {
-            wireFeed = wfi.build(new StringReader(responseString));
+            WireFeedInput input = new WireFeedInput();
+            return (Feed) input.build(new StringReader(responseString));
         } catch (Exception e) {
             throw new RuntimeException(responseString, e);
         }
-
-        return (Feed) wireFeed;
     }
 }
