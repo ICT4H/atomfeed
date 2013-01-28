@@ -42,7 +42,7 @@ public class FeedClientImplTest {
         Feed feed = getFeed(lastProcessed, latest);
         FeedClient client = new FeedClientImpl(getAllFeeds(feedUri, feed), getSingleMarker(feedUri, lastProcessed.getId()));
 
-        assertSame(1, client.unprocessedEvents(feedUri).size());
+        assertSame(latest.getId(), client.unprocessedEvents(feedUri).get(0).getId());
     }
 
     private Feed getFeed(Entry... entries) {
