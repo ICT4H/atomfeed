@@ -14,13 +14,15 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.net.URI;
+
 public class FeedClientImplTest {
 
     FeedClient feedClient;
     private InMemoryEventRecordCreator feedRecordCreator;
 
     @Before
-    public void setup(){
+    public void setup() throws Exception {
         AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
         EventService eventService = new EventService(allEventRecords);
         EventFeedService eventFeedService = new EventFeedService(allEventRecords);
@@ -28,8 +30,8 @@ public class FeedClientImplTest {
         AllFeeds allFeeds = new AllFeeds(webClientStub);
         feedRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
         InMemoryMarkers markerDataSource = new InMemoryMarkers();
-        
-        markerDataSource.add("testconsumerid", new Marker("SomeConsumerId","someEntryId"));
+
+        markerDataSource.put(new Marker(new URI("example.com/atom/working"), "someEntryId"));
         feedClient=new FeedClientImpl(allFeeds, new AllMarkers(markerDataSource));
     }
 

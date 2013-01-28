@@ -2,6 +2,7 @@ package org.ict4htw.atomfeed.client.api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +27,11 @@ public class FeedClientImpl implements FeedClient {
     }
 
     @Override
-    public List<Event> unprocessedEvents(String consumerId, String url) {
+    public List<Event> unprocessedEvents(URI feedUri) {
         try {
-            Marker marker = allMarkers.get(consumerId);
-            FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, new URI(url));
-            List<Entry> entries = null;
+            Marker marker = allMarkers.get(feedUri);
+            FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, feedUri);
+            List<Entry> entries;
             entries = (marker != null) ? feedEnumerator.newerEntries(marker.getEntryId()) : feedEnumerator.getAllEntries();
             ArrayList<Event> events = new ArrayList<Event>();
             for (Entry entry : entries) {
@@ -44,7 +45,7 @@ public class FeedClientImpl implements FeedClient {
     }
 
     @Override
-    public void confirmProcessed(String feedEntryId, String consumerId) {
-        allMarkers.update(consumerId, feedEntryId);
+    public void confirmProcessed(URI feedUri, String feedEntryId) {
+        allMarkers.update(new Marker(feedUri, feedEntryId), feedEntryId);
     }
 }

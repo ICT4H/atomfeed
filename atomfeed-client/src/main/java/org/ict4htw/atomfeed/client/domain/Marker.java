@@ -1,26 +1,25 @@
 package org.ict4htw.atomfeed.client.domain;
 
+import java.net.URI;
+
 public class Marker {
     private String entryId;
-    private String consumerId;
+    private URI workingFeed;
 
-    public Marker(String consumerId, String entryId) {
-		this.consumerId = consumerId;
-		this.entryId = entryId;
+    public Marker(URI feedUri, String entryId) {
+        this.workingFeed = feedUri;
+        this.entryId = entryId;
 	}
 
 	public String getEntryId() {
         return entryId;
     }
 	
-	public String getConsumerId() {
-		return this.consumerId;
+	public URI getFeedUri() {
+		return workingFeed;
 	}
 
-	//?? do we need this setter
-    public void setFeedEntryId(String feedEntryId) {
-        this.entryId = feedEntryId;
+    public Marker updateTo(String entryId) {
+        return new Marker(workingFeed, entryId);
     }
-	
-		
 }
