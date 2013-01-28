@@ -1,8 +1,6 @@
 package org.ict4htw.atomfeed.server.service.feedgenerator;
 
-import junit.framework.Assert;
 import org.ict4htw.atomfeed.SpringIntegrationIT;
-import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,6 +14,6 @@ public class FeedGeneratorIT extends SpringIntegrationIT {
 
     @Test
     public void verifyFeedGeneratorBean(){
-        assertEquals(generator.getClass(),FeedGeneratorBasedOnNumberBasedChunking.class);
+        assertEquals(generator.getClass(),NumberFeedGenerator.class);
     }
 }

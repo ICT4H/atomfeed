@@ -15,15 +15,15 @@ import java.util.Date;
 import java.util.UUID;
 
 
-public class FeedGeneratorBasedOnNumberBasedChunkingTest {
+public class NumberFeedGeneratorTest {
     AllEventRecords eventsRecord = new AllEventRecordsStub();
-    private FeedGeneratorBasedOnNumberBasedChunking feedGenerator;
+    private NumberFeedGenerator feedGenerator;
 
     @Before
     public void setUp() {
         NumberBasedChunkingHistory config = new NumberBasedChunkingHistory();
         config.add(1, 5, 1);
-        feedGenerator = new FeedGeneratorBasedOnNumberBasedChunking(eventsRecord, config);
+        feedGenerator = new NumberFeedGenerator(eventsRecord, config);
     }
 
     @Test(expected = Exception.class)

@@ -19,7 +19,7 @@ public class NumberBasedChunkingHistory {
 		});
 	}
 	
-	public NumberBasedChunkingHistoryEntry.Range findRange(Integer feedId, int upperBound) {
+	public NumberRange findRange(Integer feedId, int upperBound) {
 		int feedsPassed = 0;
 		for (NumberBasedChunkingHistoryEntry entryNumberBasedHistory : entryNumberBasedHistories) {
 			int feedCount = entryNumberBasedHistory.getFeedCount(upperBound);

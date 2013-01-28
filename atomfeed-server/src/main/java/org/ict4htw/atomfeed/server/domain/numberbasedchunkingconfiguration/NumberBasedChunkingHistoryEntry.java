@@ -5,15 +5,6 @@ import javax.persistence.*;
 @Entity
 @Table(name ="number_based_chunking_histories")
 public class NumberBasedChunkingHistoryEntry {
-    public class Range {
-        public final Integer first;
-        public final Integer last;
-
-        public Range(Integer first, Integer last) {
-            this.first = first;
-            this.last = last;
-        }
-    }
 
     @Id
     @Column(name = "id")
@@ -47,11 +38,11 @@ public class NumberBasedChunkingHistoryEntry {
         return feedCount.intValue();
     }
 
-    public Range getRange(Integer relativeFeedId) {
+    public NumberRange getRange(Integer relativeFeedId) {
         int start = startPos + (relativeFeedId - 1) * chunkSize;
         int naturalLimit = start + chunkSize - 1;
         int end = isOpen() ? naturalLimit : Math.min(endPos, naturalLimit);
-        return new Range(start, end);
+        return new NumberRange(start, end);
     }
 
     public boolean isOpen() {

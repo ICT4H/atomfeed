@@ -37,7 +37,7 @@ public class NumberBasedChunkingHistoryTest {
 		assertRange(14, 20, historyNumberBased.findRange(4, 100));
 	}
 
-	private void assertRange(int first, int last, NumberBasedChunkingHistoryEntry.Range range) {
+	private void assertRange(int first, int last, NumberRange range) {
 		Assert.assertEquals(first, range.first.intValue());
 		Assert.assertEquals(last, range.last.intValue());
 	}
