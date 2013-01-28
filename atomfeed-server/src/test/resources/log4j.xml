@@ -13,7 +13,7 @@
     </logger>
 
     <logger name="org.ict4htw.atomfeed.server">
-        <level value="info"/>
+        <level value="warn"/>
         <appender-ref ref="console"/>
     </logger>
 

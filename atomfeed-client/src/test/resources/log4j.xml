@@ -8,12 +8,12 @@
     </appender>
 
     <logger name="org.springframework">
-        <level value="info"/>
+        <level value="warn"/>
         <appender-ref ref="console"/>
     </logger>
 
     <logger name="org.ict4htw.atomfeed.client">
-        <level value="debug"/>
+        <level value="warn"/>
         <appender-ref ref="console"/>
     </logger>
 

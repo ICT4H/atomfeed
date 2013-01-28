@@ -14,24 +14,23 @@ import org.ict4htw.atomfeed.client.repository.AllMarkers;
 
 import com.sun.syndication.feed.atom.Entry;
 
-public class FeedClientImpl implements FeedClient {
+public class AtomFeedClient implements FeedClient {
     private static final String ATOM_MEDIA_TYPE = "application/atom+xml";
     private AllFeeds allFeeds;
     private AllMarkers allMarkers;
 
     //@Autowired
-    public FeedClientImpl(AllFeeds allFeeds, AllMarkers allMarkers) {
+    public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers) {
         this.allFeeds = allFeeds;
         this.allMarkers = allMarkers;
     }
 
     @Override
-    public List<Event> unprocessedEvents(String consumerId, String url) {
+    public List<Event> unprocessedEvents(URI feedUri) {
         try {
-            Marker marker = allMarkers.get(consumerId);
-            FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, new URI(url));
-            List<Entry> entries = null;
-            entries = (marker != null) ? feedEnumerator.newerEntries(marker.getEntryId()) : feedEnumerator.getAllEntries();
+            Marker marker = allMarkers.get(feedUri);
+            FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, feedUri);
+            List<Entry> entries = (marker != null) ? feedEnumerator.newerEntries(marker.getEntryId()) : feedEnumerator.getAllEntries();
             ArrayList<Event> events = new ArrayList<Event>();
             for (Entry entry : entries) {
                 events.add(new Event(entry));
@@ -44,7 +43,7 @@ public class FeedClientImpl implements FeedClient {
     }
 
     @Override
-    public void confirmProcessed(String feedEntryId, String consumerId) {
-        allMarkers.update(consumerId, feedEntryId);
+    public void processedTo(URI feedUri, String entryId) {
+        allMarkers.processedTo(feedUri, entryId);
     }
 }

@@ -1,4 +1,3 @@
-package org.ict4htw.atomfeed;
 import org.ict4htw.atomfeed.server.service.EventService;
 import org.openmrs.*;
 import org.openmrs.event.Event;
@@ -6,12 +5,12 @@ import org.openmrs.event.SubscribableEventListener;
 import org.springframework.stereotype.Component;
 
 import javax.jms.Message;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
 @Component
 public class AtomFeedEventListener implements SubscribableEventListener {
+
     EventService eventService;
     private MessageToEventMap messageToEventMap;
 
@@ -22,7 +21,7 @@ public class AtomFeedEventListener implements SubscribableEventListener {
 
     @Override
     public List<Class<? extends org.openmrs.OpenmrsObject>> subscribeToObjects() {
-        Object classes = Arrays.asList(Patient.class);
+        Object classes = Arrays.asList(Patient.class, Concept.class, Encounter.class, Obs.class);
         return (List<Class<? extends OpenmrsObject>>) classes;
     }
 
@@ -33,10 +32,7 @@ public class AtomFeedEventListener implements SubscribableEventListener {
 
     @Override
     public void onMessage(Message message) {
-        try {
-            eventService.notify(messageToEventMap.map(message));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        eventService.notify(messageToEventMap.map(message));
     }
+
 }
