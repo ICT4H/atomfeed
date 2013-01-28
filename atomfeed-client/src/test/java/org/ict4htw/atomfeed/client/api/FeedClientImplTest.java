@@ -28,9 +28,8 @@ public class FeedClientImplTest {
         AllFeeds allFeeds = new AllFeeds(webClientStub);
         feedRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
         InMemoryMarkers markerDataSource = new InMemoryMarkers();
-        markerDataSource.add("testconsumerid", new Marker(){
-
-        });
+        
+        markerDataSource.add("testconsumerid", new Marker("SomeConsumerId","someEntryId"));
         feedClient=new FeedClientImpl(allFeeds, new AllMarkers(markerDataSource));
     }
 

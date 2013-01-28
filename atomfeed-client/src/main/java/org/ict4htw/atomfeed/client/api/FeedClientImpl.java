@@ -1,19 +1,18 @@
 package org.ict4htw.atomfeed.client.api;
 
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.ict4htw.atomfeed.client.AtomFeedClientException;
 import org.ict4htw.atomfeed.client.FeedEnumerator;
 import org.ict4htw.atomfeed.client.api.data.Event;
 import org.ict4htw.atomfeed.client.domain.Marker;
 import org.ict4htw.atomfeed.client.repository.AllFeeds;
 import org.ict4htw.atomfeed.client.repository.AllMarkers;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import com.sun.syndication.feed.atom.Entry;
 
 public class FeedClientImpl implements FeedClient {
     private static final String ATOM_MEDIA_TYPE = "application/atom+xml";
@@ -31,11 +30,19 @@ public class FeedClientImpl implements FeedClient {
         try {
             Marker marker = allMarkers.get(consumerId);
             FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, new URI(url));
-            List<Entry> entries = feedEnumerator.newerEntries(marker.getEntryId());
+            List<Entry> entries = null;
+            entries = (marker != null) ? feedEnumerator.newerEntries(marker.getEntryId()) : feedEnumerator.getAllEntries();
             ArrayList<Event> events = new ArrayList<Event>();
             for (Entry entry : entries) {
-                events.add(new Event());
+                events.add(new Event(entry));
             }
+            
+            if (events.size() > 0) {
+            	Event lastEvent = events.get(events.size()-1);
+            	String entryId = ((Entry) lastEvent.getPayload()).getId();
+            	allMarkers.update(consumerId, entryId);
+            }
+            
             return events;
         } catch (URISyntaxException e) {
             throw new AtomFeedClientException(e);

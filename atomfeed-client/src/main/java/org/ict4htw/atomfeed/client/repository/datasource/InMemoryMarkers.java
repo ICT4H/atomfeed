@@ -13,8 +13,8 @@ public class InMemoryMarkers implements MarkerDataSource {
     }
 
     @Override
-    public void update(String consumerId, Marker marker) {
-        markers.put(consumerId, marker);
+    public void update(Marker marker) {
+        markers.put(marker.getConsumerId(), marker);
     }
 
     public void add(String consumerId, Marker marker) {

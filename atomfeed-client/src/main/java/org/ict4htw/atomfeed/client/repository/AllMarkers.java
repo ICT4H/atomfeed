@@ -16,7 +16,11 @@ public class AllMarkers {
 
     public void update(String consumerId, String feedEntryId) {
         Marker marker = get(consumerId);
-        marker.setFeedEntryId(feedEntryId);
-        markerDataSource.update(consumerId, marker);
+        if (marker == null) {
+        	marker = new Marker(consumerId, feedEntryId);
+        } else {
+        	marker.setFeedEntryId(feedEntryId);
+        }
+        markerDataSource.update(marker);
     }
 }
