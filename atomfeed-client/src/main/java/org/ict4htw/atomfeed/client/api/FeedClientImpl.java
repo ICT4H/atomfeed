@@ -31,8 +31,7 @@ public class FeedClientImpl implements FeedClient {
         try {
             Marker marker = allMarkers.get(feedUri);
             FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, feedUri);
-            List<Entry> entries;
-            entries = (marker != null) ? feedEnumerator.newerEntries(marker.getEntryId()) : feedEnumerator.getAllEntries();
+            List<Entry> entries = (marker != null) ? feedEnumerator.newerEntries(marker.getEntryId()) : feedEnumerator.getAllEntries();
             ArrayList<Event> events = new ArrayList<Event>();
             for (Entry entry : entries) {
                 events.add(new Event(entry));
