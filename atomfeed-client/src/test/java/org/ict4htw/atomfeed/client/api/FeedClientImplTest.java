@@ -10,7 +10,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,6 +20,7 @@ public class FeedClientImplTest {
     @Test
     public void findsNoUnprocessedEventsWhenTheMostRecentIsProcessed() throws Exception {
         URI feedUri = new URI("www.example.com/feed/working");
+
         Entry latest = new Entry();
         latest.setId("latest");
         Feed feed = getFeed(latest);
@@ -42,7 +43,7 @@ public class FeedClientImplTest {
         Feed feed = getFeed(lastProcessed, latest);
         FeedClient client = new FeedClientImpl(getAllFeeds(feedUri, feed), getSingleMarker(feedUri, lastProcessed.getId()));
 
-        assertSame(latest.getId(), client.unprocessedEvents(feedUri).get(0).getId());
+        assertEquals(latest.getId(), client.unprocessedEvents(feedUri).get(0).getId());
     }
 
     private Feed getFeed(Entry... entries) {
