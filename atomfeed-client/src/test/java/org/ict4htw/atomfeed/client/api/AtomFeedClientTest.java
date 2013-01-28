@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class FeedClientImplTest {
+public class AtomFeedClientTest {
 
     @Test
     public void findsNoUnprocessedEventsWhenTheMostRecentIsProcessed() throws Exception {
@@ -25,7 +25,7 @@ public class FeedClientImplTest {
         latest.setId("latest");
         Feed feed = getFeed(latest);
 
-        FeedClient client = new FeedClientImpl(getAllFeeds(feedUri, feed), getSingleMarker(feedUri, latest.getId()));
+        FeedClient client = new AtomFeedClient(getAllFeeds(feedUri, feed), getSingleMarker(feedUri, latest.getId()));
 
         assertTrue(client.unprocessedEvents(feedUri).isEmpty());
     }
@@ -41,7 +41,7 @@ public class FeedClientImplTest {
         latest.setId("latest");
 
         Feed feed = getFeed(lastProcessed, latest);
-        FeedClient client = new FeedClientImpl(getAllFeeds(feedUri, feed), getSingleMarker(feedUri, lastProcessed.getId()));
+        FeedClient client = new AtomFeedClient(getAllFeeds(feedUri, feed), getSingleMarker(feedUri, lastProcessed.getId()));
 
         assertEquals(latest.getId(), client.unprocessedEvents(feedUri).get(0).getId());
     }

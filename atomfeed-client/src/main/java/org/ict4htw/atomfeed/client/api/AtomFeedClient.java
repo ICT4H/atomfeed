@@ -14,13 +14,13 @@ import org.ict4htw.atomfeed.client.repository.AllMarkers;
 
 import com.sun.syndication.feed.atom.Entry;
 
-public class FeedClientImpl implements FeedClient {
+public class AtomFeedClient implements FeedClient {
     private static final String ATOM_MEDIA_TYPE = "application/atom+xml";
     private AllFeeds allFeeds;
     private AllMarkers allMarkers;
 
     //@Autowired
-    public FeedClientImpl(AllFeeds allFeeds, AllMarkers allMarkers) {
+    public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers) {
         this.allFeeds = allFeeds;
         this.allMarkers = allMarkers;
     }
