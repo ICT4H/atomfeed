@@ -4,10 +4,10 @@ import java.net.URI;
 
 public class Marker {
     private String entryId;
-    private URI workingFeed;
+    private URI feedUri;
 
     public Marker(URI feedUri, String entryId) {
-        this.workingFeed = feedUri;
+        this.feedUri = feedUri;
         this.entryId = entryId;
 	}
 
@@ -16,10 +16,10 @@ public class Marker {
     }
 	
 	public URI getFeedUri() {
-		return workingFeed;
+		return feedUri;
 	}
 
     public Marker updateTo(String entryId) {
-        return new Marker(workingFeed, entryId);
+        return new Marker(feedUri, entryId);
     }
 }
