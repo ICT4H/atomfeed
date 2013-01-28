@@ -37,12 +37,6 @@ public class FeedClientImpl implements FeedClient {
                 events.add(new Event(entry));
             }
             
-            if (events.size() > 0) {
-            	Event lastEvent = events.get(events.size()-1);
-            	String entryId = ((Entry) lastEvent.getPayload()).getId();
-            	allMarkers.update(consumerId, entryId);
-            }
-            
             return events;
         } catch (URISyntaxException e) {
             throw new AtomFeedClientException(e);
