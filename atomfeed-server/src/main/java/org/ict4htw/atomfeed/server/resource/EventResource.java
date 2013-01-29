@@ -3,11 +3,11 @@ package org.ict4htw.atomfeed.server.resource;
 import com.sun.syndication.feed.atom.Feed;
 
 import com.sun.syndication.io.FeedException;
+import com.sun.syndication.io.WireFeedOutput;
 import org.apache.log4j.Logger;
 import org.ict4htw.atomfeed.server.service.Event;
 import org.ict4htw.atomfeed.server.service.EventFeedService;
 import org.ict4htw.atomfeed.server.service.EventService;
-import org.ict4htw.atomfeed.server.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +33,7 @@ public class EventResource {
     public String getRecentEventFeed(HttpServletRequest httpServletRequest) {
         try {
             Feed feed = eventFeedService.getRecentFeed(new URI(httpServletRequest.getRequestURI()));
-            return Util.stringifyFeed(feed);
+            return new WireFeedOutput().outputString(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);
         } catch (Exception e) {
@@ -50,7 +50,7 @@ public class EventResource {
     public String getEventFeed(HttpServletRequest httpServletRequest, @PathVariable int feedId) {
         try {
             Feed feed = eventFeedService.getEventFeed(new URI(httpServletRequest.getRequestURI()), feedId);
-            return Util.stringifyFeed(feed);
+            return new WireFeedOutput().outputString(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);
         } catch (FeedException e) {

@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.ict4htw.atomfeed.server.util.Util;
+import com.thoughtworks.xstream.XStream;
 
 @Entity
 @Table(name = "event_records")
@@ -68,7 +68,7 @@ public class EventRecord {
         this.uuid = uuid;
         this.title = title;
         this.uri = uri.toString();
-        this.object = Util.stringify(eventObject);
+        this.object = new XStream().toXML(eventObject);
         //note: this is not the date used. the date will be assigned by database
         this.timeStamp = timeStamp;
     }
