@@ -4,8 +4,8 @@ import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.joda.time.DateTime;
 import org.junit.Test;
+
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +23,12 @@ public class EventServiceTest {
         eventService.notify(event);
         EventRecord eventRecord = allEventRecords.get(uuid);
 
-        assertEquals(eventRecord.getTitle(), event.getTitle());
+        assertEventEquals(event, eventRecord);
+    }
+
+    private void assertEventEquals(Event event, EventRecord eventRecord) {
+        assertEquals(event.getUuid(), eventRecord.getUuid());
+        assertEquals(event.getTitle(), eventRecord.getTitle());
+        assertEquals(event.getUri().toString(), eventRecord.getUri());
     }
 }
