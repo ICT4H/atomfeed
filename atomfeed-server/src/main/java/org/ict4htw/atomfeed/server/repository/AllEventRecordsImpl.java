@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository(value = "allEventRecords")
-@Transactional
+//@Repository(value = "allEventRecords")
+//@Transactional
 public class AllEventRecordsImpl implements AllEventRecords {
 
     private DataAccessTemplate template;
@@ -47,13 +47,7 @@ public class AllEventRecordsImpl implements AllEventRecords {
         Long totalCount = (Long)template.getSessionFactory().openSession().createQuery("select count(*) from EventRecord").uniqueResult();
         return totalCount.intValue();
     }
-
-
-    @Override
-	public void save(List<EventRecord> eventRecords) {
-		template.saveOrUpdateAll(eventRecords);
-	}
-
+    
 	@Override
 	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
 		Query query = template.getSessionFactory().openSession().createQuery(

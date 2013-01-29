@@ -20,11 +20,6 @@ public class AllEventRecordsStub implements AllEventRecords {
     public int getTotalCount() {
         return eventRecords.size();
     }
-
-    @Override
-	public void save(List<EventRecord> eventRecords) {
-		// TODO Auto-generated method stub
-	}
     
 	@Override
 	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {

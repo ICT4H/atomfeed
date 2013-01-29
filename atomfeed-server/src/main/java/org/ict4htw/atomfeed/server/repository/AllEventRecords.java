@@ -15,8 +15,6 @@ public interface AllEventRecords {
 
 	int getTotalCount();
 
-    void save(List<EventRecord> eventRecords);
-	
 	List<EventRecord> getEventsFromRange(Integer first, Integer last);
 
     List<EventRecord> getEventsFromTimeRange(TimeRange timeRange);

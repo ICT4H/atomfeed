@@ -114,5 +114,12 @@ public class EventRecord {
             throw new RuntimeException(e);
         }
     }
+
+	@Override
+	public String toString() {
+		return "EventRecord [id=" + id + ", uuid=" + uuid + ", title=" + title
+				+ ", timeStamp=" + timeStamp + ", uri=" + uri + ", object="
+				+ object + "]";
+	}
 	
 }

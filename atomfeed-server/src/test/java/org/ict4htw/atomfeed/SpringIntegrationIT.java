@@ -2,11 +2,8 @@ package org.ict4htw.atomfeed;
 
 import org.ict4htw.atomfeed.server.repository.DataAccessTemplate;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -14,6 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public abstract class SpringIntegrationIT {
 
-    @Autowired
+    //@Autowired
     protected DataAccessTemplate template;
 }

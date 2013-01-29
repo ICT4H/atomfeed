@@ -10,48 +10,62 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.FlushMode;
+import javax.sql.DataSource;
+
 import org.ict4htw.atomfeed.SpringIntegrationIT;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
-import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistoryEntry;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateAccessor;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class AllEventRecordsIT extends SpringIntegrationIT {
 
     @Autowired
     private AllEventRecords allEventRecords;
+    
+    private DataSource dataSource;
 
-    @Before
-    @After
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired 
+	private void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+		jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+	
+	
+
+	@Before
+	@org.junit.After
     public void purgeEventRecords() {
-        template.deleteAll(template.loadAll(EventRecord.class));
+		int queryForInt = jdbcTemplate.queryForInt("select count(*) from atomfeed.event_records");
+		System.out.println("Total records " + queryForInt);
+		int update = jdbcTemplate.update("delete from atomfeed.event_records");
+    	System.out.println("result of delete=" + update);
+    	//template.deleteAll(template.loadAll(EventRecord.class));
     }
 
     @Test
+    @Transactional
     public void shouldAddEventRecordAndFetchByUUID() throws URISyntaxException {
+    	System.out.println("executing shouldAddEventRecordAndFetchByUUID");
         String uuid = UUID.randomUUID().toString();
-
         EventRecord eventRecordAdded = new EventRecord(uuid, "title", new URI("http://uri"), null,new Date());
-
         allEventRecords.add(eventRecordAdded);
-
         EventRecord eventRecordFetched = allEventRecords.get(uuid);
-
         assertEquals(eventRecordAdded.getUuid(), eventRecordFetched.getUuid());
         assertEquals(eventRecordAdded.getTitle(), eventRecordFetched.getTitle());
         assertTrue((new Date()).after(eventRecordFetched.getTimeStamp()));
     }
 
+  //@Ignore(value = "Transaction Snafu after Transaction handling was moved to SpringIT.")
     @Test
-    @Ignore(value = "Transaction Snafu after Transaction handling was moved to SpringIT.")
     public void shouldGetTotalCountOfEventRecords() throws URISyntaxException {
+    	System.out.println("executing shouldGetTotalCountOfEventRecords");
         EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null,new Date());
         EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null,new Date());
 
@@ -62,36 +76,27 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
         Assert.assertEquals(2, totalCount);
     }
 
-    //ignoring the test temporarily, as the event chunking logic will be done by a archiver. 
-    //the test might not be needed or needs to be altered
-    @Test
-    @Ignore
+    @Test 
+    //relies on the rdbms serial id
     public void shouldGetEventsFromStartNumber() throws URISyntaxException {
-        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null,new Date());
-        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null,new Date());
-        EventRecord eventRecordAdded3 = new EventRecord("uuid3", "title", new URI("http://uri"), null,new Date());
-        EventRecord eventRecordAdded4 = new EventRecord("uuid4", "title", new URI("http://uri"), null,new Date());
-        EventRecord eventRecordAdded5 = new EventRecord("uuid5", "title", new URI("http://uri"), null,new Date());
+    	System.out.println("executing shouldGetEventsFromStartNumber");
+    	addEvents(6, "uuid");
+        EventRecord e2 = allEventRecords.get("uuid2");
+        EventRecord e5 = allEventRecords.get("uuid5");
 
-        allEventRecords.add(eventRecordAdded1);
-        allEventRecords.add(eventRecordAdded2);
-        allEventRecords.add(eventRecordAdded3);
-        allEventRecords.add(eventRecordAdded4);
-        allEventRecords.add(eventRecordAdded5);
+        List<EventRecord> events = allEventRecords.getEventsFromRange(e2.getId(),e5.getId() );
 
-        List<EventRecord> eventRecordList = allEventRecords.getEventsFromRange(3,4);
-
-        assertEquals(2, eventRecordList.size());
-        assertEquals(eventRecordAdded4.getUuid(), eventRecordList.get(0).getUuid());
-        assertEquals(eventRecordAdded5.getUuid(), eventRecordList.get(1).getUuid());
+        assertEquals(4, events.size());
+        assertEquals(e2.getUuid(), events.get(0).getUuid());
+        assertEquals(e5.getUuid(), events.get(events.size()-1).getUuid());
     }
 
-    private void addEvents(int eventNumber) throws URISyntaxException {
+    private void addEvents(int eventNumber, String uuidStartsWith) throws URISyntaxException {
     	Calendar c = Calendar.getInstance();
     	c.add(Calendar.SECOND, 10);
         for (int i= 1; i <= eventNumber; i++) {
             String title = "Event" + i;
-            allEventRecords.add(new EventRecord(UUID.randomUUID().toString(), title, new URI("http://uri/"+title), null,new Date()));
+            allEventRecords.add(new EventRecord(uuidStartsWith + i, title, new URI("http://uri/"+title), null,new Date()));
         }
     }
 }

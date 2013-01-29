@@ -17,10 +17,10 @@
 
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
-                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
-                <prop key="hibernate.default_schema">${hibernate.default_schema}</prop>
+                <prop key="hibernate.dialect">${atomdb.dialect}</prop>
+                <prop key="hibernate.show_sql">${atomdb.show_sql}</prop>
+                <prop key="hibernate.format_sql">${atomdb.format_sql}</prop>
+                <prop key="hibernate.default_schema">${atomdb.default_schema}</prop>
             </props>
         </property>
     </bean>
@@ -30,12 +30,12 @@
         <property name="jdbcUrl" value="${jdbc.url}"/>
         <property name="user" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
-        <property name="maxPoolSize" value="${hibernate.c3p0.max_size}"/>
-        <property name="minPoolSize" value="${hibernate.c3p0.min_size}"/>
-        <property name="checkoutTimeout" value="${hibernate.c3p0.timeout}"/>
-        <property name="maxStatements" value="${hibernate.c3p0.max_statements}"/>
-        <property name="idleConnectionTestPeriod" value="${hibernate.c3p0.idle_test_period}"/>
-        <property name="acquireIncrement" value="${hibernate.c3p0.acquire_increment}"/>
+        <property name="maxPoolSize" value="${atomdb.c3p0.max_size}"/>
+        <property name="minPoolSize" value="${atomdb.c3p0.min_size}"/>
+        <property name="checkoutTimeout" value="${atomdb.c3p0.timeout}"/>
+        <property name="maxStatements" value="${atomdb.c3p0.max_statements}"/>
+        <property name="idleConnectionTestPeriod" value="${atomdb.c3p0.idle_test_period}"/>
+        <property name="acquireIncrement" value="${atomdb.c3p0.acquire_increment}"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">

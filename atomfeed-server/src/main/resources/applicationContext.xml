@@ -15,12 +15,12 @@
 
     <import resource="classpath:applicationContextHibernate.xml"/>
 
-    <bean id="generatorFactory" class="org.ict4htw.atomfeed.server.service.feedgenerator.FeedGeneratorFactory">
+    <!-- <bean id="generatorFactory" class="org.ict4htw.atomfeed.server.service.feedgenerator.FeedGeneratorFactory">
     </bean>
 
     <bean id="feedGeneratorBasedOnNumberBasedChunking"
           factory-bean="generatorFactory" factory-method="getObject">
         <constructor-arg ref="allEventRecords"/>
         <constructor-arg ref="allChunkingEntries"/>
-    </bean>
+    </bean> -->
 </beans>
