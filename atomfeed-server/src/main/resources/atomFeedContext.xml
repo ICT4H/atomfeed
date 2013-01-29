@@ -11,16 +11,22 @@
 
     <context:annotation-config/>
     <context:spring-configured/>
-    <context:component-scan base-package="org.ict4htw"/>
+    
+    <import resource="classpath:atomFeedJdbcContext.xml"/>
 
-    <import resource="classpath:applicationContextHibernate.xml"/>
-
-    <!-- <bean id="generatorFactory" class="org.ict4htw.atomfeed.server.service.feedgenerator.FeedGeneratorFactory">
+    <bean id="generatorFactory" class="org.ict4htw.atomfeed.server.service.feedgenerator.FeedGeneratorFactory">
     </bean>
-
-    <bean id="feedGeneratorBasedOnNumberBasedChunking"
-          factory-bean="generatorFactory" factory-method="getObject">
+    <bean id="feedGenerator" factory-bean="generatorFactory" factory-method="getFeedGenerator">
         <constructor-arg ref="allEventRecords"/>
         <constructor-arg ref="allChunkingEntries"/>
-    </bean> -->
+    </bean>
+    
+    <bean id="eventFeedService" class="org.ict4htw.atomfeed.server.service.EventFeedService">
+        <constructor-arg ref="feedGenerator"/>
+    </bean>
+    
+    <bean id="eventService" class="org.ict4htw.atomfeed.server.service.EventService">
+        <constructor-arg ref="allEventRecords"/>
+    </bean>
+    
 </beans>

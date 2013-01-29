@@ -1,12 +1,10 @@
 package org.ict4htw.atomfeed.server.repository;
 
-import org.ict4htw.atomfeed.server.domain.EventRecord;
-import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
-@Repository
+import org.ict4htw.atomfeed.server.domain.EventRecord;
+import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
+
 public interface AllEventRecords {
 
 	void add(EventRecord eventRecord);

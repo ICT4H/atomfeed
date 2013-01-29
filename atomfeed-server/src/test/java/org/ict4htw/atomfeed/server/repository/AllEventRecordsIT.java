@@ -50,7 +50,6 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     }
 
     @Test
-    @Transactional
     public void shouldAddEventRecordAndFetchByUUID() throws URISyntaxException {
     	System.out.println("executing shouldAddEventRecordAndFetchByUUID");
         String uuid = UUID.randomUUID().toString();

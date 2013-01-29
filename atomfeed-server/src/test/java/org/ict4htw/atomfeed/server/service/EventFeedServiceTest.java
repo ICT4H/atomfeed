@@ -3,8 +3,12 @@ package org.ict4htw.atomfeed.server.service;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
 import junit.framework.Assert;
+
+import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4htw.atomfeed.server.repository.InMemoryEventRecordCreator;
+import org.ict4htw.atomfeed.server.service.feedgenerator.FeedGenerator;
+import org.ict4htw.atomfeed.server.service.feedgenerator.NumberFeedGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +25,11 @@ public class EventFeedServiceTest {
         AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
         InMemoryEventRecordCreator inMemoryEventRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
         inMemoryEventRecordCreator.create(7);
-        eventFeedService = new EventFeedService(allEventRecords);
+        
+        NumberBasedChunkingHistory config = new NumberBasedChunkingHistory();
+        config.add(1, 5, 1);
+        FeedGenerator feedGenerator = new NumberFeedGenerator(allEventRecords, config);
+        eventFeedService = new EventFeedService(feedGenerator);
     }
 
     @Test

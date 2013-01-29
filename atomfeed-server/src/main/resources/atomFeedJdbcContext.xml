@@ -6,7 +6,7 @@
 
                              http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="annotatedClasses">
             <list>
@@ -23,7 +23,7 @@
                 <prop key="hibernate.default_schema">${atomdb.default_schema}</prop>
             </props>
         </property>
-    </bean>
+    </bean> -->
 
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="${jdbc.driverClassName}"/>
@@ -37,11 +37,21 @@
         <property name="idleConnectionTestPeriod" value="${atomdb.c3p0.idle_test_period}"/>
         <property name="acquireIncrement" value="${atomdb.c3p0.acquire_increment}"/>
     </bean>
-
-    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+        <property name="dataSource" ref="dataSource" />
     </bean>
-
+    
     <tx:annotation-driven transaction-manager="transactionManager" />
+    
+    <bean id="allEventRecords" class="org.ict4htw.atomfeed.server.repository.AllEventRecordsJdbcImpl">
+        <constructor-arg ref="dataSource"/>
+        <property name="schema" value="${atomdb.default_schema}"/>
+    </bean>
+    
+    <bean id="allChunkingEntries" class="org.ict4htw.atomfeed.server.repository.AllChunkingEntriesJdbcImpl">
+        <constructor-arg ref="dataSource"/>
+        <property name="schema" value="${atomdb.default_schema}"/>
+    </bean>
 
 </beans>

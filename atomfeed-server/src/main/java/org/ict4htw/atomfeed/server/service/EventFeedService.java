@@ -7,15 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.ict4htw.atomfeed.server.domain.EventFeed;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
-import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
-import org.ict4htw.atomfeed.server.domain.EventFeed;
 import org.ict4htw.atomfeed.server.domain.FeedBuilder;
-import org.ict4htw.atomfeed.server.service.feedgenerator.NumberFeedGenerator;
-import org.ict4htw.atomfeed.server.repository.AllEventRecords;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.ict4htw.atomfeed.server.service.feedgenerator.FeedGenerator;
 
 import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.atom.Entry;
@@ -23,27 +19,19 @@ import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Generator;
 import com.sun.syndication.feed.atom.Link;
 
-@Service
 public class EventFeedService {
-    private AllEventRecords allEventRecords;
 
     private static final String ATOM_MEDIA_TYPE = "application/atom+xml";
     private static final String LINK_TYPE_SELF = "self";
     private static final String LINK_TYPE_VIA = "via";
     private static final String ATOMFEED_MEDIA_TYPE = "application/vnd.atomfeed+xml";
-	private NumberFeedGenerator feedGenerator;
 
-    @Autowired
-    public EventFeedService(AllEventRecords allEventRecords) {
-        this.allEventRecords = allEventRecords;
-        feedGenerator = new NumberFeedGenerator(allEventRecords, getChunkingHistory());
+	private FeedGenerator feedGenerator;
+
+    public EventFeedService(FeedGenerator generator) {
+        this.feedGenerator = generator;
     }
 
-	private NumberBasedChunkingHistory getChunkingHistory() {
-		NumberBasedChunkingHistory historyNumberBased = new NumberBasedChunkingHistory();
-		historyNumberBased.add(1, 5, 1);
-		return historyNumberBased;
-	}
 
     public Feed getRecentFeed(URI requestUri) {
     	EventFeed recentFeed = feedGenerator.getRecentFeed();

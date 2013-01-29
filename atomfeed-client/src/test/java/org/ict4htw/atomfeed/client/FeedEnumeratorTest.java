@@ -6,11 +6,15 @@ import java.util.List;
 
 import org.ict4htw.atomfeed.client.repository.AllFeeds;
 import org.ict4htw.atomfeed.client.repository.datasource.WebClientStub;
+import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
+import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4htw.atomfeed.server.repository.InMemoryEventRecordCreator;
 import org.ict4htw.atomfeed.server.resource.EventResource;
 import org.ict4htw.atomfeed.server.service.EventFeedService;
 import org.ict4htw.atomfeed.server.service.EventService;
+import org.ict4htw.atomfeed.server.service.feedgenerator.FeedGenerator;
+import org.ict4htw.atomfeed.server.service.feedgenerator.NumberFeedGenerator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,10 +31,17 @@ public class FeedEnumeratorTest {
 	public void setUp() {
 		AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
         EventService eventService = new EventService(allEventRecords);
-        EventFeedService eventFeedService = new EventFeedService(allEventRecords);
+        FeedGenerator generator = getFeedGenerator(allEventRecords);
+        EventFeedService eventFeedService = new EventFeedService(generator);
         webClientStub = new WebClientStub(new EventResource(eventFeedService, eventService));
         feedRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
         allFeeds = new AllFeeds(webClientStub);
+	}
+	
+	private FeedGenerator getFeedGenerator(AllEventRecords eventRecords) {
+		NumberBasedChunkingHistory config = new NumberBasedChunkingHistory();
+        config.add(1, 5, 1);
+        return new NumberFeedGenerator(eventRecords, config);
 	}
 	
     @Test

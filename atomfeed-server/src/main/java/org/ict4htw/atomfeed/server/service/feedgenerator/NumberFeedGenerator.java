@@ -4,16 +4,14 @@ import java.util.List;
 
 import org.ict4htw.atomfeed.server.domain.EventFeed;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
-import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberRange;
 import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
+import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberRange;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class NumberFeedGenerator implements FeedGenerator {
 	private AllEventRecords allEventRecords;
 	private NumberBasedChunkingHistory numberBasedChunkingHistory;
 
-    @Autowired
 	public NumberFeedGenerator(AllEventRecords eventsRecord, NumberBasedChunkingHistory numberBasedChunkingHistory) {
 		this.allEventRecords = eventsRecord;
 		this.numberBasedChunkingHistory = numberBasedChunkingHistory;

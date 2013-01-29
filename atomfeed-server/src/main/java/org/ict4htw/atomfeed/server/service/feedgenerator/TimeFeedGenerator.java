@@ -1,13 +1,12 @@
 package org.ict4htw.atomfeed.server.service.feedgenerator;
 
+import java.util.List;
+
 import org.ict4htw.atomfeed.server.domain.EventFeed;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeBasedChunkingHistory;
-import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeBasedChunkingHistoryEntry;
 import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
-
-import java.util.List;
 
 public class TimeFeedGenerator implements FeedGenerator {
     private final TimeBasedChunkingHistory timeBasedChunkingHistory;

@@ -1,12 +1,11 @@
 package org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration;
 
-import org.ict4htw.atomfeed.server.domain.EventFeed;
-import org.ict4htw.atomfeed.server.exceptions.AtomFeedRuntimeException;
-import org.joda.time.LocalDateTime;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.ict4htw.atomfeed.server.exceptions.AtomFeedRuntimeException;
+import org.joda.time.LocalDateTime;
 
 public class TimeBasedChunkingHistory {
     private List<TimeBasedChunkingHistoryEntry> chunkingHistoryEntries;

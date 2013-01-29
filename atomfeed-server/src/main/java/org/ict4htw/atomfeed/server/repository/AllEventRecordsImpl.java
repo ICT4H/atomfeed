@@ -6,19 +6,13 @@ import java.util.List;
 import org.hibernate.Query;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-//@Repository(value = "allEventRecords")
-//@Transactional
 public class AllEventRecordsImpl implements AllEventRecords {
 
     private DataAccessTemplate template;
 
     protected AllEventRecordsImpl() { }
 
-    @Autowired
     public AllEventRecordsImpl(DataAccessTemplate template) {
         this.template = template;
     }
