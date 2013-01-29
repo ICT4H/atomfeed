@@ -2,6 +2,7 @@ package org.ict4htw.atomfeed.server.resource;
 
 import com.sun.syndication.feed.atom.Feed;
 
+import com.sun.syndication.io.FeedException;
 import org.apache.log4j.Logger;
 import org.ict4htw.atomfeed.server.service.Event;
 import org.ict4htw.atomfeed.server.service.EventFeedService;
@@ -52,7 +53,9 @@ public class EventResource {
             return Util.stringifyFeed(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);
-        } 
+        } catch (FeedException e) {
+            throw new RuntimeException("Error serializing feed.", e);
+        }
         //TODO: check comments in getRecentFeed()
     }
 
