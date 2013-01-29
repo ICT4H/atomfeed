@@ -3,6 +3,7 @@ package org.ict4htw.atomfeed.server.util;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.WireFeedOutput;
 import com.thoughtworks.xstream.XStream;
+import org.ict4htw.atomfeed.server.exceptions.AtomFeedRuntimeException;
 
 import java.io.StringWriter;
 
@@ -20,7 +21,7 @@ public class Util {
             output.output(feed, stringWriter, true);
             return stringWriter.toString();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new AtomFeedRuntimeException(e);
         }
     }
 
