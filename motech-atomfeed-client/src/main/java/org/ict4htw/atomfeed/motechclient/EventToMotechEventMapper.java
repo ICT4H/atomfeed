@@ -1,8 +1,8 @@
 package org.ict4htw.atomfeed.motechclient;
 
-import com.sun.syndication.feed.atom.Entry;
+import org.ict4htw.atomfeed.client.api.data.Event;
 import org.motechproject.event.MotechEvent;
 
 public interface EventToMotechEventMapper {
-    MotechEvent map(Entry event);
+    MotechEvent map(Event event);
 }

@@ -1,10 +1,12 @@
 package org.ict4htw.atomfeed.motechclient;
 
-import com.sun.syndication.feed.atom.Entry;
-import org.ict4htw.atomfeed.client.FeedEnumerator;
+import org.ict4htw.atomfeed.client.api.AtomFeedClient;
+import org.ict4htw.atomfeed.client.api.FeedClient;
+import org.ict4htw.atomfeed.client.api.data.Event;
 import org.ict4htw.atomfeed.client.repository.AllFeeds;
+import org.ict4htw.atomfeed.client.repository.AllMarkers;
+import org.ict4htw.atomfeed.client.repository.datasource.MarkerDataSource;
 import org.ict4htw.atomfeed.client.repository.datasource.WebClient;
-import org.motechproject.event.MotechEvent;
 import org.motechproject.event.listener.EventRelay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,8 +18,7 @@ import java.util.List;
 @Component
 public class AtomClient {
 
-    //should be persisted
-    private String lastRecordId;
+    private URI entryURL;
     private EventToMotechEventMapper eventToMotechEventMapper;
 
     public EventRelay getEventRelay() {
@@ -30,36 +31,23 @@ public class AtomClient {
 
     @Autowired
     private EventRelay eventRelay;
-    private FeedEnumerator feedEnumerator;
+    private FeedClient feedClient;
 
-
-    public AtomClient(String startingURL, WebClient webClient, EventToMotechEventMapper eventToMotechEventMapper) throws URISyntaxException {
+    public AtomClient(URI startingURL, WebClient webClient, EventToMotechEventMapper eventToMotechEventMapper) throws URISyntaxException {
+        this.entryURL = startingURL;
         this.eventToMotechEventMapper = eventToMotechEventMapper;
         AllFeeds allFeeds = new AllFeeds(webClient);
-        feedEnumerator = new FeedEnumerator(allFeeds, new URI(startingURL));
-
+        MarkerDataSource inmemoryMarkerDataSource = new InmemoryMarkerDataSource();
+        feedClient=new AtomFeedClient(allFeeds, new AllMarkers(inmemoryMarkerDataSource));
     }
-
 
     public  void update() throws URISyntaxException {
-        List<Entry> entries=null;
-        if(lastRecordId==null) {
-            entries=feedEnumerator.getAllEntries();
+        List<Event> events = feedClient.unprocessedEvents(entryURL);
+        for (Event event : events) {
+            eventRelay.sendEventMessage(eventToMotechEventMapper.map(event));
         }
-        else
-            entries=feedEnumerator.newerEntries(lastRecordId);
-        for (Entry entry : entries) {
-            //need to know if they need any change
-            MotechEvent event = eventToMotechEventMapper.map(entry);
-            eventRelay.sendEventMessage(event);
-        }
-        setLastRecordId(entries);
-    }
-
-
-    //Presist
-    private void setLastRecordId(List<Entry> entries) {
-        lastRecordId=entries.get(entries.size()-1).getId();
+        Event lastEvent = events.get(events.size() - 1);
+        feedClient.processedTo(entryURL,lastEvent.getId());
     }
 
 }

@@ -1,6 +1,6 @@
 package org.ict4htw.atomfeed.server.domain;
 
-import com.sun.syndication.feed.atom.Entry;
+import org.ict4htw.atomfeed.client.api.data.Event;
 import org.ict4htw.atomfeed.client.repository.datasource.WebClient;
 import org.ict4htw.atomfeed.motechclient.AtomClient;
 import org.ict4htw.atomfeed.motechclient.EventToMotechEventMapper;
@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.motechproject.event.MotechEvent;
 import org.motechproject.event.listener.EventRelay;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.mockito.Mockito.*;
@@ -34,12 +35,12 @@ public class AtomClientTest {
         WebClient webClientStub = new WebClientStub(new EventResource(eventFeedService, eventService));
         EventToMotechEventMapper eventMapperEventTo =new EventToMotechEventMapper(){
             @Override
-            public MotechEvent map(Entry entry) {
-                MotechEvent event = new MotechEvent("com.atomfeed.entry."+entry.getId());
-                return event;
+            public MotechEvent map(Event event) {
+                MotechEvent motechEvent = new MotechEvent("com.atomfeed.entry."+event.getId());
+                return motechEvent;
             }
         };
-        atomClient=new AtomClient("http://foo.bar/2", webClientStub, eventMapperEventTo);
+        atomClient=new AtomClient(new URI("http://foo.bar/2"), webClientStub, eventMapperEventTo);
         atomClient.setEventRelay(mock(EventRelay.class));
     }
 
