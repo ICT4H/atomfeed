@@ -2,20 +2,23 @@ package org.ict4htw.atomfeed.server.repository;
 
 import org.ict4htw.atomfeed.SpringIntegrationIT;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
+import org.ict4htw.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
+import org.ict4htw.atomfeed.server.repository.jdbc.JdbcConnectionProvider;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -23,24 +26,32 @@ import static junit.framework.Assert.assertTrue;
 
 public class AllEventRecordsIT extends SpringIntegrationIT {
 
-    @Autowired
     private AllEventRecords allEventRecords;
-    
-    private JdbcTemplate jdbcTemplate;
+    private Connection connection;
 
-	@Autowired 
-	private void setDataSource(DataSource ds) {
-		jdbcTemplate = new JdbcTemplate(ds);
-	}
 
-	@Before
-	@org.junit.After
-    public void purgeEventRecords() {
-		int queryForInt = jdbcTemplate.queryForInt("select count(*) from atomfeed.event_records");
-		System.out.println("Total records " + queryForInt);
-		int update = jdbcTemplate.update("delete from atomfeed.event_records");
-    	System.out.println("result of delete=" + update);
-    	//template.deleteAll(template.loadAll(EventRecord.class));
+    @Before
+    public void purgeEventRecords() throws SQLException {
+        ResourceBundle bundle = ResourceBundle.getBundle("atomfeed");
+
+        connection = DriverManager.getConnection(bundle.getString("jdbc.url"),
+                                                 bundle.getString("jdbc.username"),
+                                                 bundle.getString("jdbc.password")
+                                                );
+        allEventRecords = new AllEventRecordsJdbcImpl(new JdbcConnectionProvider() {
+            @Override
+            public Connection getConnection() throws SQLException {
+                return connection;
+            }
+        });
+        Statement statement = connection.createStatement();
+        statement.execute("delete from atomfeed.event_records");
+        statement.close();
+    }
+
+    @After
+    public void after() throws SQLException {
+          connection.close();
     }
 
     @Test
