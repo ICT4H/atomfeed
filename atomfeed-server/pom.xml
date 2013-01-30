@@ -186,6 +186,7 @@
             <artifactId>aspectjrt</artifactId>
             <version>1.6.8</version>
         </dependency>
+        <!--remove rome from spring-->
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
