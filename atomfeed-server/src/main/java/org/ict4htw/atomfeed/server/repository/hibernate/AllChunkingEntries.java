@@ -1,6 +1,8 @@
-package org.ict4htw.atomfeed.server.repository;
+package org.ict4htw.atomfeed.server.repository.hibernate;
 
 import java.util.List;
+
+import org.ict4htw.atomfeed.server.repository.ChunkingHistories;
 
 public class AllChunkingEntries implements ChunkingHistories {
 

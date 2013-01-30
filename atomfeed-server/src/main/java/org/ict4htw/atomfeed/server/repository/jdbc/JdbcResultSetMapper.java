@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.server.repository;
+package org.ict4htw.atomfeed.server.repository.jdbc;
 
 import java.lang.reflect.Field;
 import java.sql.ResultSet;

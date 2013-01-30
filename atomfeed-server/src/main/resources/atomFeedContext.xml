@@ -9,9 +9,9 @@
 
     <context:property-placeholder location="classpath*:*.properties"/>
 
-    <context:annotation-config/>
+    <!-- <context:annotation-config/>
     <context:spring-configured/>
-    
+     -->
     <import resource="classpath:atomFeedJdbcContext.xml"/>
 
     <bean id="generatorFactory" class="org.ict4htw.atomfeed.server.service.feedgenerator.FeedGeneratorFactory">

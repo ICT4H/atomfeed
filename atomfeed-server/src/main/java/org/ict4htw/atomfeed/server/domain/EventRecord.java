@@ -26,12 +26,14 @@ import com.thoughtworks.xstream.XStream;
 @Entity
 @Table(name = "event_records")
 @NamedQueries({
-        @NamedQuery(name = EventRecord.FIND_BY_UUID, query = "select e from EventRecord e where e.uuid=:uuid")
+        @NamedQuery(name = EventRecord.FIND_BY_UUID, query = "select e from EventRecord e where e.uuid=:uuid"),
+        @NamedQuery(name = EventRecord.TOTAL_COUNT, query = "select count(er) FROM EventRecord er")
 })
 @XmlRootElement(name = "event", namespace = EventRecord.EVENT_NAMESPACE)
 public class EventRecord {
 
     public static final String FIND_BY_UUID = "find.by.uuid";
+    public static final String TOTAL_COUNT = "event_records.total_count";
 
     public static final String EVENT_NAMESPACE = "http://schemas.atomfeed.ict4h.org/events";
 

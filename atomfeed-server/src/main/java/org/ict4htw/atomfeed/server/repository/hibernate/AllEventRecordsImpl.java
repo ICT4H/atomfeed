@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.server.repository;
+package org.ict4htw.atomfeed.server.repository.hibernate;
 
 import java.util.Collections;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
+import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 
 public class AllEventRecordsImpl implements AllEventRecords {
 

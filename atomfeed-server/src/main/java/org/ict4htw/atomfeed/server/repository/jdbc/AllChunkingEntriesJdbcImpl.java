@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.server.repository;
+package org.ict4htw.atomfeed.server.repository.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,18 +6,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.sql.DataSource;
-
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.ict4htw.atomfeed.server.repository.ChunkingHistories;
 
 public class AllChunkingEntriesJdbcImpl implements ChunkingHistories {
 
-	private DataSource dataSource;
 	
-	private String schema = "atomfeed";	
+	private String schema = "atomfeed";
+
+	private JdbcConnectionProvider provider;	
 	
-	public AllChunkingEntriesJdbcImpl(DataSource dataSource) {
-		this.dataSource = dataSource;
+	public AllChunkingEntriesJdbcImpl(JdbcConnectionProvider provider) {
+		this.provider = provider;
 	}
 	
 	public void setSchema(String dbSchema) {
@@ -27,28 +26,32 @@ public class AllChunkingEntriesJdbcImpl implements ChunkingHistories {
 	@Override
 	public <T> List<T> all(Class<T> clazz) {
 		Connection connection = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
 		try {
 			connection = getDbConnection();
 			String sql = String.format("select id, chunk_size, start_pos, end_pos from %s order by id", getTableName("chunking_history"));
-			PreparedStatement stmt = connection.prepareStatement(sql);
-			ResultSet results = stmt.executeQuery();
-			return mapHistories(results, clazz);
+			stmt = connection.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			return mapHistories(rs, clazz);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
-			closeAll(connection, null, null);
+			closeAll(stmt, rs);
 		}
 	}
 
-	private void closeAll(Connection con, PreparedStatement stmt, ResultSet rs) {
-		if (stmt != null) {
-			try {
-				rs.close();
-				stmt.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	private void closeAll(PreparedStatement stmt, ResultSet rs) {
+		try {
+			if (rs != null) {
+					rs.close();
 			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -67,7 +70,7 @@ public class AllChunkingEntriesJdbcImpl implements ChunkingHistories {
 	}
 
 	private Connection getDbConnection() throws SQLException {
-		return DataSourceUtils.doGetConnection(dataSource);
+		return provider.getConnection();
 	}
 
 }

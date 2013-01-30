@@ -2,28 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-
-
                              http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
-
-    <!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="annotatedClasses">
-            <list>
-                <value>org.ict4htw.atomfeed.server.domain.EventRecord</value>
-                <value>org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistoryEntry</value>
-            </list>
-        </property>
-
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${atomdb.dialect}</prop>
-                <prop key="hibernate.show_sql">${atomdb.show_sql}</prop>
-                <prop key="hibernate.format_sql">${atomdb.format_sql}</prop>
-                <prop key="hibernate.default_schema">${atomdb.default_schema}</prop>
-            </props>
-        </property>
-    </bean> -->
 
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="${jdbc.driverClassName}"/>
@@ -44,13 +23,17 @@
     
     <tx:annotation-driven transaction-manager="transactionManager" />
     
-    <bean id="allEventRecords" class="org.ict4htw.atomfeed.server.repository.AllEventRecordsJdbcImpl">
+    <bean id="jdbcConnectionProvider" class="org.ict4htw.atomfeed.server.repository.jdbc.SpringJdbcConnectionProvider">
         <constructor-arg ref="dataSource"/>
+    </bean>
+    
+    <bean id="allEventRecords" class="org.ict4htw.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl">
+        <constructor-arg ref="jdbcConnectionProvider"/>
         <property name="schema" value="${atomdb.default_schema}"/>
     </bean>
     
-    <bean id="allChunkingEntries" class="org.ict4htw.atomfeed.server.repository.AllChunkingEntriesJdbcImpl">
-        <constructor-arg ref="dataSource"/>
+    <bean id="allChunkingEntries" class="org.ict4htw.atomfeed.server.repository.jdbc.AllChunkingEntriesJdbcImpl">
+        <constructor-arg ref="jdbcConnectionProvider"/>
         <property name="schema" value="${atomdb.default_schema}"/>
     </bean>
 

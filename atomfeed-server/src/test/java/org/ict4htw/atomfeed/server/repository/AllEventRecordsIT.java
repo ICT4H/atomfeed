@@ -21,23 +21,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+
 public class AllEventRecordsIT extends SpringIntegrationIT {
 
     @Autowired
     private AllEventRecords allEventRecords;
     
-    private DataSource dataSource;
-
-	private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
 	@Autowired 
-	private void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-		jdbcTemplate = new JdbcTemplate(dataSource);
+	private void setDataSource(DataSource ds) {
+		jdbcTemplate = new JdbcTemplate(ds);
 	}
-	
-	
 
 	@Before
 	@org.junit.After
@@ -50,6 +45,7 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     }
 
     @Test
+    @Transactional
     public void shouldAddEventRecordAndFetchByUUID() throws URISyntaxException {
     	System.out.println("executing shouldAddEventRecordAndFetchByUUID");
         String uuid = UUID.randomUUID().toString();
