@@ -35,8 +35,9 @@
         </dependency>
         <dependency>
             <groupId>org.ict4htw</groupId>
-            <artifactId>atomfeed-server</artifactId>
+            <artifactId>atomfeed-spring</artifactId>
             <scope>test</scope>
+            <!--<classifier>tests</classifier>-->
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

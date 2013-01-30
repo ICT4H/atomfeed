@@ -10,7 +10,7 @@ import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.Numbe
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4htw.atomfeed.server.repository.InMemoryEventRecordCreator;
-import org.ict4htw.atomfeed.server.resource.EventResource;
+import org.ict4htw.atomfeed.spring.resource.EventResource;
 import org.ict4htw.atomfeed.server.service.EventFeedService;
 import org.ict4htw.atomfeed.server.service.EventService;
 import org.ict4htw.atomfeed.server.service.feedgenerator.FeedGenerator;

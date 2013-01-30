@@ -1,6 +1,6 @@
 package org.ict4htw.atomfeed.client.repository.datasource;
 
-import org.ict4htw.atomfeed.server.resource.EventResource;
+import org.ict4htw.atomfeed.spring.resource.EventResource;
 import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletRequest;
