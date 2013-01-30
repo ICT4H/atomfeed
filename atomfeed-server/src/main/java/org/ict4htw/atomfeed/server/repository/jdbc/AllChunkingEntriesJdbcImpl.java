@@ -30,7 +30,7 @@ public class AllChunkingEntriesJdbcImpl implements ChunkingHistories {
 		ResultSet rs = null;
 		try {
 			connection = getDbConnection();
-			String sql = String.format("select id, chunk_size, start_pos, end_pos from %s order by id", getTableName("chunking_history"));
+			String sql = String.format("select id, chunk_size, start_pos from %s order by id", getTableName("number_based_chunking_histories"));
 			stmt = connection.prepareStatement(sql);
 			rs = stmt.executeQuery();
 			return mapHistories(rs, clazz);
