@@ -3,12 +3,10 @@ package org.ict4htw.atomfeed.server.repository;
 import org.ict4htw.atomfeed.SpringIntegrationIT;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
-import org.ict4htw.atomfeed.server.repository.jdbc.JdbcConnectionProvider;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,7 +42,6 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     }
 
     @Test
-    @Transactional
     public void shouldAddEventRecordAndFetchByUUID() throws URISyntaxException {
     	System.out.println("executing shouldAddEventRecordAndFetchByUUID");
         String uuid = UUID.randomUUID().toString();

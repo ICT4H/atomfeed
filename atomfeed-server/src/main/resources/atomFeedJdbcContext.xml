@@ -23,8 +23,7 @@
     
     <tx:annotation-driven transaction-manager="transactionManager" />
     
-    <bean id="jdbcConnectionProvider" class="org.ict4htw.atomfeed.server.repository.jdbc.SpringJdbcConnectionProvider">
-        <constructor-arg ref="dataSource"/>
+    <bean id="jdbcConnectionProvider" class="org.ict4htw.atomfeed.server.repository.jdbc.PropertiesJdbcConnectionProvider">
     </bean>
     
     <bean id="allEventRecords" class="org.ict4htw.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl">
