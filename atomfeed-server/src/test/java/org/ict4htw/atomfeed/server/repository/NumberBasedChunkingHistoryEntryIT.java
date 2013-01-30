@@ -5,7 +5,6 @@ import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.Numbe
 import org.ict4htw.atomfeed.server.repository.jdbc.AllChunkingEntriesJdbcImpl;
 import org.junit.After;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
 import java.sql.SQLException;
