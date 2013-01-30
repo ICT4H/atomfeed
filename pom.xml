@@ -16,7 +16,6 @@
     </modules>
 
     <properties>
-        <spring.version>3.1.0.RELEASE</spring.version>
         <slf4j.version>1.6.1</slf4j.version>
     </properties>
 
