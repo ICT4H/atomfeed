@@ -12,6 +12,7 @@
         <module>atomfeed-server</module>
         <module>atomfeed-client</module>
         <module>atomfeed-spring</module>
+        <module>atomfeed-standalone</module>
     </modules>
 
     <properties>
