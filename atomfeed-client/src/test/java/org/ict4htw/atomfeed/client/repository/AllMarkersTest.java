@@ -11,13 +11,6 @@ import java.net.URISyntaxException;
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: karthik
- * Date: 29/01/13
- * Time: 12:00 PM
- * To change this template use File | Settings | File Templates.
- */
 public class AllMarkersTest {
 
     AllMarkers allMarkers;
@@ -34,7 +27,7 @@ public class AllMarkersTest {
         URI feedUri = new URI("http://testfeeduri");
         Marker testEntryId = new Marker(feedUri, "testEntryId");
         when(mock.get(feedUri)).thenReturn(testEntryId);
-        return mock;  //To change body of created methods use File | Settings | File Templates.
+        return mock;
     }
 
     @Test

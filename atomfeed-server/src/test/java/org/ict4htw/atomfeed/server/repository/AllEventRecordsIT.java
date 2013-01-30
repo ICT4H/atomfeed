@@ -8,17 +8,17 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -29,21 +29,10 @@ public class AllEventRecordsIT extends SpringIntegrationIT {
     private AllEventRecords allEventRecords;
     private Connection connection;
 
-
     @Before
     public void purgeEventRecords() throws SQLException {
-        ResourceBundle bundle = ResourceBundle.getBundle("atomfeed");
-
-        connection = DriverManager.getConnection(bundle.getString("jdbc.url"),
-                                                 bundle.getString("jdbc.username"),
-                                                 bundle.getString("jdbc.password")
-                                                );
-        allEventRecords = new AllEventRecordsJdbcImpl(new JdbcConnectionProvider() {
-            @Override
-            public Connection getConnection() throws SQLException {
-                return connection;
-            }
-        });
+        connection = getConnection();
+        allEventRecords = new AllEventRecordsJdbcImpl(getProvider(connection));
         Statement statement = connection.createStatement();
         statement.execute("delete from atomfeed.event_records");
         statement.close();
