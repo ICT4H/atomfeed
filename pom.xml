@@ -29,6 +29,7 @@
                     <version>6.1.10</version>
                     <configuration>
                         <contextPath>/</contextPath>
+                        <tmpDirectory>/tmp</tmpDirectory>
                         <webAppSourceDirectory>atomfeed-standalone/target/atomfeed-standalone-0.1-SNAPSHOT</webAppSourceDirectory>
                         <stopKey/>
                         <stopPort/>
