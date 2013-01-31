@@ -14,13 +14,29 @@
     <groupId>org.ict4htw</groupId>
     <artifactId>atomfeed-standalone</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
+
+    <properties>
+        <spring.version>3.1.0.RELEASE</spring.version>
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.ict4htw</groupId>
             <artifactId>atomfeed-spring</artifactId>
             <version>0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>

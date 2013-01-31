@@ -12,6 +12,9 @@ To build:
 To install (assuming a Postgres DB is already created):
 * mvn install -P IT -DskipTests
 
+To start up:
+* mvn jetty:run
+
 design
 ------
 Our design assumes:
