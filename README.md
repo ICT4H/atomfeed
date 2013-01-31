@@ -13,6 +13,7 @@ To install (assuming a Postgres DB is already created):
 * mvn install -P IT -DskipTests
 
 To start up:
+* mkdir -p target/work 
 * mvn jetty:run
 
 design
