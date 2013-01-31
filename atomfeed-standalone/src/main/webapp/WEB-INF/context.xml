@@ -6,5 +6,6 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     <context:annotation-config/>
-    <context:component-scan base-package="org.ict4htw.atomfeed.standalone"/>
+    <context:component-scan base-package="org.ict4htw.atomfeed.spring"/>
+    <import resource="classpath:atomFeedContext.xml"/>
 </beans>
