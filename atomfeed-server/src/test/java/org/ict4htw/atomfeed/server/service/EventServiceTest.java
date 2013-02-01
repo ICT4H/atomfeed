@@ -6,8 +6,6 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -17,9 +15,8 @@ public class EventServiceTest {
         AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
         EventService eventService = new EventService(allEventRecords);
         String uuid = "51850820-6071-11e2-bcfd-0800200c9a66";
-        List<String> serializableObject = Collections.emptyList();
 
-        Event event = new Event(uuid, "title", new DateTime(123), "http://uri", serializableObject);
+        Event event = new Event(uuid, "title", new DateTime(123), "http://uri", "");
         eventService.notify(event);
         EventRecord eventRecord = allEventRecords.get(uuid);
 
@@ -30,5 +27,6 @@ public class EventServiceTest {
         assertEquals(event.getUuid(), eventRecord.getUuid());
         assertEquals(event.getTitle(), eventRecord.getTitle());
         assertEquals(event.getUri().toString(), eventRecord.getUri());
+        assertEquals(event.getContents(), eventRecord.getContents());
     }
 }

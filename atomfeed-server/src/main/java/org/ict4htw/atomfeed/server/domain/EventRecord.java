@@ -1,27 +1,12 @@
 package org.ict4htw.atomfeed.server.domain;
 
-import java.io.StringWriter;
-import java.net.URI;
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
-import com.thoughtworks.xstream.XStream;
+import java.net.URI;
+import java.util.Date;
 
 @Entity
 @Table(name = "event_records")
@@ -62,15 +47,15 @@ public class EventRecord {
 
     @Column(name = "object")
     @XmlElement
-    private String object;
+    private String serializedContents;
 
     public EventRecord() { }
 
-    public EventRecord(String uuid, String title, URI uri, Object eventObject, Date timeStamp) {
+    public EventRecord(String uuid, String title, URI uri, String serializedContents, Date timeStamp) {
         this.uuid = uuid;
         this.title = title;
         this.uri = uri.toString();
-        this.object = new XStream().toXML(eventObject);
+        this.serializedContents = serializedContents;
         //note: this is not the date used. the date will be assigned by database
         this.timeStamp = timeStamp;
     }
@@ -99,29 +84,15 @@ public class EventRecord {
         return uri;
     }
 
-    public String getObject() {
-        return object;
+    public String getContents() {
+        return serializedContents;
     }
 
-    public String toXmlString() {
-        try {
-            JAXBContext context = JAXBContext.newInstance(EventRecord.class);
-            Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
-            StringWriter stringWriter = new StringWriter();
-            marshaller.marshal(this, stringWriter);
-
-            return stringWriter.toString();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-	@Override
+    @Override
 	public String toString() {
 		return "EventRecord [id=" + id + ", uuid=" + uuid + ", title=" + title
-				+ ", timeStamp=" + timeStamp + ", uri=" + uri + ", object="
-				+ object + "]";
+				+ ", timeStamp=" + timeStamp + ", uri=" + uri + ", contents="
+				+ serializedContents + "]";
 	}
 	
 }

@@ -17,7 +17,7 @@ public class EventService {
                 event.getUuid(),
                 event.getTitle(),
                 event.getUri(),
-                event.getEventObject(),
+                event.getContents(),
                 new Date());
 
         allEventRecords.add(eventRecord);

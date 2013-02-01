@@ -37,7 +37,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 			stmt.setString(1, eventRecord.getUuid());
 			stmt.setString(2, eventRecord.getTitle());
 			stmt.setString(3, eventRecord.getUri());
-			stmt.setString(4, eventRecord.getObject());
+			stmt.setString(4, eventRecord.getContents());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

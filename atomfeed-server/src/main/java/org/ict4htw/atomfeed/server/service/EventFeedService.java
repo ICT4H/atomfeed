@@ -1,23 +1,14 @@
 package org.ict4htw.atomfeed.server.service;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
+import com.sun.syndication.feed.atom.*;
 import org.ict4htw.atomfeed.server.domain.EventFeed;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
 import org.ict4htw.atomfeed.server.domain.FeedBuilder;
 import org.ict4htw.atomfeed.server.service.feedgenerator.FeedGenerator;
 
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Generator;
-import com.sun.syndication.feed.atom.Link;
+import java.net.URI;
+import java.util.*;
 
 public class EventFeedService {
 
@@ -164,7 +155,7 @@ public class EventFeedService {
 
         Content content = new Content();
         content.setType(ATOMFEED_MEDIA_TYPE);
-        content.setValue(eventRecord.toXmlString());
+        content.setValue(eventRecord.getContents());
         contents.add(content);
 
         return contents;

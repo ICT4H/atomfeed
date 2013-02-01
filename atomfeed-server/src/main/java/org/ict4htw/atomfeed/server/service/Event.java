@@ -16,19 +16,19 @@ public class Event {
 
     private URI uri;
 
-    private Object eventObject;
+    private String serializedContents;
 
 
-    public Event(String uuid, String title, DateTime timeStamp, URI uri, Object eventObject) {
+    public Event(String uuid, String title, DateTime timeStamp, URI uri, String serializedContents) {
         this.uuid = uuid;
         this.timeStamp = timeStamp;
         this.uri = uri;
-        this.eventObject = eventObject;
+        this.serializedContents = serializedContents;
         this.title = title;
     }
 
-    public Event(String uuid, String title, DateTime timeStamp, String uriString, Object eventObject) throws URISyntaxException {
-        this(uuid, title, timeStamp, new URI(uriString), eventObject);
+    public Event(String uuid, String title, DateTime timeStamp, String uriString, String serializedContents) throws URISyntaxException {
+        this(uuid, title, timeStamp, new URI(uriString), serializedContents);
     }
 
     public String getUuid() {
@@ -43,8 +43,8 @@ public class Event {
         return uri;
     }
 
-    public Object getEventObject() {
-        return eventObject;
+    public String getContents() {
+        return serializedContents;
     }
 
     public String getTitle() {
