@@ -1,19 +1,33 @@
 package org.ict4htw.atomfeed.client.repository.datasource;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URI;
 
 public class WebClient {
     public String fetch(URI uri) {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.getForEntity(uri, String.class);
-//        ClientResponse response = client.resource(uri).accept(ATOM_MEDIA_TYPE).get(ClientResponse.class);
-//        String responseString = response.getEntity(String.class);
-
-        //some UTF-8 encoded files include a three-byte UTF-8 Byte-order mark
-        //strip this off (otherwise we get 'org.xml.sax.SAXParseException: Content is not allowed in prolog')
-        return response.getBody();
+        HttpURLConnection connection = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            connection = (HttpURLConnection) uri.toURL().openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/text");
+            connection.setDoOutput(true);
+            connection.connect();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line + '\n');
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return stringBuilder.toString();
     }
 }

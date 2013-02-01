@@ -1,6 +1,5 @@
 package org.ict4htw.atomfeed.client.repository;
 
-import com.sun.syndication.feed.WireFeed;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.WireFeedInput;
 import org.apache.log4j.Logger;
