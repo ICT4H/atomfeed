@@ -193,7 +193,7 @@
                         <executions>
                             <execution>
                                 <id>run-postgres-change-sets</id>
-                                <phase>verify</phase>
+                                <phase>integration-test</phase>
                                 <goals>
                                     <goal>update</goal>
                                 </goals>
