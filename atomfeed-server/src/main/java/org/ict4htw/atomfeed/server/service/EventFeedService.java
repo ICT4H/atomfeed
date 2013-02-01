@@ -134,8 +134,6 @@ public class EventFeedService {
     }
 
     private List<Link> generateLinks(EventRecord eventRecord, URI requestUri) {
-        ArrayList<Link> links = new ArrayList<Link>();
-
         Link self = new Link();
         self.setHref(getServiceUri(requestUri) + "/events/" + eventRecord.getId());
         self.setRel("self");
@@ -144,20 +142,13 @@ public class EventFeedService {
         related.setHref(eventRecord.getUri());
         related.setRel("related");
 
-        links.add(self);
-        links.add(related);
-
-        return links;
+        return Arrays.asList(self, related);
     }
 
     private List<Content> generateContents(EventRecord eventRecord) {
-        ArrayList<Content> contents = new ArrayList<Content>();
-
         Content content = new Content();
         content.setType(ATOMFEED_MEDIA_TYPE);
         content.setValue(eventRecord.getContents());
-        contents.add(content);
-
-        return contents;
+        return Arrays.asList(content);
     }
 }
