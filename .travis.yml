@@ -3,6 +3,6 @@ jdk:
   - openjdk6
 env:
   - DB=postgres
-before_script:
+before_install:
   - sh atomfeed-server/src/main/resources/sql/setup.sh
 script: "mvn verify -P IT"
