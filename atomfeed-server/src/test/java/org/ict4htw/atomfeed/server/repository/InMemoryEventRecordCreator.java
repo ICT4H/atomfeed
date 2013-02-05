@@ -6,11 +6,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 
-public class InMemoryEventRecordCreator {
-    private AllEventRecords allEventRecords;
+public class InMemoryEventRecordCreator extends EventRecordCreator {
 
     public InMemoryEventRecordCreator(AllEventRecords allEventRecords) {
-        this.allEventRecords = allEventRecords;
+        super(allEventRecords);
     }
 
     public void create(int numOfEvents) throws URISyntaxException {
