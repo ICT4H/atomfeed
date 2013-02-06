@@ -105,7 +105,6 @@
     		<artifactId>persistence-api</artifactId>
     		<version>1.0.2</version>
 		</dependency>
-        <!--remove rome from spring-->
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
