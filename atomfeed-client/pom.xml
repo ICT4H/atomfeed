@@ -17,7 +17,6 @@
             <artifactId>rome</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--Make log4j a provided dependency?-->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
