@@ -13,7 +13,7 @@ import javax.persistence.Entity;
 public class JdbcResultSetMapper<T> {
 	@SuppressWarnings("unchecked")
 	public List<T> mapResultSetToObject(ResultSet rs, Class<T> outputClass) {
-		List<T> outputList = null;
+		List<T> outputList = new ArrayList<T>();
 		try {
 			if (rs != null) {
 				if (outputClass.isAnnotationPresent(Entity.class)) {
@@ -44,7 +44,7 @@ public class JdbcResultSetMapper<T> {
 					throw new RuntimeException("Can not map to a class not marked with javax.persistence.Entity annotation");
 				}
 			} else {
-				return null;
+				return new ArrayList<T>();
 			}
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
