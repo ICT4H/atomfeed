@@ -5,3 +5,6 @@ target/
 */.DS_Store
 atomfeed.ipr
 atomfeed.iws
+.project
+*/.project
+.settings/
