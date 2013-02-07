@@ -12,6 +12,8 @@ public class EventService {
         this.allEventRecords = allEventRecords;
     }
 
+    public EventService() {}
+
     public void notify(Event event) {
         EventRecord eventRecord = new EventRecord(
                 event.getUuid(),

@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
-                           http://www.springframework.org/schema/context/spring-context-3.0.xsd"
-       xmlns:context="http://www.springframework.org/schema/context">
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
     <context:property-placeholder location="classpath*:*.properties"/>
 
@@ -13,6 +19,19 @@
     <context:spring-configured/>
      -->
     <import resource="classpath:atomFeedJdbcContext.xml"/>
+
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--We throw a runtime exception if creation on event records fail. RuntimeExceptions result in a rollback.-->
+            <tx:method name="notify"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="eventCreation" expression="execution(* org.ict4htw.atomfeed.server.service.EventService.*(..))"/>
+        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="eventCreation"/>
+    </aop:config>
+
 
     <bean id="generatorFactory" class="org.ict4htw.atomfeed.server.service.feedgenerator.FeedGeneratorFactory">
     </bean>
