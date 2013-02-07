@@ -3,7 +3,6 @@ package org.ict4htw.atomfeed.server.service;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
 import junit.framework.Assert;
-
 import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4htw.atomfeed.server.repository.InMemoryEventRecordCreator;
@@ -14,15 +13,18 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
 public class EventFeedServiceTest {
     private EventFeedService eventFeedService;
+    private AllEventRecordsStub allEventRecords;
 
     @Before
     public void setupEventRecords() throws URISyntaxException {
-        AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
+        allEventRecords = new AllEventRecordsStub();
         InMemoryEventRecordCreator inMemoryEventRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
         inMemoryEventRecordCreator.create(7);
         
@@ -40,6 +42,20 @@ public class EventFeedServiceTest {
         Assert.assertNull(links.get("next-archive"));
         Assert.assertNotNull(links.get("prev-archive"));
         Assert.assertEquals(recentUrl, links.get("self").getHref());
+    }
+
+    @Test
+    public void shouldSetUpdatedDateToTodayWhenNoRecordsCanBeFound() throws URISyntaxException {
+        String recentUrl = "http://hostname/feedgenerator/recent";
+        allEventRecords.clear();
+        Calendar date = new GregorianCalendar();
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        Assert.assertEquals(date.getTime(), feed.getUpdated());
     }
 
     private HashMap<String, Link> getAllFeedLinks(Feed feed) {

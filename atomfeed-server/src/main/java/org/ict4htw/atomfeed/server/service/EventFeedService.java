@@ -6,6 +6,7 @@ import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.EventRecordComparator;
 import org.ict4htw.atomfeed.server.domain.FeedBuilder;
 import org.ict4htw.atomfeed.server.service.feedgenerator.FeedGenerator;
+import org.joda.time.DateTime;
 
 import java.net.URI;
 import java.util.*;
@@ -91,6 +92,9 @@ public class EventFeedService {
     }
 
     private Date newestEventDate(List<EventRecord> eventRecordList) {
+        if(eventRecordList.isEmpty()){
+            return new DateTime().toDateMidnight().toDate();
+        }
         return Collections.max(eventRecordList, new EventRecordComparator()).getTimeStamp();
     }
 

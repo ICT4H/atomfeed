@@ -26,6 +26,9 @@ public class AllEventRecordsStub implements AllEventRecords {
           ArrayList<EventRecord> eventRecordList = new ArrayList<EventRecord>(eventRecords.values());
           Collections.sort(eventRecordList, new EventRecordComparator());
           int effectiveLast = Math.min(last, eventRecordList.size());
+          if(eventRecordList.isEmpty()){
+              return eventRecordList;
+          }
           return eventRecordList.subList(first - 1, effectiveLast);
 	}
 
@@ -40,5 +43,9 @@ public class AllEventRecordsStub implements AllEventRecords {
             }
         }
         return recordsWithinTimeRange;
+    }
+
+    public void clear() {
+        eventRecords.clear();
     }
 }
