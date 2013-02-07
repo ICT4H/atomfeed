@@ -7,12 +7,18 @@
                            http://www.springframework.org/schema/context/spring-context-3.0.xsd"
        xmlns:context="http://www.springframework.org/schema/context">
     <context:annotation-config />
+
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations" value="META-INF/motech/atom.properties"/>
+    </bean>
+
     <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor"/>
     <bean class="org.ict4htw.atomfeed.motechclient.AtomClient" id="atomClient">
         <constructor-arg>
             <bean class="java.net.URI">
                 <constructor-arg type="java.lang.String">
-                    <value>http://localhost:8080/events/recent</value>
+                    <value>http://${atom_properties.host}:${atom_properties.port}${atom_properties.startURL}</value>
                 </constructor-arg>
             </bean>
         </constructor-arg>
@@ -20,7 +26,10 @@
             <bean class="org.ict4htw.atomfeed.client.repository.datasource.WebClient"></bean>
         </constructor-arg>
         <constructor-arg>
-            <null />
+            <bean class="org.ict4htw.atomfeed.motechclient.EventToMotechEventMapperImpl"></bean>
+        </constructor-arg>
+        <constructor-arg type="java.lang.String">
+            <value>${atom_properties.cronExpression}</value>
         </constructor-arg>
     </bean>
 </beans>

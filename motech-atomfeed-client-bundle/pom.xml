@@ -69,6 +69,7 @@
                         <Import-Package>
                             org.motechproject.event.listener.annotations,
                             org.springframework.beans.factory.xml,
+                            org.springframework.beans.factory.config,
                             org.springframework.context.config,
                             org.motechproject.osgi.web,
                             *

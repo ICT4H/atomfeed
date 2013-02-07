@@ -29,8 +29,13 @@
             <name>MOTECH Maven Repository</name>
             <url>http://nexus.motechproject.org/content/repositories/public</url>
         </repository>
-    </repositories>    
+    </repositories>
     <dependencies>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-scheduler</artifactId>
+            <version>0.17</version>
+        </dependency>
         <dependency>
             <groupId>org.ict4htw</groupId>
             <artifactId>atomfeed-spring</artifactId>

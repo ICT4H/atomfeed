@@ -13,6 +13,8 @@
     <osgi:reference id="eventRelayOsgi" cardinality="0..1"
                     interface="org.motechproject.event.listener.EventRelay" />
 
+    <osgi:reference id="schedulerServiceOsgi" cardinality="0..1" interface="org.motechproject.scheduler.MotechSchedulerService"></osgi:reference>
+
     <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor"/>
 
     <import resource="classpath*:META-INF/motech/*.xml"/>
