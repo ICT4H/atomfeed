@@ -9,11 +9,11 @@ import java.net.URISyntaxException;
 
 import static junit.framework.Assert.assertEquals;
 
-public class EventServiceTest {
+public class EventServiceImplTest {
     @Test
     public void shouldNotifyEventServiceOfEventAndStoreIt() throws URISyntaxException {
         AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
-        EventService eventService = new EventService(allEventRecords);
+        EventService eventService = new EventServiceImpl(allEventRecords);
         String uuid = "51850820-6071-11e2-bcfd-0800200c9a66";
 
         Event event = new Event(uuid, "title", new DateTime(123), "http://uri", "");

@@ -28,7 +28,7 @@
     </tx:advice>
 
     <aop:config>
-        <aop:pointcut id="eventCreation" expression="execution(* org.ict4htw.atomfeed.server.service.EventService.*(..))"/>
+        <aop:pointcut id="eventCreation" expression="execution(* org.ict4htw.atomfeed.server.service.EventServiceImpl.*(..))"/>
         <aop:advisor advice-ref="transactionAdvice" pointcut-ref="eventCreation"/>
     </aop:config>
 
@@ -44,7 +44,7 @@
         <constructor-arg ref="feedGenerator"/>
     </bean>
     
-    <bean id="eventService" class="org.ict4htw.atomfeed.server.service.EventService">
+    <bean id="eventService" class="org.ict4htw.atomfeed.server.service.EventServiceImpl">
         <constructor-arg ref="allEventRecords"/>
     </bean>
     

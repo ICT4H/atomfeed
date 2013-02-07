@@ -10,9 +10,10 @@ import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.Numbe
 import org.ict4htw.atomfeed.server.repository.AllEventRecords;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4htw.atomfeed.server.repository.InMemoryEventRecordCreator;
+import org.ict4htw.atomfeed.server.service.EventService;
+import org.ict4htw.atomfeed.server.service.EventServiceImpl;
 import org.ict4htw.atomfeed.spring.resource.EventResource;
 import org.ict4htw.atomfeed.server.service.EventFeedService;
-import org.ict4htw.atomfeed.server.service.EventService;
 import org.ict4htw.atomfeed.server.service.feedgenerator.FeedGenerator;
 import org.ict4htw.atomfeed.server.service.feedgenerator.NumberFeedGenerator;
 import org.junit.Assert;
@@ -30,7 +31,7 @@ public class FeedEnumeratorTest {
 	@Before
 	public void setUp() {
 		AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
-        EventService eventService = new EventService(allEventRecords);
+        EventService eventService = new EventServiceImpl(allEventRecords);
         FeedGenerator generator = getFeedGenerator(allEventRecords);
         EventFeedService eventFeedService = new EventFeedService(generator);
         webClientStub = new WebClientStub(new EventResource(eventFeedService, eventService));
