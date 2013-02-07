@@ -27,6 +27,11 @@
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>org.motechproject.org.quartz-scheduler</artifactId>
+            <version>2.1.5-r008</version>
+        </dependency>
+        <dependency>
             <groupId>org.ict4htw</groupId>
             <artifactId>motech-atomfeed-client</artifactId>
             <version>0.1-SNAPSHOT</version>
@@ -46,6 +51,11 @@
             <artifactId>motech-platform-event</artifactId>
             <version>0.17</version>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-scheduler</artifactId>
+            <version>0.17</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -56,10 +66,6 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Context-File>applicationAtomLoggerBundle.xml</Context-File>
-                        <Bundle-Activator>
-                            com.motech.atomfeed.Activator
-                        </Bundle-Activator>
                         <Import-Package>
                             org.motechproject.event.listener.annotations,
                             org.springframework.beans.factory.xml,
@@ -72,51 +78,6 @@
                     </instructions>
                 </configuration>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-osgi-dependencies</id>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeScope>runtime</includeScope>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                            <outputDirectory>
-                                ${user.home}/.motech/bundles
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.5</version>
-                <executions>
-                    <execution>
-                        <id>copy-bundles</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${user.home}/.motech/bundles</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>target</directory>
-                                    <includes>
-                                        <include>*.jar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
         </plugins>
     </build>
 </project>

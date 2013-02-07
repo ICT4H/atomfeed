@@ -8,7 +8,7 @@
 
     <import resource="classpath*:META-INF/motech/*.xml"/>
     
-    <import resource="classpath:Meta-INF/spring/MotechAtomFeedClient.xml"></import>
+    <import resource="classpath:META-INF/spring/MotechAtomFeedClient.xml"></import>
 
     <osgi:reference id="eventListenerRegistryServiceOsgi" interface="org.motechproject.event.listener.EventListenerRegistryService"/>
 

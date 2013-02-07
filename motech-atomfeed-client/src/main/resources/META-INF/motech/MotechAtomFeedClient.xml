@@ -7,6 +7,20 @@
                            http://www.springframework.org/schema/context/spring-context-3.0.xsd"
        xmlns:context="http://www.springframework.org/schema/context">
     <context:annotation-config />
-    <import resource="classpath*:/META-INF/motech/*.xml" />
     <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor"/>
+    <bean class="org.ict4htw.atomfeed.motechclient.AtomClient" id="atomClient">
+        <constructor-arg>
+            <bean class="java.net.URI">
+                <constructor-arg type="java.lang.String">
+                    <value>http://localhost:8080/events/recent</value>
+                </constructor-arg>
+            </bean>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.ict4htw.atomfeed.client.repository.datasource.WebClient"></bean>
+        </constructor-arg>
+        <constructor-arg>
+            <null />
+        </constructor-arg>
+    </bean>
 </beans>
