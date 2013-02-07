@@ -6,12 +6,16 @@
         <version>0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
+    
+    
     <groupId>org.ict4htw</groupId>
     <artifactId>motech-atomfeed-bundle</artifactId>
     <version>0.01-SNAPSHOT</version>
     <name>motech-atomfeed-bundle</name>
     <packaging>bundle</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    
+    
     <dependencies>
         <dependency>
             <groupId>org.ict4htw</groupId>
