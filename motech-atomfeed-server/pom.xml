@@ -4,6 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <artifactId>atomfeed</artifactId>
+        <groupId>org.ict4htw</groupId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <repositories>
+        <repository>
+            <id>motech-repo</id>
+            <name>MOTECH Maven Repository</name>
+            <url>http://nexus.motechproject.org/content/repositories/public</url>
+        </repository>
+    </repositories>
+
     <groupId>org.ict4htw</groupId>
     <artifactId>motech-atomfeed-server</artifactId>
     <version>1.0</version>
@@ -11,7 +25,7 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-event</artifactId>
-            <version>0.17-SNAPSHOT</version>
+            <version>0.17</version>
         </dependency>
         <dependency>
             <groupId>org.ict4htw</groupId>
