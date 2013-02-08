@@ -28,7 +28,7 @@
     </tx:advice>
 
     <aop:config>
-        <aop:pointcut id="eventCreation" expression="execution(* org.ict4htw.atomfeed.server.service.EventServiceImpl.*(..))"/>
+        <aop:pointcut id="eventCreation" expression="execution(* org.ict4htw.atomfeed.server.service.EventService.*(..))"/>
         <aop:advisor advice-ref="transactionAdvice" pointcut-ref="eventCreation"/>
     </aop:config>
 
