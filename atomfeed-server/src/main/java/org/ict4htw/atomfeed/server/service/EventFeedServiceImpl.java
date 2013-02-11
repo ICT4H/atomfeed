@@ -147,7 +147,7 @@ public class EventFeedServiceImpl implements EventFeedService {
 
     private List<Link> generateLinks(EventRecord eventRecord, URI requestUri) {
         Link self = new Link();
-        self.setHref(getServiceUri(requestUri) + "/events/" + eventRecord.getId());
+        self.setHref(getServiceUri(requestUri) + "/entries/" + eventRecord.getId());
         self.setRel("self");
 
         Link related = new Link();

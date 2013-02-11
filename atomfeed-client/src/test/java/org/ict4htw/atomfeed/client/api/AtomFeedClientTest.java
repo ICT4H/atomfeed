@@ -19,7 +19,7 @@ public class AtomFeedClientTest {
 
     @Test
     public void findsNoUnprocessedEventsWhenTheMostRecentIsProcessed() throws Exception {
-        URI feedUri = new URI("www.example.com/feed/working");
+        URI feedUri = new URI("http://www.example.com/feed/working");
 
         Entry latest = new Entry();
         latest.setId("latest");
@@ -32,7 +32,7 @@ public class AtomFeedClientTest {
 
     @Test
     public void findsASingleUnprocessedEvent() throws Exception {
-        URI feedUri = new URI("www.example.com/feed/working");
+        URI feedUri = new URI("http://www.example.com/feed/working");
 
         Entry lastProcessed = new Entry();
         lastProcessed.setId("lastProcessed");
