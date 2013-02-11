@@ -5,10 +5,9 @@ import org.motechproject.event.MotechEvent;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventToMotechEventMapperImpl implements EventToMotechEventMapper{
+public class EventMapperImpl implements EventMapper {
     @Override
     public MotechEvent map(Event event) {
         return new MotechEvent(MotechEvent.class.getName());
-        //TODO
     }
 }

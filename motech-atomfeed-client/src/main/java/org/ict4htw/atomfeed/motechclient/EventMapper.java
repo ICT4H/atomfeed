@@ -5,6 +5,6 @@ import org.motechproject.event.MotechEvent;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface EventToMotechEventMapper {
+public interface EventMapper {
     MotechEvent map(Event event);
 }
