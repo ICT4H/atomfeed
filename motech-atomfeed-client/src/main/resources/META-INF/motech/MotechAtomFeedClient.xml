@@ -10,11 +10,11 @@
 
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations" value="META-INF/motech/atom.properties"/>
+        <property name="locations" value="META-INF/motech/motechAtomFeedConsumer.properties"/>
     </bean>
 
     <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor"/>
-    <bean class="org.ict4htw.atomfeed.motechclient.AtomClient" id="atomClient">
+    <bean class="org.ict4htw.atomfeed.motechclient.MotechAtomFeedConsumer" id="atomClient">
         <constructor-arg>
             <bean class="java.net.URI">
                 <constructor-arg type="java.lang.String">

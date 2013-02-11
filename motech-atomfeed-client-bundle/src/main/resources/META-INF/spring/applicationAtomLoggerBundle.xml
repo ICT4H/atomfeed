@@ -6,8 +6,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
         http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
-
-
     <osgi:reference id="eventListenerRegistryServiceOsgi" interface="org.motechproject.event.listener.EventListenerRegistryService"/>
 
     <osgi:reference id="eventRelayOsgi" cardinality="0..1"
@@ -18,21 +16,4 @@
     <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor"/>
 
     <import resource="classpath*:META-INF/motech/*.xml"/>
-
-    <!--<bean class="org.ict4htw.atomfeed.motechclient.AtomClient" id="atomClient">-->
-        <!--<constructor-arg>-->
-            <!--<bean class="java.net.URI">-->
-                <!--<constructor-arg type="java.lang.String">-->
-                    <!--<value>http://localhost:8080/events/recent</value>-->
-                <!--</constructor-arg>-->
-            <!--</bean>-->
-        <!--</constructor-arg>-->
-        <!--<constructor-arg>-->
-            <!--<bean class="org.ict4htw.atomfeed.client.repository.datasource.WebClient"></bean>-->
-        <!--</constructor-arg>-->
-        <!--<constructor-arg>-->
-            <!--<null />-->
-        <!--</constructor-arg>-->
-    <!--</bean>-->
-
 </beans>

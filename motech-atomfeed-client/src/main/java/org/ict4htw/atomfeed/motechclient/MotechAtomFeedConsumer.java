@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @Component
-public class AtomClient {
+public class MotechAtomFeedConsumer {
 
     private URI entryURL;
     private EventToMotechEventMapper eventToMotechEventMapper;
@@ -57,10 +57,10 @@ public class AtomClient {
         schedulerService.safeUnscheduleAllJobs(ATOM_UPDATE_MESSAGE);
     }
 
-    public AtomClient(URI startingURL,
-                      WebClient webClient,
-                      EventToMotechEventMapper eventToMotechEventMapper,
-                      String chronExpression) throws URISyntaxException {
+    public MotechAtomFeedConsumer(URI startingURL,
+                                  WebClient webClient,
+                                  EventToMotechEventMapper eventToMotechEventMapper,
+                                  String chronExpression) throws URISyntaxException {
         this.chronExpression=chronExpression;
         this.entryURL = startingURL;
         this.eventToMotechEventMapper = eventToMotechEventMapper;
