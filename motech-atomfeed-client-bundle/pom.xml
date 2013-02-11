@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>org.ict4htw</groupId>
-            <artifactId>motech-atomfeed-client</artifactId>
+            <artifactId>motech-atomfeed-consumer</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -74,7 +74,7 @@
                             org.motechproject.osgi.web,
                             *
                         </Import-Package>
-                        <Embed-Dependency>rome|motech-atomfeed-client|atomfeed-client;inline=true</Embed-Dependency>
+                        <Embed-Dependency>rome|motech-atomfeed-consumer|atomfeed-client;inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                     </instructions>
                 </configuration>
