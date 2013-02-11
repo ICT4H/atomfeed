@@ -20,16 +20,24 @@
      -->
     <import resource="classpath:atomFeedJdbcContext.xml"/>
 
-    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+    <tx:advice id="defaultTxAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <!--We throw a runtime exception if creation on event records fail. RuntimeExceptions result in a rollback.-->
             <tx:method name="notify"/>
         </tx:attributes>
     </tx:advice>
+    
+    <tx:advice id="noTxAdvice">
+	    <tx:attributes>
+	      <tx:method name="*" propagation="NEVER"/>
+	    </tx:attributes>
+	</tx:advice>
 
     <aop:config>
         <aop:pointcut id="eventCreation" expression="execution(* org.ict4htw.atomfeed.server.service.EventService.*(..))"/>
-        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="eventCreation"/>
+        <aop:pointcut id="eventFeeds" expression="execution(* org.ict4htw.atomfeed.server.service.EventFeedService.*(..))"/>
+        <aop:advisor advice-ref="defaultTxAdvice" pointcut-ref="eventCreation"/>
+        <aop:advisor advice-ref="noTxAdvice" pointcut-ref="eventFeeds"/>
     </aop:config>
 
 
@@ -40,7 +48,7 @@
         <constructor-arg ref="allChunkingEntries"/>
     </bean>
     
-    <bean id="eventFeedService" class="org.ict4htw.atomfeed.server.service.EventFeedService">
+    <bean id="eventFeedService" class="org.ict4htw.atomfeed.server.service.EventFeedServiceImpl">
         <constructor-arg ref="feedGenerator"/>
     </bean>
     

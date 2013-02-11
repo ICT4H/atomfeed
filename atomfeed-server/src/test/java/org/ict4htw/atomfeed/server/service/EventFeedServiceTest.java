@@ -31,7 +31,7 @@ public class EventFeedServiceTest {
         NumberBasedChunkingHistory config = new NumberBasedChunkingHistory();
         config.add(1, 5, 1);
         FeedGenerator feedGenerator = new NumberFeedGenerator(allEventRecords, config);
-        eventFeedService = new EventFeedService(feedGenerator);
+        eventFeedService = new EventFeedServiceImpl(feedGenerator);
     }
 
     @Test
