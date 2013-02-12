@@ -1,0 +1,7 @@
+Structure
+=========
+
+* What is Atom?
+* Event-driven systems with Atom
+* Producing feeds
+* Navigating feeds
