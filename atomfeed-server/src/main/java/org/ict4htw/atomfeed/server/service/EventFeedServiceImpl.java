@@ -128,9 +128,13 @@ public class EventFeedServiceImpl implements EventFeedService {
             return scheme + "://" + hostname + path;
         }
     }        
-
+    //TODO: Read authors for the DB instead of hardcoding it to OpenMrs here.
     private List<Entry> getEntries(List<EventRecord> eventRecordList, URI requestUri) {
         List<Entry> entryList = new ArrayList<Entry>();
+        List authors = new ArrayList<Person>();
+        Person person = new Person();
+        person.setName("OpenMRS");
+        authors.add(person);
 
         for (EventRecord eventRecord : eventRecordList) {
             final Entry entry = new Entry();
@@ -139,6 +143,7 @@ public class EventFeedServiceImpl implements EventFeedService {
             entry.setUpdated(eventRecord.getTimeStamp());
             entry.setAlternateLinks(generateLinks(eventRecord, requestUri));
             entry.setContents(generateContents(eventRecord));
+            entry.setAuthors(authors);
             entryList.add(entry);
         }
 

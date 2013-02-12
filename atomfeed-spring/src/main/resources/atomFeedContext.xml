@@ -40,6 +40,16 @@
         <aop:advisor advice-ref="noTxAdvice" pointcut-ref="eventFeeds"/>
     </aop:config>
 
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" >
+        <property name="messageConverters">
+            <list>
+                <bean class = "org.springframework.http.converter.StringHttpMessageConverter">
+                    <property name="supportedMediaTypes" value = "application/atom+xml;charset=UTF-8" />
+                </bean>
+            </list>
+        </property>
+    </bean>
+
 
     <bean id="generatorFactory" class="org.ict4htw.atomfeed.server.service.feedgenerator.FeedGeneratorFactory">
     </bean>

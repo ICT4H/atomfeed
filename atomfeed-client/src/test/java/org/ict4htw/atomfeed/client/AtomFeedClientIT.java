@@ -2,6 +2,7 @@ package org.ict4htw.atomfeed.client;
 
 import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.io.WireFeedInput;
 import org.ict4htw.atomfeed.SpringIntegrationIT;
 import org.ict4htw.atomfeed.client.repository.AllFeeds;
 import org.ict4htw.atomfeed.client.repository.datasource.WebClient;
@@ -12,6 +13,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;

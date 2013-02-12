@@ -1,14 +1,12 @@
 package org.ict4htw.atomfeed.spring.resource;
 
 import com.sun.syndication.feed.atom.Feed;
-
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedOutput;
 import org.apache.log4j.Logger;
 import org.ict4htw.atomfeed.server.service.Event;
 import org.ict4htw.atomfeed.server.service.EventFeedService;
 import org.ict4htw.atomfeed.server.service.EventService;
-import org.ict4htw.atomfeed.server.service.EventServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +27,7 @@ public class EventResource {
         this.eventService = eventService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/events/recent")
+    @RequestMapping(method = RequestMethod.GET, value = "/events/recent", produces = "application/atom+xml")
     @ResponseBody
     public String getRecentEventFeed(HttpServletRequest httpServletRequest) {
     	try {

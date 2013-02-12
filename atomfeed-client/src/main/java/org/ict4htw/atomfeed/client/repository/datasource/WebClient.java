@@ -12,7 +12,7 @@ public class WebClient {
         try {
             connection = (HttpURLConnection) uri.toURL().openConnection();
             connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "application/text");
+            connection.setRequestProperty("Accept", "application/atom+xml");
             connection.setDoOutput(true);
             connection.connect();
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));

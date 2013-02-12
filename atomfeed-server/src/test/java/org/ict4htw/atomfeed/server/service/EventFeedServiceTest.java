@@ -1,7 +1,9 @@
 package org.ict4htw.atomfeed.server.service;
 
+import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
+import com.sun.syndication.feed.atom.Person;
 import junit.framework.Assert;
 import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
@@ -21,12 +23,13 @@ import java.util.List;
 public class EventFeedServiceTest {
     private EventFeedService eventFeedService;
     private AllEventRecordsStub allEventRecords;
+    private InMemoryEventRecordCreator recordCreator;
 
     @Before
     public void setupEventRecords() throws URISyntaxException {
         allEventRecords = new AllEventRecordsStub();
-        InMemoryEventRecordCreator inMemoryEventRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
-        inMemoryEventRecordCreator.create(7);
+        recordCreator = new InMemoryEventRecordCreator(allEventRecords);
+        recordCreator.create(7);
         
         NumberBasedChunkingHistory config = new NumberBasedChunkingHistory();
         config.add(1, 5, 1);
@@ -42,6 +45,15 @@ public class EventFeedServiceTest {
         Assert.assertNull(links.get("next-archive"));
         Assert.assertNotNull(links.get("prev-archive"));
         Assert.assertEquals(recentUrl, links.get("self").getHref());
+    }
+
+//  Should fail when we read author data from the database
+    @Test
+    public void shouldGetAnAuthorForAnEnEntry() throws URISyntaxException {
+        String recentUrl = "http://hostname/feedgenerator/recent";
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        Entry entry = (Entry) feed.getEntries().get(0);
+        Assert.assertEquals("OpenMRS", ((Person)entry.getAuthors().get(0)).getName());
     }
 
     @Test
