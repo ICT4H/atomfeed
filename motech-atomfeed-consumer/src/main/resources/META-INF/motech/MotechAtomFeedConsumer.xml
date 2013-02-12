@@ -32,10 +32,10 @@
             <value>${atom_properties.cronExpression}</value>
         </constructor-arg>
         <constructor-arg>
-            <bean class="org.motechproject.event.listener.ServerEventRelay"></bean>
+            <ref bean="eventRelayOsgi"/>
         </constructor-arg>
         <constructor-arg>
-            <bean class="org.motechproject.scheduler.MotechSchedulerService"></bean>
+            <ref bean="schedulerServiceOsgi"/>
         </constructor-arg>
     </bean>
 </beans>
