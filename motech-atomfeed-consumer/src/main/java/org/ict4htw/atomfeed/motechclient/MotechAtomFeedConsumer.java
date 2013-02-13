@@ -59,7 +59,17 @@ public class MotechAtomFeedConsumer {
 
     @MotechListener(subjects = "atomUpdateMessage")
     public void updateEvents(MotechEvent event) throws URISyntaxException {
-        this.update();
+        Thread thread = Thread.currentThread();
+        ClassLoader oldContextClassLoader = thread.getContextClassLoader();
+        try {
+            thread.setContextClassLoader(this.getClass().getClassLoader());
+            this.update();
+        }catch (Exception ex){
+            throw new RuntimeException(String.format("Event Update Failure. Error %s",ex.getMessage()), ex);
+        }
+        finally {
+            thread.setContextClassLoader(oldContextClassLoader);
+        }
     }
 
     private void update() throws URISyntaxException {
