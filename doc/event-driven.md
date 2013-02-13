@@ -82,6 +82,11 @@ In addition to the URLs for each physical feed, the server also exposes a URL th
             <entry>..</entry>
         </feed>
 
+This is the published entry point to the feed. Clients of the event feed will always be able to dereference http://example.com/notifications to get the most recent entries.
+
+This resource would most likely not allow clients to cache it, as it changes every time a new entry comes along (though this could depend on the specific requirements of the system). 
+
+Clients who are interested in older entries can follow the "prev" link to the previous feed.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -94,6 +99,7 @@ In addition to the URLs for each physical feed, the server also exposes a URL th
             <entry>..</entry>
         </feed>
 
+This resource is effectively equivalent to the feed entry point. It represents the most recent feed that has not yet been "filled up". 
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -107,6 +113,9 @@ In addition to the URLs for each physical feed, the server also exposes a URL th
             <entry>..</entry>
         </feed>
 
+This feed has been finished, and should not change. It can therefore have cache ehaders with a long time-to-live.
+
+Clients wishing to find older or newer entries than the ones in this feed can find them by following the "prev" and "next" links respectively. 
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -119,6 +128,8 @@ In addition to the URLs for each physical feed, the server also exposes a URL th
             <entry>..</entry>
             <entry>..</entry>
         </feed>
+
+This is another finished feed, and can also be heavily cached. Finding older or newer entries is again a matter of following the "prev" or "next" links.
 
 Consuming feeds
 ---------------
