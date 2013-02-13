@@ -135,3 +135,42 @@ Consuming feeds
 ---------------
 
 A client of an Atom feed keeps track of the unique identifier of the most recent entry it has processed. Because the entries are time ordered, and the only change is to add new entries onto the front of the feed, clients can work backwards till they find the oldest entry they have not yet processed, and then work forwards through the feed processing each event in turn. 
+
+For example, a consumer might know that it has most recently processed the entry with id "urn:uuid:fc374b00-75c7-11e2-bcfd-0800200c9a66".
+
+This client wants to check if there are any more recent entries, so it issues a GET request on http://example.com/notifications, which is the published entry-point of the feed.
+
+    <?xml version="1.0">
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <link rel="self" href="http://example.com/notifications" />
+            <link rel="prev" href="http://example.com/feeds/3" />
+            <entry>
+                <id>urn:uuid:e2089090-75c7-11e2-bcfd-0800200c9a66</id>
+            </entry>
+            <entry>
+                <id>urn:uuid:d765c950-75c7-11e2-bcfd-0800200c9a66</id>
+            </entry>
+        </feed>
+
+The entry with id "urn:uuid:fc374b00-75c7-11e2-bcfd-0800200c9a66" is not present. This is because since the client last checked the feed, the server has added new entries to the feed, closing off an old physical feed and starting a new one in the process.
+
+The client therefore issues a GET request for the previous feed, which has the URL "http://example.com/feeds/3".
+
+    <?xml version="1.0">
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <link rel="self" href="http://example.com/feeds/3" />
+            <link rel="next" href="http://example.com/feeds/4" />
+            <link rel="prev" href="http://example.com/feeds/2" />
+            <entry>
+                <id>urn:uuid:f37a81d0-75c7-11e2-bcfd-0800200c9a66</id>
+            </entry>
+            <entry>
+                <id>urn:uuid:fc374b00-75c7-11e2-bcfd-0800200c9a66</id>
+            </entry>
+        </feed>
+
+This time, the client does find the entry it last processed. The client can now start to work its way back to the front of the feed, by processing the one new entry in feed 3, and then going through the entries in the recent feed.
+
+As the client goes through the entries, it keeps updating its record of the most recent entry processed.
+
+Notice that the service does not have to keep track of who the clients are or where they are up to. The guarantee that new events are always added to the front of the list allows clients to do that for themselves.
