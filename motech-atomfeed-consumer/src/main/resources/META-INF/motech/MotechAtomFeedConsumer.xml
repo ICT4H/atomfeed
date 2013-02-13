@@ -25,9 +25,6 @@
         <constructor-arg>
             <bean class="org.ict4htw.atomfeed.client.repository.datasource.WebClient"></bean>
         </constructor-arg>
-        <constructor-arg>
-            <bean class="org.ict4htw.atomfeed.motechclient.EventMapperImpl"></bean>
-        </constructor-arg>
         <constructor-arg type="java.lang.String">
             <value>${atom_properties.cronExpression}</value>
         </constructor-arg>
