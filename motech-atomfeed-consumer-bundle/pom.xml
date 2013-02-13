@@ -9,9 +9,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ict4htw</groupId>
-    <artifactId>motech-atomfeed-client-bundle</artifactId>
+    <artifactId>motech-atomfeed-consumer-bundle</artifactId>
     <version>0.01-SNAPSHOT</version>
-    <name>motech-atomfeed-client-bundle</name>
+    <name>motech-atomfeed-consumer-bundle</name>
     <packaging>bundle</packaging>
     <repositories>
         <repository>
