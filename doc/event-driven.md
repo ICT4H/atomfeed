@@ -4,7 +4,7 @@ Atom
 What is Atom?
 ------------
 
-Atom is an XML-based syndication format. Atom represents time-ordered series of events. In Atom terminology, each event is an *entry* and the series is a *feed*.
+[Atom](http://en.wikipedia.org/wiki/Atom_(standard)) is an XML-based syndication format. Atom represents time-ordered series of events. In Atom terminology, each event is an *entry* and the series is a *feed*.
 
 Both feeds and entries have metadata associated with them, for example a title and a unique identifier.
 
@@ -47,7 +47,7 @@ Both feeds and entries have metadata associated with them, for example a title a
 
 Atom is optimised and designed for RESTful systems that communicate over HTTP.
 
-Atom is a general-purpose format that can be extended to fit a particular domain. By using a well-understood general-purpose format as a basis, we can reuse tools infrastructure and semantics.
+Atom is a general-purpose format that can be extended to fit a particular domain. By using a well-understood general-purpose format as a basis, we can reuse tools infrastructure and semantics. The Atom syndication format was formalised in [RFC 4287](http://www.ietf.org/rfc/rfc4287).
 
 Event-driven systems
 --------------------
@@ -174,3 +174,8 @@ This time, the client does find the entry it last processed. The client can now 
 As the client goes through the entries, it keeps updating its record of the most recent entry processed.
 
 Notice that the service does not have to keep track of who the clients are or where they are up to. The guarantee that new events are always added to the front of the list allows clients to do that for themselves.
+
+References
+---------
+
+A great reference for understanding Atom's use in RESTful event-driven systems is [REST in Practice](http://restinpractice.com/book/) by Jim Webber, Savas Parastatidis and Ian Robinson.
