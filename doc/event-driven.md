@@ -14,7 +14,8 @@ Both feeds and entries have metadata associated with them, for example a title a
             <title type="text">Recent notifications</title>
             <updated>2013-01-02T10:03:00Z</updated>
             <generator></generator>
-            <link rel="self" href="http://example.com/notifications/recent" />
+            <link rel="self" href="http://example.com/notifications" />
+            <link rel="prev" href="http://example.com/feeds/3" />
             <entry>
                 <id>urn:uuid:eb3ee5a0-75be-11e2-bcfd-0800200c9a66</id>
                 <title type="text">Document edited</title>
@@ -22,7 +23,7 @@ Both feeds and entries have metadata associated with them, for example a title a
                 <author>
                     <name>jsmith</name>
                 </author>
-                <link rel="self" href="http://example.com/notification/33" />
+                <link rel="self" href="http://example.com/entry/33" />
                 <content type="application/vnd.example.document+xml">
                     <title>HR policies</title>
                     <link href="http://example.com/cms/doc/456" />
@@ -35,7 +36,7 @@ Both feeds and entries have metadata associated with them, for example a title a
                 <author>
                     <name>dgonzales</name>
                 </author>
-                <link rel="self" href="http://example.com/notification/33" />
+                <link rel="self" href="http://example.com/entry/32" />
                 <content type="application/vnd.example.user+xml">
                     <username>jsmith</username>
                     <role>editor</role>
