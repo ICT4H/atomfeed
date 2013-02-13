@@ -9,8 +9,38 @@ Atom is an XML-based syndication format. Atom represents time-ordered series of 
 Both feeds and entries have metadata associated with them, for example a title and a unique identifier.
 
     <?xml version="1.0">
-        <feed>
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
+            <title type="text">Recent notifications</title>
+            <updated>2013-01-02T10:03:00Z</updated>
+            <generator></generator>
+            <link rel="self" href="http://example.com/notifications/recent" />
             <entry>
+                <id>urn:uuid:eb3ee5a0-75be-11e2-bcfd-0800200c9a66</id>
+                <title type="text">Document edited</title>
+                <updated>2013-01-02T10:01:00Z</updated>
+                <author>
+                    <name>jsmith</name>
+                </author>
+                <link rel="self" href="http://example.com/notification/33" />
+                <content type="application/vnd.example.document+xml">
+                    <title>HR policies</title>
+                    <link href="http://example.com/cms/doc/456" />
+                </content>
+            </entry>
+            <entry>
+                <id>urn:uuid:1d3334a0-75bd-11e2-bcfd-0800200c9a66</id>
+                <title type="text">User created</title>
+                <updated>2013-01-02T07:31:00Z</updated>
+                <author>
+                    <name>dgonzales</name>
+                </author>
+                <link rel="self" href="http://example.com/notification/33" />
+                <content type="application/vnd.example.user+xml">
+                    <username>jsmith</username>
+                    <role>editor</role>
+                    <email>jsmith@example.com</email>
+                </content>
             </entry>
         </feed>
 
