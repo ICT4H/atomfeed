@@ -4,7 +4,7 @@ Atom
 What is Atom?
 ------------
 
-[Atom](http://en.wikipedia.org/wiki/Atom_(standard\)) is an XML-based syndication format. Atom represents time-ordered series of events. In Atom terminology, each event is an *entry* and the series is a *feed*.
+[Atom](http://en.wikipedia.org/wiki/Atom_(standard\)) is an XML-based syndication format which represents time-ordered series of events. In Atom terminology, each event is an *entry* and the series is a *feed*.
 
 Both feeds and entries have metadata associated with them, for example a title and a unique identifier.
 
@@ -82,11 +82,11 @@ In addition to the URLs for each physical feed, the server also exposes a URL th
             <entry>..</entry>
         </feed>
 
-This is the published entry point to the feed. Clients of the event feed will always be able to dereference http://example.com/notifications to get the most recent entries.
+This is the published entry point to the feed. Consumers of the event feed will always be able to dereference http://example.com/notifications to get the most recent entries.
 
-This resource would most likely not allow clients to cache it, as it changes every time a new entry comes along (though this could depend on the specific requirements of the system). 
+The server would most likely add HTTP headers to prevent consumers from caching it, as the resource changes every time a new entry comes along (though this could depend on the specific requirements of the system). 
 
-Clients who are interested in older entries can follow the "prev" link to the previous feed.
+Consumers who are interested in older entries can follow the "prev" link to the previous feed.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -99,7 +99,7 @@ Clients who are interested in older entries can follow the "prev" link to the pr
             <entry>..</entry>
         </feed>
 
-This resource is effectively equivalent to the feed entry point. It represents the most recent feed that has not yet been "filled up". 
+This resource is effectively equivalent to the feed entry point. It represents the most recent feed that has not yet been finished. 
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -115,7 +115,7 @@ This resource is effectively equivalent to the feed entry point. It represents t
 
 This feed has been finished, and should not change. It can therefore have cache ehaders with a long time-to-live.
 
-Clients wishing to find older or newer entries than the ones in this feed can find them by following the "prev" and "next" links respectively. 
+Conumers wishing to find older or newer entries than the ones in this feed can find them by following the "prev" and "next" links respectively. 
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -134,11 +134,11 @@ This is another finished feed, and can also be heavily cached. Finding older or 
 Consuming feeds
 ---------------
 
-A client of an Atom feed keeps track of the unique identifier of the most recent entry it has processed. Because the entries are time ordered, and the only change is to add new entries onto the front of the feed, clients can work backwards till they find the oldest entry they have not yet processed, and then work forwards through the feed processing each event in turn. 
+A consumer of an Atom feed keeps track of the unique identifier of the most recent entry it has processed. Because the entries are time ordered, and the only change is to add new entries onto the front of the feed, consumers can work backwards till they find the oldest entry they have not yet processed, and then work forwards through the feed processing each event in turn. 
 
 For example, a consumer might know that it has most recently processed the entry with id "urn:uuid:fc374b00-75c7-11e2-bcfd-0800200c9a66".
 
-This client wants to check if there are any more recent entries, so it issues a GET request on http://example.com/notifications, which is the published entry-point of the feed.
+This consumer wants to check if there are any more recent entries, so it issues a GET request on http://example.com/notifications, which is the published entry-point of the feed.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -152,9 +152,9 @@ This client wants to check if there are any more recent entries, so it issues a 
             </entry>
         </feed>
 
-The entry with id "urn:uuid:fc374b00-75c7-11e2-bcfd-0800200c9a66" is not present. This is because since the client last checked the feed, the server has added new entries to the feed, closing off an old physical feed and starting a new one in the process.
+The entry with id "urn:uuid:fc374b00-75c7-11e2-bcfd-0800200c9a66" is not present. This is because since the consumer last checked the feed, the server has added new entries to the feed, closing off an old physical feed and starting a new one in the process.
 
-The client therefore issues a GET request for the previous feed, which has the URL "http://example.com/feeds/3".
+The consumer therefore issues a GET request for the previous feed, which has the URL "http://example.com/feeds/3".
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -169,13 +169,13 @@ The client therefore issues a GET request for the previous feed, which has the U
             </entry>
         </feed>
 
-This time, the client does find the entry it last processed. The client can now start to work its way back to the front of the feed, by processing the one new entry in feed 3, and then going through the entries in the recent feed.
+This time, the consumer does find the entry it last processed. The consumer can now start to work its way back to the front of the feed, by processing the one new entry in feed 3, and then going through the entries in the recent feed.
 
-As the client goes through the entries, it keeps updating its record of the most recent entry processed.
+As the consumer goes through the entries, it keeps updating its record of the most recent entry processed.
 
-Notice that the service does not have to keep track of who the clients are or where they are up to. The guarantee that new events are always added to the front of the list allows clients to do that for themselves.
+Notice that the service does not have to keep track of who the consumer are or where they are up to. The guarantee that new events are always added to the front of the list allows consumers to do that for themselves.
 
 References
----------
+----------
 
-A great reference for understanding Atom's use in RESTful event-driven systems is [REST in Practice](http://restinpractice.com/book/) by Jim Webber, Savas Parastatidis and Ian Robinson.
+A great reference for understanding Atom's use in RESTful event-driven systems is Chapter 7 of [REST in Practice](http://restinpractice.com/book/) by Jim Webber, Savas Parastatidis and Ian Robinson.
