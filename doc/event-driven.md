@@ -4,7 +4,7 @@ Atom
 What is Atom?
 ------------
 
-[Atom](http://en.wikipedia.org/wiki/Atom_(standard)) is an XML-based syndication format. Atom represents time-ordered series of events. In Atom terminology, each event is an *entry* and the series is a *feed*.
+[Atom](http://en.wikipedia.org/wiki/Atom_(standard\)) is an XML-based syndication format. Atom represents time-ordered series of events. In Atom terminology, each event is an *entry* and the series is a *feed*.
 
 Both feeds and entries have metadata associated with them, for example a title and a unique identifier.
 
