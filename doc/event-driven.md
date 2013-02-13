@@ -71,6 +71,55 @@ Similar to a doubly-linked list, each physical feed has *prev* and *next* links 
 
 In addition to the URLs for each physical feed, the server also exposes a URL that points to the current working feed. This URL is effectively an alias for the feed that is still under construction.
 
+    <?xml version="1.0">
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
+            <title type="text">Recent notifications</title>
+            <link rel="self" href="http://example.com/notifications" />
+            <link rel="prev" href="http://example.com/feeds/3" />
+            <entry>..</entry>
+            <entry>..</entry>
+            <entry>..</entry>
+        </feed>
+
+
+    <?xml version="1.0">
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
+            <title type="text">Notifications</title>
+            <link rel="self" href="http://example.com/feeds/4" />
+            <link rel="prev" href="http://example.com/feeds/3" />
+            <entry>..</entry>
+            <entry>..</entry>
+            <entry>..</entry>
+        </feed>
+
+
+    <?xml version="1.0">
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
+            <title type="text">Notifications</title>
+            <link rel="self" href="http://example.com/feeds/3" />
+            <link rel="next" href="http://example.com/feeds/4" />
+            <link rel="prev" href="http://example.com/feeds/2" />
+            <entry>..</entry>
+            <entry>..</entry>
+            <entry>..</entry>
+        </feed>
+
+
+    <?xml version="1.0">
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
+            <title type="text">Notifications</title>
+            <link rel="self" href="http://example.com/feeds/2" />
+            <link rel="next" href="http://example.com/feeds/3" />
+            <link rel="prev" href="http://example.com/feeds/1" />
+            <entry>..</entry>
+            <entry>..</entry>
+            <entry>..</entry>
+        </feed>
+
 Consuming feeds
 ---------------
 
