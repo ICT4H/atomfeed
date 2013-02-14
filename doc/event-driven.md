@@ -6,16 +6,17 @@ What is Atom?
 
 [Atom](http://en.wikipedia.org/wiki/Atom_(standard\)) is an XML-based syndication format which represents time-ordered series of events. In Atom terminology, each event is an *entry* and the series is a *feed*.
 
-Both feeds and entries have metadata associated with them, for example a title and a unique identifier.
+Both feeds and entries have metadata associated with them, for example a title and a unique identifier. They also have links, including a "self" link that point back to the selfsame entry or feed.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
-            <title type="text">Recent notifications</title>
+            <title type="text">Notifications</title>
             <updated>2013-01-02T10:03:00Z</updated>
             <generator></generator>
-            <link rel="self" href="http://example.com/notifications" />
-            <link rel="prev" href="http://example.com/feeds/3" />
+            <link rel="self" href="http://example.com/feeds/2" />
+            <link rel="next" href="http://example.com/feeds/3" />
+            <link rel="prev" href="http://example.com/feeds/1" />
             <entry>
                 <id>urn:uuid:eb3ee5a0-75be-11e2-bcfd-0800200c9a66</id>
                 <title type="text">Document edited</title>
@@ -49,6 +50,8 @@ Atom is optimised and designed for RESTful systems that communicate over HTTP.
 
 Atom is a general-purpose format that can be extended to fit a particular domain. By using a well-understood general-purpose format as a basis, we can reuse tools infrastructure and semantics. The Atom syndication format was formalised in [RFC 4287](http://www.ietf.org/rfc/rfc4287).
 
+"Atom" can also sometimes refer to [AtomPub](https://tools.ietf.org/html/rfc5023), a protocol for editing and publishing web resources built on top of the Atom XML format, but this document is concerned only with consuming Atom content and not with editing feeds.
+
 Event-driven systems
 --------------------
 
@@ -56,7 +59,7 @@ Atom can be used to implement event-driven systems by adding an entry to the fee
 
 Depending on the nature of the event and the size of the resource that it applies to, the Atom entry could either include a snapshot of the new state of the resource, or simply link to the resource so that the client can issue a fresh GET.
 
-Because Atom is based on polling, it increases latency, which might make it unsuitable for real time systems. However, using a RESTful polling approach decouples client and server, and provides scalability through the opportunity for heavy caching.
+Because Atom is based on polling, it has high latency compared to other approaches, which might make it unsuitable for real time systems. However, using a RESTful polling approach decouples client and server, and provides scalability through the opportunity for heavy caching.
 
 Paginating feeds
 ----------------
@@ -69,24 +72,25 @@ The server breaks up the series of events into separate physical feeds and gives
 
 Similar to a doubly-linked list, each physical feed has *prev* and *next* links that can be followed to find the next feed in the chain.
 
-In addition to the URLs for each physical feed, the server also exposes a URL that points to the current working feed. This URL is effectively an alias for the feed that is still under construction.
+There is one special feed known as the recent feed, which holds the most recent entries. This feed does not have a *next* link because it is at the head of the list.
+
+This is the published entry point to the feed. Consumers of the event feed will always be able to dereference http://example.com/recent to get the most recent entries.
+
+Normal feeds do not change after they have been created, but the recent feed will continue to have entries prepended to it until the server archives the feed. This means that caching can be much more agressive for archived feeds than the recent feed.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Recent notifications</title>
-            <link rel="self" href="http://example.com/notifications" />
+            <link rel="self" href="http://example.com/feeds/recent" />
             <link rel="prev" href="http://example.com/feeds/3" />
+            <!-- There is no "next" link as this is the most recent feed. -->
             <entry>..</entry>
             <entry>..</entry>
             <entry>..</entry>
         </feed>
 
-This is the published entry point to the feed. Consumers of the event feed will always be able to dereference http://example.com/notifications to get the most recent entries.
-
-The server would most likely add HTTP headers to prevent consumers from caching it, as the resource changes every time a new entry comes along (though this could depend on the specific requirements of the system). 
-
-Consumers who are interested in older entries can follow the "prev" link to the previous feed.
+The recent feed can also be accessed through its permanent URL. Once the server has archived the current recent feed, it will create a new one and leave the old recent feed available.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -94,12 +98,13 @@ Consumers who are interested in older entries can follow the "prev" link to the 
             <title type="text">Notifications</title>
             <link rel="self" href="http://example.com/feeds/4" />
             <link rel="prev" href="http://example.com/feeds/3" />
+            <!-- There is no "next" link as this is the most recent feed. -->
             <entry>..</entry>
             <entry>..</entry>
             <entry>..</entry>
         </feed>
 
-This resource is effectively equivalent to the feed entry point. It represents the most recent feed that has not yet been finished. 
+Consumers who are interested in older entries can follow the "prev" link to the previous feed.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -113,9 +118,7 @@ This resource is effectively equivalent to the feed entry point. It represents t
             <entry>..</entry>
         </feed>
 
-This feed has been finished, and should not change. It can therefore have cache ehaders with a long time-to-live.
-
-Conumers wishing to find older or newer entries than the ones in this feed can find them by following the "prev" and "next" links respectively. 
+This feed has been archived, and should therefore never change. Consumers wishing to find older or newer entries than the ones in this feed can find them by following the "prev" and "next" links respectively. 
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -129,7 +132,19 @@ Conumers wishing to find older or newer entries than the ones in this feed can f
             <entry>..</entry>
         </feed>
 
-This is another finished feed, and can also be heavily cached. Finding older or newer entries is again a matter of following the "prev" or "next" links.
+This is another archived feed, and can also be heavily cached. Finding older or newer entries is again a matter of following the "prev" or "next" links. Consumers who wish to read the entire history can continue to follow "prev" links until they come across a feed with no such link, which will be the first feed.
+
+    <?xml version="1.0">
+        <feed xmlns="http://www.w3.org/2005/Atom">
+            <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
+            <title type="text">Notifications</title>
+            <link rel="self" href="http://example.com/feeds/1" />
+            <link rel="next" href="http://example.com/feeds/2" />
+            <!-- There is no "prev" link as this is the first feed. -->
+            <entry>..</entry>
+            <entry>..</entry>
+            <entry>..</entry>
+        </feed>
 
 Consuming feeds
 ---------------
