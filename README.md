@@ -1,7 +1,7 @@
 atomfeed
 ========
 
-[![Build Status](https://travis-ci.org/ICT4H-TW/atomfeed.png)](https://travis-ci.org/ICT4H-TW/atomfeed)
+[![Build Status](https://travis-ci.org/ICT4H/atomfeed.png)](https://travis-ci.org/ICT4H/atomfeed)
 
 build
 -----
