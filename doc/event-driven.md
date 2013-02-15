@@ -188,7 +188,7 @@ The consumer therefore issues a GET request for the previous feed, which has the
 
 This time, the consumer does find the entry it last processed. The consumer can now start to work its way back to the front of the feed, by processing the one new entry in feed 3, and then going through the entries in the recent feed.
 
-As the consumer goes through the entries, it keeps updating its record of the most recent entry processed.
+As the consumer goes through the entries, it keeps updating its record of the most recent entry processed. Note that because the series of entries is time-ordered, the client need only keep track of the identifier of the most recent entry it has processed.
 
 Notice that the service does not have to keep track of who the consumers are or which entry they are each up to. The guarantee that new events are always added to the front of the list allows consumers to do that for themselves.
 
