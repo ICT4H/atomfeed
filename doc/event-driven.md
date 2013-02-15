@@ -74,9 +74,9 @@ Similar to a doubly-linked list, each physical feed has *prev* and *next* links 
 
 There is one special feed known as the recent feed, which holds the most recent entries. This feed does not have a *next* link because it is at the head of the list.
 
-This is the published entry point to the feed. Consumers of the event feed will always be able to dereference http://example.com/recent to get the most recent entries.
+The recent feed is the published entry point. Consumers of the event feed will always be able to retrieve http://example.com/recent to get the most recent entries.
 
-Normal feeds do not change after they have been created, but the recent feed will continue to have entries prepended to it until the server archives the feed. This means that caching can be much more agressive for archived feeds than the recent feed.
+Feeds older than the recent one are known as archived feeds. Archived feeds do not change after they have been created, but the recent feed will continue to have entries prepended to it until the server archives the feed. This means that caching can be much more agressive for archived feeds than the recent feed.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -167,7 +167,7 @@ This consumer wants to check if there are any more recent entries, so it issues 
             </entry>
         </feed>
 
-The entry with id "urn:uuid:fc374b00-75c7-11e2-bcfd-0800200c9a66" is not present. This is because since the consumer last checked the feed, the server has added new entries to the feed, closing off an old physical feed and starting a new one in the process.
+The entry with id "urn:uuid:fc374b00-75c7-11e2-bcfd-0800200c9a66" is not present. This is because since the consumer last checked the feed, the server has added new entries to the feed, archiving the old physical feed and starting a new one in the process.
 
 The consumer therefore issues a GET request for the previous feed, which has the URL "http://example.com/feeds/3".
 
@@ -188,7 +188,22 @@ This time, the consumer does find the entry it last processed. The consumer can 
 
 As the consumer goes through the entries, it keeps updating its record of the most recent entry processed.
 
-Notice that the service does not have to keep track of who the consumer are or where they are up to. The guarantee that new events are always added to the front of the list allows consumers to do that for themselves.
+Notice that the service does not have to keep track of who the consumers are or which entry they are each up to. The guarantee that new events are always added to the front of the list allows consumers to do that for themselves.
+
+Implementation considerations
+-----------------------------
+
+One of the biggest advantages to using Atom is caching. Servers should serve archived feeds with aggressive Cache-Control headers, because once a feed is archived, it does not change. Servers can take advantage of this by actually writing archived feeds out to disk and serving them as static files.
+
+Note that this caching is possible because the pagination of entries into feeds is controlled by the server. If every consumer could decide how to break up the series of entries, we would have to cache many different pagination combinations.
+
+Consumers should not care how pagination is implemented, because they simply follow links and retrieve resources. The server might choose to break the feed into time periods e.g. a single physical feed per day or some other scheme. However, if the flow of events is irregular, that could lead to some physical feeds being very large and others being very small. This can be addressed by keeping a fixed number of entries per feed.
+
+Cache-Control headers on the recent feed are limited by the freshness requirements of the system. It may still worthwhile allowing consumers and HTTP caches to cache the recent feed for a short period of time, as it reduces load on the server, but the length of time in the header must take into account how quickly consumers need to find out about new events in the system.
+
+For example, in a system with heavy load, using Cache-Control headers with a short time-to-live in conjunction with a reverse proxy gives an upper-bound on how often the server needs to generate the recent feed. For example, a time-to-live of 60 seconds means that the server will only have to generate the recent feed once a minute, regardless of how many consumers there are.
+
+Another useful optimisation for the recent feed are ETags and Last-Modified headers. Consumers poll the recent feed potentially very often, so if they are able to issue a conditional GET accompanied by an ETag or Last-Modified date then the server can simply reply with a 304 Not Modified response and avoid transfering the entire recent feed to the client.
 
 References
 ----------
