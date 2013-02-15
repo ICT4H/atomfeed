@@ -85,12 +85,13 @@ Feeds older than the recent one are known as archived feeds. Archived feeds do n
             <link rel="self" href="http://example.com/feeds/recent" />
             <link rel="prev" href="http://example.com/feeds/3" />
             <!-- There is no "next" link as this is the most recent feed. -->
+            <link rel="via" href="http://example.com/feeds/4" />
             <entry>..</entry>
             <entry>..</entry>
             <entry>..</entry>
         </feed>
 
-The recent feed can also be accessed through its permanent URL. Once the server has archived the current recent feed, it will create a new one and leave the old recent feed available.
+The recent feed can also be accessed through its permanent URL, which is represented with a "via" link. Once the server has archived the current recent feed, it will create a new one and leave the via link intact.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
@@ -153,12 +154,13 @@ A consumer of an Atom feed keeps track of the unique identifier of the most rece
 
 For example, a consumer might know that it has most recently processed the entry with id "urn:uuid:fc374b00-75c7-11e2-bcfd-0800200c9a66".
 
-This consumer wants to check if there are any more recent entries, so it issues a GET request on http://example.com/notifications, which is the published entry-point of the feed.
+This consumer wants to check if there are any more recent entries, so it issues a GET request on http://example.com/recent, which is the published entry-point of the feed.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
-            <link rel="self" href="http://example.com/notifications" />
+            <link rel="self" href="http://example.com/recent" />
             <link rel="prev" href="http://example.com/feeds/3" />
+            <link rel="via" href="http://example.com/feeds/4" />
             <entry>
                 <id>urn:uuid:e2089090-75c7-11e2-bcfd-0800200c9a66</id>
             </entry>
