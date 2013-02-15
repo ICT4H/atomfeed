@@ -192,6 +192,8 @@ As the consumer goes through the entries, it keeps updating its record of the mo
 
 Notice that the service does not have to keep track of who the consumers are or which entry they are each up to. The guarantee that new events are always added to the front of the list allows consumers to do that for themselves.
 
+![Feeds are chained using next and prev links](Atom.png "Chaining physical feeds")
+
 Implementation considerations
 -----------------------------
 
