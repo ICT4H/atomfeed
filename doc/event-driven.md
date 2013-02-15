@@ -6,17 +6,15 @@ What is Atom?
 
 [Atom](http://en.wikipedia.org/wiki/Atom_(standard\)) is an XML-based syndication format which represents time-ordered series of events. In Atom terminology, each event is an *entry* and the series is a *feed*.
 
-Both feeds and entries have metadata associated with them, for example a title and a unique identifier. They also have links, including a "self" link that point back to the selfsame entry or feed.
+Both feeds and entries have metadata associated with them, for example a title and a unique identifier. They can also have links, for example a "self" link that point back to the selfsame entry or feed.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Notifications</title>
             <updated>2013-01-02T10:03:00Z</updated>
-            <generator></generator>
+            <generator>Foo CMS</generator>
             <link rel="self" href="http://example.com/feeds/2" />
-            <link rel="next" href="http://example.com/feeds/3" />
-            <link rel="prev" href="http://example.com/feeds/1" />
             <entry>
                 <id>urn:uuid:eb3ee5a0-75be-11e2-bcfd-0800200c9a66</id>
                 <title type="text">Document edited</title>
@@ -50,8 +48,6 @@ Atom is optimised and designed for RESTful systems that communicate over HTTP.
 
 Atom is a general-purpose format that can be extended to fit a particular domain. By using a well-understood general-purpose format as a basis, we can reuse tools infrastructure and semantics. The Atom syndication format was formalised in [RFC 4287](http://www.ietf.org/rfc/rfc4287).
 
-"Atom" can also sometimes refer to [AtomPub](https://tools.ietf.org/html/rfc5023), a protocol for editing and publishing web resources built on top of the Atom XML format, but this document is concerned only with consuming Atom content and not with editing feeds.
-
 Event-driven systems
 --------------------
 
@@ -60,6 +56,25 @@ Atom can be used to implement event-driven systems by adding an entry to the fee
 Depending on the nature of the event and the size of the resource that it applies to, the Atom entry could either include a snapshot of the new state of the resource, or simply link to the resource so that the client can issue a fresh GET.
 
 Because Atom is based on polling, it has high latency compared to other approaches, which might make it unsuitable for real time systems. However, using a RESTful polling approach decouples client and server, and provides scalability through the opportunity for heavy caching.
+
+A simple protocol
+-----------------
+
+"Atom" can also sometimes refer to [AtomPub](https://tools.ietf.org/html/rfc5023), a protocol for editing and publishing web resources built on top of the Atom XML format.
+
+This document is not concerned with editing or writing to feeds. It will describe a simplified form of AtomPub suitable for broadcasting events to multiple consumers, and assume the server hosting the service has some way of recognising and registering new events as Atom entries..
+
+As well as conforming to the restrictions of the Atom XML format, our protocol is based on the following rules:
+* Entries are ordered by their updated field, from newest to oldest.
+* An entry, once published, never changes.
+* The stream of entries is paginated over many Atom feeds.
+* All feeds except the oldest will have a link with rel "next" pointing to the next feed in the series.
+* All feeds except the newest will have a link with rel "prev" pointing to the previous feed in the series. 
+* Only the most recent feed may change once published, and that can only change by newer events being prepended to the series.
+* When the server decides the most recent feed is finished, it archives that feed and creates a new feed.
+* There is a published URL that always points to the most recent feed and serves as an entry point to the service.
+
+Though it is good practice to use intuitive URLs, the protocol in no way depends on the structure of the URLs. Consumers should follow links, and not attempt to construct URLs themselves.
 
 Paginating feeds
 ----------------
