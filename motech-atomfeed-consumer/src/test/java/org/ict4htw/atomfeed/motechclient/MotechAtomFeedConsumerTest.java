@@ -1,5 +1,7 @@
 package org.ict4htw.atomfeed.motechclient;
 
+import com.sun.syndication.feed.atom.Content;
+import com.sun.syndication.feed.atom.Entry;
 import org.ict4htw.atomfeed.client.api.FeedClient;
 import org.ict4htw.atomfeed.client.api.data.Event;
 import org.junit.Before;
@@ -11,6 +13,8 @@ import org.motechproject.event.listener.EventRelay;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import static org.mockito.Mockito.*;
 
@@ -29,7 +33,31 @@ public class MotechAtomFeedConsumerTest {
         MotechAtomFeedConsumer consumer = new MotechAtomFeedConsumer(null,feedClient,"", eventRelay,null);
         when(feedClient.unprocessedEvents(Matchers.<URI>any())).thenReturn(new ArrayList<Event>());
         consumer.updateEvents(new MotechEvent());
-        verify(eventRelay,never()).sendEventMessage(null);
+        verifyZeroInteractions(eventRelay);
     }
+
+    @Test
+    public void shouldRelayEventContentToMotech() throws URISyntaxException {
+        MotechAtomFeedConsumer consumer = new MotechAtomFeedConsumer(null,feedClient,"", eventRelay,null);
+        ArrayList<Event> events = events();
+        when(feedClient.unprocessedEvents(Matchers.<URI>any())).thenReturn(events);
+        consumer.updateEvents(new MotechEvent("atomUpdateMessage"));
+        HashMap map = new HashMap<String, Object>();
+        map.put("contents",events.get(0).getContent());
+        verify(eventRelay).sendEventMessage(new MotechEvent("eventFromOpenMRS",map));
+    }
+
+    private ArrayList<Event> events() {
+        ArrayList events = new ArrayList<Event>();
+        Entry entry = new Entry();
+        Content content = new Content();
+        content.setValue("<data></data>");
+        entry.setContents(Arrays.asList(content));
+        Event event = new Event(entry);
+        events.add(event);
+        return events;
+    }
+
+
 }
 
