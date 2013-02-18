@@ -41,14 +41,13 @@ public class MotechAtomFeedConsumer {
         schedulerService.safeUnscheduleAllJobs(ATOM_UPDATE_MESSAGE);
     }
 
-    public MotechAtomFeedConsumer(URI startingURL, WebClient webClient,
+    public MotechAtomFeedConsumer(URI startingURL, FeedClient feedClient,
                                   String cronExpression, EventRelay eventRelay, MotechSchedulerService schedulerService) throws URISyntaxException {
         this.cronExpression = cronExpression;
         this.entryURL = startingURL;
         this.eventRelay = eventRelay;
         this.schedulerService = schedulerService;
-        AllFeeds allFeeds = new AllFeeds(webClient);
-        feedClient = new AtomFeedClient(allFeeds, new AllMarkers(new InmemoryMarkerDataSource()));
+        this.feedClient = feedClient;
     }
 
     @MotechListener(subjects = ATOM_UPDATE_MESSAGE)
