@@ -68,12 +68,14 @@ public class MotechAtomFeedConsumer {
 
     private void update() throws URISyntaxException {
         List<Event> events = feedClient.unprocessedEvents(entryURL);
-        for (Event event : events) {
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("contents", event.getContent());
-            eventRelay.sendEventMessage(new MotechEvent(EVENT_FROM_OPEN_MRS,map));
+        if(!events.isEmpty()){
+            for (Event event : events) {
+                HashMap<String, Object> map = new HashMap<String, Object>();
+                map.put("contents", event.getContent());
+                eventRelay.sendEventMessage(new MotechEvent(EVENT_FROM_OPEN_MRS,map));
+            }
+            Event lastEvent = events.get(events.size() - 1);
+            feedClient.processedTo(entryURL,lastEvent.getId());
         }
-        Event lastEvent = events.get(events.size() - 1);
-        feedClient.processedTo(entryURL,lastEvent.getId());
     }
 }
