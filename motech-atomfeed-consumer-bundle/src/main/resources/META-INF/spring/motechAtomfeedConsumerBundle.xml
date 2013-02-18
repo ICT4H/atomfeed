@@ -20,5 +20,4 @@
     </bean>
 
     <import resource="classpath*:META-INF/motech/motechAtomFeedConsumer.xml"/>
-    <import resource="classpath*:META-INF/motech/motechOpenMRSIntegration.xml"/>
 </beans>
