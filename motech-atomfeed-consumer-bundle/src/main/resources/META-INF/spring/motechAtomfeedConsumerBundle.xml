@@ -12,9 +12,13 @@
 
     <osgi:reference id="schedulerServiceOsgi" cardinality="0..1" interface="org.motechproject.scheduler.MotechSchedulerService"></osgi:reference>
 
+    <osgi:reference id="pillReminderServiceImplOsgi" cardinality="0..1" interface="org.motechproject.server.pillreminder.api.service.PillReminderService">
+    </osgi:reference>
+
     <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor">
         <property name="eventListenerRegistry" ref="eventListenerRegistryServiceOsgi"/>
     </bean>
 
     <import resource="classpath*:META-INF/motech/motechAtomFeedConsumer.xml"/>
+    <import resource="classpath*:META-INF/motech/motechOpenMRSIntegration.xml"/>
 </beans>

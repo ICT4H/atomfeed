@@ -26,5 +26,10 @@
             <artifactId>motech-platform-event</artifactId>
             <version>0.17</version>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-pillreminder-api</artifactId>
+            <version>0.17</version>
+        </dependency>
     </dependencies>
 </project>
