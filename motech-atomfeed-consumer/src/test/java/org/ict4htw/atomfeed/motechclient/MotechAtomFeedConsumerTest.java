@@ -47,9 +47,20 @@ public class MotechAtomFeedConsumerTest {
         verify(eventRelay).sendEventMessage(new MotechEvent("eventFromOpenMRS",map));
     }
 
+    @Test
+    public void shouldMarkAnEventAsProcessedSoThatTheSameEventWillNotBePushedIntoTheQueueTheNextTimeWePollTheServer() throws URISyntaxException {
+        URI uri = new URI("");
+        ArrayList<Event> events = events();
+        when(feedClient.unprocessedEvents(Matchers.<URI>any())).thenReturn(events);
+        MotechAtomFeedConsumer consumer = new MotechAtomFeedConsumer(uri,feedClient,"", eventRelay,null);
+        consumer.updateEvents(new MotechEvent());
+        verify(feedClient).processedTo(uri, events.get(0).getId());
+    }
+
     private ArrayList<Event> events() {
         ArrayList events = new ArrayList<Event>();
         Entry entry = new Entry();
+        entry.setId("42");
         Content content = new Content();
         content.setValue("<data></data>");
         entry.setContents(Arrays.asList(content));
@@ -57,7 +68,5 @@ public class MotechAtomFeedConsumerTest {
         events.add(event);
         return events;
     }
-
-
 }
 
