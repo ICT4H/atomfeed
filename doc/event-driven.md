@@ -14,7 +14,7 @@ Both feeds and entries have metadata associated with them, for example a title a
             <title type="text">Notifications</title>
             <updated>2013-01-02T10:03:00Z</updated>
             <generator>Foo CMS</generator>
-            <link rel="self" href="http://example.com/document/2" />
+            <link rel="self" href="http://example.com/documents/2" />
             <entry>
                 <id>urn:uuid:eb3ee5a0-75be-11e2-bcfd-0800200c9a66</id>
                 <title type="text">Edit</title>
@@ -98,9 +98,9 @@ Documents older than the recent one are known as archived documents. Archived do
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Recent notifications</title>
             <link rel="self" href="http://example.com/recent" />
-            <link rel="prev" href="http://example.com/document/3" />
+            <link rel="prev" href="http://example.com/documents/3" />
             <!-- There is no "next" link as this is the most recent document. -->
-            <link rel="via" href="http://example.com/document/4" />
+            <link rel="via" href="http://example.com/documents/4" />
             <entry>..</entry>
             <entry>..</entry>
             <entry>..</entry>
@@ -112,8 +112,8 @@ The recent document can also be accessed through its permanent URL, which is rep
         <feed xmlns="http://www.w3.org/2005/Atom">
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Notifications</title>
-            <link rel="self" href="http://example.com/document/4" />
-            <link rel="prev" href="http://example.com/document/3" />
+            <link rel="self" href="http://example.com/documents/4" />
+            <link rel="prev" href="http://example.com/documents/3" />
             <!-- There is no "next" link as this is the most recent document. -->
             <entry>..</entry>
             <entry>..</entry>
@@ -126,9 +126,9 @@ Consumers who are interested in older entries can follow the "prev" link to the 
         <feed xmlns="http://www.w3.org/2005/Atom">
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Notifications</title>
-            <link rel="self" href="http://example.com/document/3" />
-            <link rel="next" href="http://example.com/document/4" />
-            <link rel="prev" href="http://example.com/document/2" />
+            <link rel="self" href="http://example.com/documents/3" />
+            <link rel="next" href="http://example.com/documents/4" />
+            <link rel="prev" href="http://example.com/documents/2" />
             <entry>..</entry>
             <entry>..</entry>
             <entry>..</entry>
@@ -140,9 +140,9 @@ This document has been archived, and should therefore never change. Consumers wi
         <feed xmlns="http://www.w3.org/2005/Atom">
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Notifications</title>
-            <link rel="self" href="http://example.com/document/2" />
-            <link rel="next" href="http://example.com/document/3" />
-            <link rel="prev" href="http://example.com/document/1" />
+            <link rel="self" href="http://example.com/documents/2" />
+            <link rel="next" href="http://example.com/documents/3" />
+            <link rel="prev" href="http://example.com/documents/1" />
             <entry>..</entry>
             <entry>..</entry>
             <entry>..</entry>
@@ -154,8 +154,8 @@ This is another archived document, and can also be heavily cached. Finding older
         <feed xmlns="http://www.w3.org/2005/Atom">
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Notifications</title>
-            <link rel="self" href="http://example.com/document/1" />
-            <link rel="next" href="http://example.com/document/2" />
+            <link rel="self" href="http://example.com/documents/1" />
+            <link rel="next" href="http://example.com/documents/2" />
             <!-- There is no "prev" link as this is the first document. -->
             <entry>..</entry>
             <entry>..</entry>
@@ -174,8 +174,8 @@ This consumer wants to check if there are any more recent entries, so it issues 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
             <link rel="self" href="http://example.com/recent" />
-            <link rel="prev" href="http://example.com/document/3" />
-            <link rel="via" href="http://example.com/document/4" />
+            <link rel="prev" href="http://example.com/documents/3" />
+            <link rel="via" href="http://example.com/documents/4" />
             <entry>
                 <id>urn:uuid:e2089090-75c7-11e2-bcfd-0800200c9a66</id>
             </entry>
@@ -190,9 +190,9 @@ The consumer therefore issues a GET request for the previous document, which has
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
-            <link rel="self" href="http://example.com/document/3" />
-            <link rel="next" href="http://example.com/document/4" />
-            <link rel="prev" href="http://example.com/document/2" />
+            <link rel="self" href="http://example.com/documents/3" />
+            <link rel="next" href="http://example.com/documents/4" />
+            <link rel="prev" href="http://example.com/documents/2" />
             <entry>
                 <id>urn:uuid:f37a81d0-75c7-11e2-bcfd-0800200c9a66</id>
             </entry>
