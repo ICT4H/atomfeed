@@ -46,7 +46,7 @@ Both feeds and entries have metadata associated with them, for example a title a
 
 Atom is optimised and designed for RESTful systems that communicate over HTTP.
 
-Atom is a general-purpose format that can be extended to fit a particular domain. By using a well-understood general-purpose format as a basis, we can reuse tools infrastructure and semantics. The Atom syndication format was formalised in [RFC 4287](http://www.ietf.org/rfc/rfc4287).
+Atom is a general-purpose format that can be extended to fit a particular domain. By using a well-understood general-purpose format as a basis, we can reuse tools, infrastructure and semantics. The Atom syndication format was formalised in [RFC 4287](http://www.ietf.org/rfc/rfc4287).
 
 Event-driven systems
 --------------------
