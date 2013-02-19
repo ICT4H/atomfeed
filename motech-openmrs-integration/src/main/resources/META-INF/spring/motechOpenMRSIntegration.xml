@@ -9,7 +9,7 @@
     <context:annotation-config />
 
     <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor"/>
-    <bean class="org.ict4h.atomfeed.integration.motech.openmrs.PillRegimen" id="pillRegimen">
+    <bean class="org.ict4h.atomfeed.integration.motech.openmrs.listener.PillRegimen" id="pillRegimen">
         <constructor-arg>
             <ref bean="pillReminderServiceImplOsgi"/>
         </constructor-arg>
@@ -18,6 +18,9 @@
         </constructor-arg>
         <constructor-arg type="java.lang.String">
             <value>0 0/1 * 1/1 * ? *</value>
+        </constructor-arg>
+        <constructor-arg>
+            <bean class="org.ict4h.atomfeed.integration.motech.openmrs.mapper.EventMapper"></bean>
         </constructor-arg>
     </bean>
 </beans>

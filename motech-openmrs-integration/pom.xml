@@ -19,6 +19,10 @@
             <name>MOTECH Maven Repository</name>
             <url>http://nexus.motechproject.org/content/repositories/public</url>
         </repository>
+        <repository>
+            <id>codehaus</id>
+            <url>http://repository.codehaus.org/org/codehaus</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -30,6 +34,11 @@
             <groupId>org.motechproject</groupId>
             <artifactId>motech-pillreminder-api</artifactId>
             <version>0.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.8.5</version>
         </dependency>
     </dependencies>
 </project>

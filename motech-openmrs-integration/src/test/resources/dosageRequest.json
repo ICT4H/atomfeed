@@ -1,0 +1,10 @@
+{
+   "externalId": "77b8de8b29fb4134aec26974b56a33b6",
+   "reminderRepeatIntervalInMinutes": 15,
+   "pillWindowInHours": 2,
+   "bufferOverDosageTimeInMinutes": 5,
+    "dosageRequests": [
+        {"startHour": 21,"startMinute": 30,
+            "medicineRequests": [{ "name": "d4T3TC_Lamivir-S","startDate": "2012-05-31"}]
+        }]
+}
