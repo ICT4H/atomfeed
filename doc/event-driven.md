@@ -70,7 +70,7 @@ As well as conforming to the restrictions of the Atom XML format, our protocol i
 * The series of entries is paginated over many Atom documents.
 * All documents except the oldest will have a link with rel "next" pointing to the next document in the feed.
 * All documents except the newest will have a link with rel "prev" pointing to the previous document in the feed. 
-* Only the most recent document may change once published, and that can only change by newer events being prepended to it.
+* Only the most recent document may change, and that can only change by newer events being prepended to it.
 * When the server decides the most recent document is finished, it archives that document and creates a new document.
 * There is a published URL that always points to the most recent document and serves as an entry point to the feed.
 
