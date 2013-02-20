@@ -17,6 +17,9 @@ To start up:
 * mkdir -p target/work 
 * mvn jetty:run
 
+To integration test:
+* mvn integration-test -P IT
+
 design
 ------
 Our design assumes:
