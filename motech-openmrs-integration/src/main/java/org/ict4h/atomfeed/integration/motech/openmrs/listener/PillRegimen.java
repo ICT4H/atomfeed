@@ -42,7 +42,11 @@ public class PillRegimen {
     public void create(MotechEvent motechEvent) throws IOException {
         Map<String,Object> parameters = motechEvent.getParameters();
         String contents = (String) parameters.get("contents");
+        System.out.println(String.format("before -  %s - contents",contents));
+        contents = contents.replaceFirst("^<!\\[CDATA\\[","").replaceFirst("\\]\\]>$","");
+        System.out.println(String.format("after -  %s - contents",contents));
         pillReminderService.createNew(mapper.toDailyPillRegimenRequest(contents));
-        System.out.println(String.format("marker - %s - marker",contents));
+        System.out.println("If you see this - go check the couch installation to view the created Pill Regimen");
     }
+
 }
