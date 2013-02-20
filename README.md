@@ -15,9 +15,9 @@ To install:
 
 To start up:
 * Create the DB tables by running install (see above).
-* Update atomfeed-server/maven.properties with Postgres credentials.
+* Update atomfeed-standalone/src/main/resources/atomfeed.properties with Postgres credentials.
 * mkdir -p target/work 
-* mvn jetty:run
+* mvn jetty:run -P IT
 
 To integration test:
 * mvn integration-test -P IT
