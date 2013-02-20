@@ -9,7 +9,8 @@ To build:
 * mvn compile
 * mvn test
 
-To install (assuming a Postgres DB is already created):
+To install:
+* Create a Postgres DB and update atomfeed-server/maven.properties with credentials.
 * mvn install -P IT -DskipTests
 
 To start up:
