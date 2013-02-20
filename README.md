@@ -14,6 +14,8 @@ To install:
 * mvn install -P IT -DskipTests
 
 To start up:
+* Create the DB tables by running install (see above).
+* Update atomfeed-server/maven.properties with Postgres credentials.
 * mkdir -p target/work 
 * mvn jetty:run
 
