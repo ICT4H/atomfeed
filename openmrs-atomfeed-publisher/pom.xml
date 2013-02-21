@@ -8,10 +8,10 @@
   </parent>
 
 	<groupId>org.openmrs.module</groupId>
-	<artifactId>atomfeedpublisher</artifactId>
+	<artifactId>openmrsatomfeedpublisher</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>AtomFeed Publisher Module</name>
+	<name>OpenMrs AtomFeed Publisher Module</name>
 	<description>Demonstrates how to publish events using ATOM</description>
 	<url>https://wiki.openmrs.org/display/docs/AtomFeed+Publisher+Module+Module</url>
 	

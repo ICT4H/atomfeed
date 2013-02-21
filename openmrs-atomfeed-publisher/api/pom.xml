@@ -4,13 +4,13 @@
 
 	<parent>
 		<groupId>org.openmrs.module</groupId>
-		<artifactId>atomfeedpublisher</artifactId>
+		<artifactId>openmrsatomfeedpublisher</artifactId>
 		<version>0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>atomfeedpublisher-api</artifactId>
+	<artifactId>openmrsatomfeedpublisher-api</artifactId>
 	<packaging>jar</packaging>
-	<name>AtomFeed Publisher Module API</name>
+	<name>OpenMrs AtomFeed Publisher Module API</name>
 	<description>API project for AtomFeedPublisher</description>
 
 	<dependencies>
@@ -23,8 +23,8 @@
 		</dependency> 
 		-->
 
-		
-		
+
+
 
 		<!-- Begin OpenMRS core -->
 		

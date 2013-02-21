@@ -4,13 +4,13 @@
 
 	<parent>
 		<groupId>org.openmrs.module</groupId>
-		<artifactId>atomfeedpublisher</artifactId>
+		<artifactId>openmrsatomfeedpublisher</artifactId>
 		<version>0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>atomfeedpublisher-omod</artifactId>
+	<artifactId>openmrsatomfeedpublisher-omod</artifactId>
 	<packaging>jar</packaging>
-	<name>AtomFeed Publisher Module OMOD</name>
+	<name>OpenMrs AtomFeed Publisher Module OMOD</name>
 	<description>OMOD project for AtomFeedPublisher</description>
 
 	<dependencies>
