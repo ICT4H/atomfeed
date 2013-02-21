@@ -2,12 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.openmrs.module.ict4h</groupId>
-	<artifactId>openmrs-atomfeed-publisher</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<groupId>org.openmrs.module</groupId>
+	<artifactId>atomfeed</artifactId>
+	<version>1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>OpenMrs Atom Feed Publisher Module</name>
-	<description>Demonstrates how to publish events using ATOM.</description>
+	<name>Atom Feed Module</name>
+	<description>A listing of changes in openmrs in atom feed form</description>
+	<url>https://wiki.openmrs.org/display/docs/Atom+Feed+Module</url>
 	
 	<developers>
 		<developer>
@@ -19,6 +20,12 @@
 		<name>OpenMRS</name>
 		<url>http://openmrs.org</url>
 	</organization>
+
+	<scm>
+		<connection>scm:svn:https://svn.openmrs.org/openmrs-modules/atomfeed/trunk/</connection>
+		<developerConnection>scm:svn:https://svn.openmrs.org/openmrs-modules/atomfeed/trunk/</developerConnection>
+		<url>https://svn.openmrs.org/openmrs-modules/atomfeed/trunk/</url>
+	</scm>
 
 	<modules>
 		<module>api</module>

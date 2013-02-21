@@ -42,7 +42,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
  * 
  *
  */
- @Ignore
+@Ignore
 public class AtomFeedUtilTest extends BaseModuleContextSensitiveTest {
 	
 	@Before

@@ -2,14 +2,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.openmrs.module.ict4h</groupId>
-		<artifactId>openmrs-atomfeed-publisher</artifactId>
-		<version>0.1-SNAPSHOT</version>
+		<groupId>org.openmrs.module</groupId>
+		<artifactId>atomfeed</artifactId>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>openmrs-atomfeed-publisher-api</artifactId>
+	<artifactId>atomfeed-api</artifactId>
 	<packaging>jar</packaging>
-	<name>Atom Feed Publisher Module API</name>
+	<name>Atom Feed Module API</name>
 	<description>API project for AtomFeed</description>
 
 	<dependencies>
