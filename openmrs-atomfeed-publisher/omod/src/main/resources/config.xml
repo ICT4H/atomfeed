@@ -62,12 +62,12 @@
 	<mappingFiles>
 				
 	</mappingFiles>
-	
+
 	<servlet>
-		<servlet-name>atomfeed</servlet-name>
-		<servlet-class>${project.parent.groupId}.${project.parent.artifactId}.web.AtomFeedDownloadServlet</servlet-class>
+		<!--<servlet-name>atomfeed</servlet-name>-->
+		<!--<servlet-class>servlet class goes here</servlet-class>-->
 	</servlet>
-	
+
 	<!-- Internationalization -->
 	<!-- All message codes should start with ${project.parent.artifactId}. -->
 	<messages>

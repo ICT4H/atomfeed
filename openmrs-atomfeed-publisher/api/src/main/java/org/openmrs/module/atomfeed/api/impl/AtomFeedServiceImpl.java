@@ -20,9 +20,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.atomfeed.api.AtomFeedService;
 import org.openmrs.module.atomfeed.api.db.AtomFeedDAO;
 
-/**
- * It is a default implementation of {@link AtomFeedService}.
- */
 public class AtomFeedServiceImpl extends BaseOpenmrsService implements AtomFeedService {
 	
 	protected final Log log = LogFactory.getLog(this.getClass());

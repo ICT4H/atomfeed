@@ -32,10 +32,6 @@ import org.openmrs.event.Event;
 import org.openmrs.event.SubscribableEventListener;
 import org.openmrs.module.atomfeed.api.AtomFeedService;
 
-/**
- * This class is registered to the {@link Event} in the moduleApplicationContext spring file. It
- * subscribes to all relevant objects and all relevant actions.
- */
 public class GeneralEventListener implements SubscribableEventListener {
 	
 	private static Log log = LogFactory.getLog(GeneralEventListener.class);
@@ -67,21 +63,6 @@ public class GeneralEventListener implements SubscribableEventListener {
 		log.error("action: " + action + " object : " + classname + " uuid: " + uuid);
 		
 		OpenmrsObject openmrsObject = Context.getService(AtomFeedService.class).getObjectByUuid(classname, uuid);
-		
-		/*
-		 * intentionally separating the methods here so that AtomFeedUtil
-		 * doesn't have a dependency on Event.Action
-		 */
-		if (action.equals(Event.Action.CREATED.name())) {
-			AtomFeedUtil.objectCreated(openmrsObject);
-		} else if (action.equals(Event.Action.UPDATED.name())) {
-			AtomFeedUtil.objectUpdated(openmrsObject);
-		} else if (action.equals(Event.Action.VOIDED.name())) {
-			AtomFeedUtil.objectVoided(openmrsObject);
-		} else if (action.equals(Event.Action.PURGED.name())) {
-			AtomFeedUtil.objectDeleted(openmrsObject);
-		}
-		
 		Context.closeSession();
 	}
 	
