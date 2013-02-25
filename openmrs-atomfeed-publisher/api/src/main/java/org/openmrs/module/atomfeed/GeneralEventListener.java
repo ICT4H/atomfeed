@@ -39,11 +39,6 @@ public class GeneralEventListener implements SubscribableEventListener {
 	@Override
 	public void onMessage(Message msgParam) {
 		Context.openSession();
-		String username = Context.getAdministrationService().getGlobalProperty(AtomFeedConstants.GP_MESSAGE_USERNAME, "");
-		String password = Context.getAdministrationService().getGlobalProperty(AtomFeedConstants.GP_MESSAGE_PASSWORD, "");
-		if (!username.isEmpty())
-			Context.authenticate(username, password);
-		
 		MapMessage msg = (MapMessage) msgParam;
 		String action;
 		String uuid;
@@ -55,14 +50,10 @@ public class GeneralEventListener implements SubscribableEventListener {
 		}
 		catch (JMSException e) {
 			log.error("unable to get strings off of the MapMessage", e);
-			
-			// fail hard here			
 			return;
 		}
-		
 		log.error("action: " + action + " object : " + classname + " uuid: " + uuid);
-		
-		OpenmrsObject openmrsObject = Context.getService(AtomFeedService.class).getObjectByUuid(classname, uuid);
+//		OpenmrsObject openmrsObject = Context.getService(AtomFeedService.class).getObjectByUuid(classname, uuid);
 		Context.closeSession();
 	}
 	
