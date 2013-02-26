@@ -68,8 +68,8 @@ As well as conforming to the restrictions of the Atom XML format, our protocol i
 * Entries are ordered by the time they were added to the feed, from newest to oldest.
 * An entry, once published, never changes.
 * The series of entries is paginated over many Atom documents.
-* All documents except the oldest will have a link with rel "next" pointing to the next document in the feed.
-* All documents except the newest will have a link with rel "prev" pointing to the previous document in the feed. 
+* All documents except the oldest will have a link with rel "next-archive" pointing to the next document in the feed.
+* All documents except the newest will have a link with rel "prev-archive" pointing to the previous document in the feed. 
 * Only the most recent document may change, and that can only change by newer events being prepended to it.
 * When the server decides the most recent document is finished, it archives that document and creates a new document.
 * There is a published URL that always points to the most recent document and serves as an entry point to the feed.
@@ -85,7 +85,7 @@ The solution is to break up a single logical feed into many documents. As Atom i
 
 The server breaks up the series of events into separate documents and gives each of them their own URL. The server might choose to make each document represent a period of time e.g. a day, or might divide the series of events evenly so that each document has e.g. 100 entries. 
 
-Similar to a doubly-linked list, each document has *prev* and *next* links that can be followed to find the next document in the chain.
+Similar to a doubly-linked list, each document has *prev-archive* and *next-archive* links that can be followed to find the next document in the chain.
 
 There is one special document known as the recent document, which holds the most recent entries. This document does not have a *next* link because it is at the head of the list.
 
@@ -98,8 +98,8 @@ Documents older than the recent one are known as archived documents. Archived do
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Recent notifications</title>
             <link rel="self" href="http://example.com/recent" />
-            <link rel="prev" href="http://example.com/documents/3" />
-            <!-- There is no "next" link as this is the most recent document. -->
+            <link rel="prev-archive" href="http://example.com/documents/3" />
+            <!-- There is no "next-archive" link as this is the most recent document. -->
             <link rel="via" href="http://example.com/documents/4" />
             <entry>..</entry>
             <entry>..</entry>
@@ -113,50 +113,50 @@ The recent document can also be accessed through its permanent URL, which is rep
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Notifications</title>
             <link rel="self" href="http://example.com/documents/4" />
-            <link rel="prev" href="http://example.com/documents/3" />
-            <!-- There is no "next" link as this is the most recent document. -->
+            <link rel="prev-archive" href="http://example.com/documents/3" />
+            <!-- There is no "next-archive" link as this is the most recent document. -->
             <entry>..</entry>
             <entry>..</entry>
             <entry>..</entry>
         </feed>
 
-Consumers who are interested in older entries can follow the "prev" link to the previous document.
+Consumers who are interested in older entries can follow the "prev-archive" link to the previous document.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Notifications</title>
             <link rel="self" href="http://example.com/documents/3" />
-            <link rel="next" href="http://example.com/documents/4" />
-            <link rel="prev" href="http://example.com/documents/2" />
+            <link rel="next-archive" href="http://example.com/documents/4" />
+            <link rel="prev-archive" href="http://example.com/documents/2" />
             <entry>..</entry>
             <entry>..</entry>
             <entry>..</entry>
         </feed>
 
-This document has been archived, and should therefore never change. Consumers wishing to find older or newer entries than the ones in this document can find them by following the "prev" and "next" links respectively. 
+This document has been archived, and should therefore never change. Consumers wishing to find older or newer entries than the ones in this document can find them by following the "prev-archive" and "next-archive" links respectively. 
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Notifications</title>
             <link rel="self" href="http://example.com/documents/2" />
-            <link rel="next" href="http://example.com/documents/3" />
-            <link rel="prev" href="http://example.com/documents/1" />
+            <link rel="next-archive" href="http://example.com/documents/3" />
+            <link rel="prev-archive" href="http://example.com/documents/1" />
             <entry>..</entry>
             <entry>..</entry>
             <entry>..</entry>
         </feed>
 
-This is another archived document, and can also be heavily cached. Finding older or newer entries is again a matter of following the "prev" or "next" links. Consumers who wish to read the entire history can continue to follow "prev" links until they come across a document with no such link, which will be the first.
+This is another archived document, and can also be heavily cached. Finding older or newer entries is again a matter of following the "prev-archive" or "next-archive" links. Consumers who wish to read the entire history can continue to follow "prev-archive" links until they come across a document with no such link, which will be the first.
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
             <id>urn:uuid:ff31a040-75bc-11e2-bcfd-0800200c9a66</id>
             <title type="text">Notifications</title>
             <link rel="self" href="http://example.com/documents/1" />
-            <link rel="next" href="http://example.com/documents/2" />
-            <!-- There is no "prev" link as this is the first document. -->
+            <link rel="next-archive" href="http://example.com/documents/2" />
+            <!-- There is no "prev-archive" link as this is the first document. -->
             <entry>..</entry>
             <entry>..</entry>
             <entry>..</entry>
@@ -174,7 +174,7 @@ This consumer wants to check if there are any more recent entries, so it issues 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
             <link rel="self" href="http://example.com/recent" />
-            <link rel="prev" href="http://example.com/documents/3" />
+            <link rel="prev-archive" href="http://example.com/documents/3" />
             <link rel="via" href="http://example.com/documents/4" />
             <entry>
                 <id>urn:uuid:e2089090-75c7-11e2-bcfd-0800200c9a66</id>
@@ -186,13 +186,13 @@ This consumer wants to check if there are any more recent entries, so it issues 
 
 The entry with id "urn:uuid:fc374b00-75c7-11e2-bcfd-0800200c9a66" is not present. This is because since the consumer last checked the feed, the server has added new entries to the front of the feed, archiving a document and starting a new one in the process.
 
-The consumer therefore issues a GET request for the previous document, which has the URL "http://example.com/feeds/3".
+The consumer therefore issues a GET request for the previous document, which has the URL "http://example.com/documents/3".
 
     <?xml version="1.0">
         <feed xmlns="http://www.w3.org/2005/Atom">
             <link rel="self" href="http://example.com/documents/3" />
-            <link rel="next" href="http://example.com/documents/4" />
-            <link rel="prev" href="http://example.com/documents/2" />
+            <link rel="next-archive" href="http://example.com/documents/4" />
+            <link rel="prev-archive" href="http://example.com/documents/2" />
             <entry>
                 <id>urn:uuid:f37a81d0-75c7-11e2-bcfd-0800200c9a66</id>
             </entry>
@@ -207,7 +207,7 @@ As the consumer goes through the entries, it keeps updating its record of the mo
 
 Notice that the service does not have to keep track of who the consumers are or which entry they are each up to. The guarantee that new events are always added to the front of the list allows consumers to do that for themselves.
 
-![Documents are chained using next and prev links](Atom.png "Chaining documents")
+![Documents are chained using next-archive and prev-archive links](Atom.png "Chaining documents")
 
 Implementation considerations
 -----------------------------
