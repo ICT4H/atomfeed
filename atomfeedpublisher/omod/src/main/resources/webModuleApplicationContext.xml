@@ -6,5 +6,19 @@
   		    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
   		    http://www.springframework.org/schema/context
   		    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <context:property-placeholder location="classpath*:*.properties"/>
     <context:annotation-config/>
+    <bean parent="serviceContext">
+        <property name="useSystemClassLoader">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+
+    <bean id="resourceGeneratorFactory" class="org.openmrs.module.atomfeedpublisher.factory.EventResourceFactory"/>
+    <bean id="eventService" factory-bean="resourceGeneratorFactory" factory-method="getEventService"/>
+    <bean id="eventFeedService" factory-bean="resourceGeneratorFactory" factory-method="getEventFeedService"/>
+
+    <context:component-scan base-package="org.ict4htw.atomfeed.spring"/>
 </beans>
