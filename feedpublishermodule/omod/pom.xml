@@ -13,6 +13,11 @@
 	<description>OpenMRS module project for Atom Feed Publisher Module</description>
 
 	<dependencies>
+        <dependency>
+            <groupId>org.ict4htw</groupId>
+            <artifactId>atomfeed-server</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>feedpublishermodule-api</artifactId>
@@ -47,7 +52,7 @@
 			<type>pom</type>
             <scope>test</scope>
 		</dependency>
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
