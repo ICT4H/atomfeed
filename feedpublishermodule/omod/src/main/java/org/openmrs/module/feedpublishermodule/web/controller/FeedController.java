@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.feedpublishermodule.web.controller;
 
+import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.io.WireFeedOutput;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ict4htw.atomfeed.server.service.EventFeedService;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 
 @Controller
 public class FeedController {
@@ -40,14 +43,14 @@ public class FeedController {
     @RequestMapping(value = "/module/feedpublishermodule/events/recent", method = RequestMethod.GET)
     @ResponseBody
 	public ResponseEntity<String> get(HttpServletRequest request){
-        return new ResponseEntity<String>("{\"feeds\" : 42}",HttpStatus.OK);
-//        try {
-//            Feed feed = feedService.getRecentFeed(new URI(request.getRequestURL().toString()));
-//            String output = new WireFeedOutput().outputString(feed);
-//            return new ResponseEntity<String>(output,HttpStatus.OK);
-//        } catch (Exception e) {
-//            logger.error("error occurred while getting recent feeds", e);
-//            throw new RuntimeException("Unexpected error", e);
-//        }
+//        return new ResponseEntity<String>("{\"feeds\" : 42}",HttpStatus.OK);
+        try {
+            Feed feed = feedService.getRecentFeed(new URI(request.getRequestURL().toString()));
+            String output = new WireFeedOutput().outputString(feed);
+            return new ResponseEntity<String>(output,HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("error occurred while getting recent feeds", e);
+            throw new RuntimeException("Unexpected error", e);
+        }
 	}
 }
