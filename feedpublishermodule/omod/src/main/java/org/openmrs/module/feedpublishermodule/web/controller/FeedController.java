@@ -43,7 +43,6 @@ public class FeedController {
     @RequestMapping(value = "/module/feedpublishermodule/events/recent", method = RequestMethod.GET)
     @ResponseBody
 	public ResponseEntity<String> get(HttpServletRequest request){
-//        return new ResponseEntity<String>("{\"feeds\" : 42}",HttpStatus.OK);
         try {
             Feed feed = feedService.getRecentFeed(new URI(request.getRequestURL().toString()));
             String output = new WireFeedOutput().outputString(feed);
