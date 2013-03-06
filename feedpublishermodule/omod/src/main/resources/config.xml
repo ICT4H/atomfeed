@@ -19,6 +19,12 @@
 		<point>org.openmrs.admin.list</point>
 		<class>org.openmrs.module.feedpublishermodule.extension.html.AdminList</class>
 	</extension>
+
+    <require_modules>
+        <require_module version="2.0.1">
+            org.openmrs.event
+        </require_module>
+    </require_modules>
 	
 	
 	<!-- AOP
