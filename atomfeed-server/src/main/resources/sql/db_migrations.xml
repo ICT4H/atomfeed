@@ -36,4 +36,10 @@
     <changeSet id="4" author="ict4h">
         <renameTable oldTableName="chunking_history" newTableName="number_based_chunking_histories"/>
     </changeSet>
+    <changeSet id="5" author="ict4h" dbms="mssql">
+        <modifyDataType tableName="number_based_chunking_histories" columnName="id" newDataType="int"/>
+        <addAutoIncrement tableName="number_based_chunking_histories" columnName="id" columnDataType="int"/>
+        <modifyDataType tableName="event_records" columnName="id" newDataType="int"/>
+        <addAutoIncrement tableName="event_records" columnName="id" columnDataType="int"/>
+    </changeSet>
 </databaseChangeLog>
