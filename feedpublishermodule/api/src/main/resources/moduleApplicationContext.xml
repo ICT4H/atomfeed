@@ -23,4 +23,7 @@
   		    http://www.springframework.org/schema/util
   		    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
+    <bean class="org.openmrs.event.Event">
+        <property name="subscription"><bean class="org.openmrs.module.feedpublishermodule.event.listener.DrugRegimenEventListener"></bean></property>
+    </bean>
 </beans>

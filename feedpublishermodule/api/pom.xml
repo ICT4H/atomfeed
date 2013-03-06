@@ -13,13 +13,13 @@
 	<description>API project for ATOM Feed Publisher Module</description>
 
 	<dependencies>
-		<!-- 
-		Add other dependencies from lib:
-		<dependency>
-			<groupId>org.other.library</groupId>
-			<artifactId>library-name</artifactId>
-		</dependency>
-		-->
+        <dependency>
+            <groupId>org.openmrs</groupId>
+            <artifactId>event-api</artifactId>
+            <version>2.0.1</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
 		
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
