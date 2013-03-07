@@ -2,45 +2,44 @@ package org.openmrs.module.feedpublishermodule.event.listener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ict4htw.atomfeed.server.service.*;
+import org.ict4htw.atomfeed.server.service.EventService;
 import org.joda.time.DateTime;
+import org.openmrs.DrugOrder;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.Order;
 import org.openmrs.Patient;
-import org.openmrs.api.PatientService;
+import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.event.Event;
 import org.openmrs.event.SubscribableEventListener;
-import org.openmrs.serialization.OpenmrsSerializer;
-import org.openmrs.serialization.SerializationException;
-import org.openmrs.serialization.SimpleXStreamSerializer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.openmrs.module.feedpublishermodule.mapper.DosageRequestSerializer;
+import org.springframework.stereotype.Component;
 
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-//@Service
+@Component
 public class DrugRegimenEventListener implements SubscribableEventListener {
 
     private EventService eventService;
-    private OpenmrsSerializer serializer;
 
 //    @Autowired
-//    public DrugRegimenEventListener(EventService eventService,OpenmrsSerializer serializer) {
+    public DrugRegimenEventListener() {
 //        this.eventService = eventService;
-//        this.serializer = serializer;
-//    }
+    }
 
     protected final Log logger = LogFactory.getLog(DrugRegimenEventListener.class);
 
     @Override
     public List<Class<? extends OpenmrsObject>> subscribeToObjects() {
-        Object classes = Arrays.asList(Patient.class);
+        Object classes = Arrays.asList(DrugOrder.class);
         return (List<Class<? extends OpenmrsObject>>) classes;
     }
 
@@ -55,10 +54,12 @@ public class DrugRegimenEventListener implements SubscribableEventListener {
             Context.openSession();
             authenticate();
             String uuid = ((MapMessage) message).getString("uuid");
-            Patient patient = Context.getService(PatientService.class).getPatientByUuid(uuid);
-            logger.info(String.format("patient found - %s", patient.getGivenName()));
-            org.ict4htw.atomfeed.server.service.Event event = createEvent(patient);
-            logger.info(String.format("event instantiated with contents - %s",event.getContents()));
+            OrderService service = Context.getService(OrderService.class);
+            Order order = service.getOrderByUuid(uuid);
+            Patient patient = order.getPatient();
+            logger.debug(String.format("patient found - %s", patient.getGivenName()));
+            List<DrugOrder> drugOrdersForPatient = service.getDrugOrdersByPatient(patient, OrderService.ORDER_STATUS.CURRENT);
+            List<org.ict4htw.atomfeed.server.service.Event> events = createEvents(drugOrdersForPatient);
 //            eventService.notify(event);
         }
         catch (JMSException jmsException){
@@ -74,9 +75,18 @@ public class DrugRegimenEventListener implements SubscribableEventListener {
         }
     }
 
-    private org.ict4htw.atomfeed.server.service.Event createEvent(Patient patient) throws SerializationException, URISyntaxException {
-        //new SimpleXStreamSerializer()
-        String contents = new SimpleXStreamSerializer().serialize(patient);
+    private List<org.ict4htw.atomfeed.server.service.Event> createEvents(List<DrugOrder> drugOrdersForPatient) throws URISyntaxException, IOException {
+        ArrayList<org.ict4htw.atomfeed.server.service.Event> events = new ArrayList<org.ict4htw.atomfeed.server.service.Event>();
+        DosageRequestSerializer dosageRequestSerializer = new DosageRequestSerializer();
+        for(DrugOrder order : drugOrdersForPatient){
+            //ignore implications of frequency for now.
+            events.add(createEvent(dosageRequestSerializer.serialize(order)));
+        }
+        return events;
+    }
+
+    private org.ict4htw.atomfeed.server.service.Event createEvent(String dosageRequest) throws URISyntaxException {
+        String contents = dosageRequest;
         String uuid = UUID.randomUUID().toString();
         String title = "";
         DateTime timeStamp = DateTime.now();
