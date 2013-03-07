@@ -1,4 +1,4 @@
-package org.openmrs.module.feedpublishermodule.factory;
+package org.openmrs.module.feedpublishermodule.repository.jdbc;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.connection.C3P0ConnectionProvider;

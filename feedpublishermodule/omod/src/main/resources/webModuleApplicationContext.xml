@@ -27,12 +27,11 @@
     <context:component-scan base-package="org.openmrs.module.feedpublishermodule.web.controller" />
 
     <bean id="feedGeneratorFactory" class="org.openmrs.module.feedpublishermodule.factory.FeedGeneratorFactory"/>
-    <bean id="openMRSConnectionProvider" class="org.openmrs.module.feedpublishermodule.factory.OpenMRSConnectionProvider">
-            <constructor-arg ref="sessionFactory"/>
-    </bean>
+
     <bean id="feedGenerator" factory-bean="feedGeneratorFactory" factory-method="get">
         <constructor-arg ref="openMRSConnectionProvider"/>
     </bean>
+
     <bean id="eventFeedService" class="org.ict4htw.atomfeed.server.service.EventFeedServiceImpl">
         <constructor-arg ref="feedGenerator"/>
     </bean>
