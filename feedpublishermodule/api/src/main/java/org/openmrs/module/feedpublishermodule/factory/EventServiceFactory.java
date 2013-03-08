@@ -8,7 +8,8 @@ import org.ict4htw.atomfeed.server.service.EventServiceImpl;
 
 public class EventServiceFactory {
     public EventService get(JdbcConnectionProvider provider){
-        AllEventRecords eventRecords = new AllEventRecordsJdbcImpl(provider);
+        AllEventRecordsJdbcImpl eventRecords = new AllEventRecordsJdbcImpl(provider);
+        eventRecords.setSchema("");
         return new EventServiceImpl(eventRecords);
     }
 }

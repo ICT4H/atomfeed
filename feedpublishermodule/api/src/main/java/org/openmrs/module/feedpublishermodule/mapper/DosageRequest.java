@@ -2,6 +2,7 @@ package org.openmrs.module.feedpublishermodule.mapper;
 
 import org.joda.time.LocalDate;
 import org.openmrs.DrugOrder;
+import org.openmrs.Order;
 
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -13,20 +14,19 @@ public class DosageRequest {
     public int numberOfTimesInADay;
     public String drugName;
     public Date startDate;
-
+    public String uuid;
 
     public static DosageRequest create(DrugOrder drugOrder) {
         String frequency = drugOrder.getFrequency();
-        String drugName = drugOrder.getDrug().getName();
-        Date startDate = drugOrder.getStartDate();
-
         DosageRequest dosageRequest = new DosageRequest();
-        dosageRequest.drugName = drugName;
-        dosageRequest.startDate = startDate;
+        dosageRequest.drugName = drugOrder.getDrug().getName();
+        dosageRequest.startDate = drugOrder.getStartDate();
         String[] frequencySplit = frequency.split("x");
 
         dosageRequest.numberOfTimesInADay = matchRangeAsIntegerFor(frequencySplit[0]);
         dosageRequest.numberOfDaysInAWeek = matchRangeAsIntegerFor(frequencySplit[1]);
+
+        dosageRequest.uuid = drugOrder.getUuid();
         return dosageRequest;
     }
 

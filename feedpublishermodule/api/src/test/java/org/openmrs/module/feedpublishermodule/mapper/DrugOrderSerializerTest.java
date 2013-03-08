@@ -1,25 +1,22 @@
 package org.openmrs.module.feedpublishermodule.mapper;
 
 import junit.framework.Assert;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URISyntaxException;
 import java.util.Date;
-import java.util.List;
 
-public class DosageRequestSerializerTest {
+public class DrugOrderSerializerTest {
 
     @Test
-    public void shouldSerializedListOfDrugOrder() throws IOException {
+    public void shouldSerializedListOfDrugOrder() throws IOException, URISyntaxException {
         DrugOrder order = new DrugOrder();
         order.setStartDate(new Date("01/03/2013"));
         order.setFrequency("2/day x 7 days/week");
         order.setDrug(new Drug());
-        String contents = new DosageRequestSerializer().serialize(order);
-        Assert.assertNotNull(contents);
+        Assert.assertNotNull(new DrugOrderSerializer().asEvent(order));
     }
 }
