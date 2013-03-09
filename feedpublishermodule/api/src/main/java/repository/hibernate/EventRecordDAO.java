@@ -30,6 +30,7 @@ public class EventRecordDAO implements AllEventRecords{
                 AllEventRecordsJdbcImpl eventRecords = new AllEventRecordsJdbcImpl(new JdbcConnectionProvider() {
                     @Override
                     public Connection getConnection() throws SQLException {
+                        //TODO: Should not be setting this. Explore alternatives.
                         connection.setAutoCommit(true);
                         return connection;
                     }
