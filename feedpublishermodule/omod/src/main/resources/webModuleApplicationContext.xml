@@ -26,6 +26,10 @@
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
     <context:component-scan base-package="org.openmrs.module.feedpublishermodule.web.controller" />
 
+    <bean id="openMRSConnectionProvider" class="org.openmrs.module.feedpublishermodule.repository.jdbc.OpenMRSConnectionProvider">
+        <constructor-arg ref="sessionFactory"/>
+    </bean>
+
     <bean id="feedGeneratorFactory" class="org.openmrs.module.feedpublishermodule.factory.FeedGeneratorFactory"/>
 
     <bean id="feedGenerator" factory-bean="feedGeneratorFactory" factory-method="get">

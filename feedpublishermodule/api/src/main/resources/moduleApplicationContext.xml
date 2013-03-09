@@ -27,12 +27,9 @@
         <property name="subscription"><bean class="org.openmrs.module.feedpublishermodule.event.listener.DrugRegimenEventListener"></bean></property>
     </bean>
 
-    <bean id="openMRSConnectionProvider" class="org.openmrs.module.feedpublishermodule.repository.jdbc.OpenMRSConnectionProvider">
-        <constructor-arg ref="sessionFactory"/>
-    </bean>
-
     <bean id="eventServiceFactory" class="org.openmrs.module.feedpublishermodule.factory.EventServiceFactory"/>
+
     <bean id="eventService" factory-bean="eventServiceFactory" factory-method="get">
-        <constructor-arg ref="openMRSConnectionProvider"/>
+        <constructor-arg ref="sessionFactory"/>
     </bean>
 </beans>
