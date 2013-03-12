@@ -19,9 +19,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.ict4htw.atomfeed.server.service.EventFeedService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,7 +48,10 @@ public class FeedController {
         try {
             Feed feed = feedService.getRecentFeed(new URI(request.getRequestURL().toString()));
             String output = new WireFeedOutput().outputString(feed);
-            return new ResponseEntity<String>(output,HttpStatus.OK);
+            MultiValueMap<String, String> headers = new HttpHeaders();
+            headers.add("Content-Type", "application/atom+xml");
+            ResponseEntity<String> entity = new ResponseEntity<String>(output, headers,HttpStatus.OK);
+            return entity;
         } catch (Exception e) {
             logger.error("error occurred while getting recent feeds", e);
             throw new RuntimeException("Unexpected error", e);
