@@ -18,6 +18,8 @@ public class OpenMRSConnectionProvider implements JdbcConnectionProvider {
         this.sessionFactory = sessionFactory;
     }
 
+    //Use the doWork Paradigm instead of getting a Connection like this.
+    //Check if context is available at this point of time in the module life cycle.
     @Override
     public Connection getConnection() throws SQLException {
         SessionFactoryImplementor implementor = (SessionFactoryImplementor) sessionFactory;
