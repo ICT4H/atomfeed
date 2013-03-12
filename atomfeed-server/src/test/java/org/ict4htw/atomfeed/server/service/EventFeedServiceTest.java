@@ -1,9 +1,6 @@
 package org.ict4htw.atomfeed.server.service;
 
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
-import com.sun.syndication.feed.atom.Person;
+import com.sun.syndication.feed.atom.*;
 import junit.framework.Assert;
 import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
@@ -87,5 +84,15 @@ public class EventFeedServiceTest {
         Assert.assertNotNull(links.get("next-archive"));
         Assert.assertNull(links.get("prev-archive"));
         Assert.assertEquals(feedUrl, links.get("self").getHref());
+    }
+
+    @Test
+    public void shouldGetContentsFromFeedWrappedInCDATA() throws URISyntaxException {
+        String recentUrl = "http://hostname/feedgenerator/1";
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        Entry entry = (Entry) feed.getEntries().get(0);
+        String contents = ((Content)(entry.getContents().get(0))).getValue();
+        Assert.assertTrue(contents.startsWith("<![CDATA["));
+        Assert.assertTrue(contents.endsWith("]]>"));
     }
 }

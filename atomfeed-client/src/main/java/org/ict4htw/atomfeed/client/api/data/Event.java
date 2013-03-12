@@ -28,7 +28,10 @@ public class Event {
      * @return
      */
     public String getContent(){
-        Content content = (Content) entry.getContents().get(0);
-        return entry.getContents().size()!=0? content.getValue() :null;
+        if(entry.getContents().isEmpty()){
+            return null;
+        }
+        String value = ((Content) (entry.getContents().get(0))).getValue();
+        return String.format("%s%s%s","<![CDATA[", value,"]]>");
     }
 }

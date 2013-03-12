@@ -165,7 +165,14 @@ public class EventFeedServiceImpl implements EventFeedService {
     private List<Content> generateContents(EventRecord eventRecord) {
         Content content = new Content();
         content.setType(ATOMFEED_MEDIA_TYPE);
-        content.setValue(eventRecord.getContents());
+        content.setValue(wrapInCDATA(eventRecord.getContents()));
         return Arrays.asList(content);
+    }
+
+    private String wrapInCDATA(String contents){
+        if(contents == null){
+            return null;
+        }
+        return String.format("%s%s%s","<![CDATA[",contents,"]]>");
     }
 }
