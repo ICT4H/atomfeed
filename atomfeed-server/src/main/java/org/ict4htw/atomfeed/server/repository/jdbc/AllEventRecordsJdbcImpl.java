@@ -31,6 +31,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 		PreparedStatement stmt = null;
 		try {
 			connection = getDbConnection();
+            connection.setAutoCommit(false);
 			String insertSql = String.format("insert into %s (uuid, title, uri, object) values (?, ?, ?, ?)", getTableName("event_records"));
 			stmt = connection.prepareStatement(insertSql);
 			stmt.setString(1, eventRecord.getUuid());

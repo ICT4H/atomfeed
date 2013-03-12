@@ -2,6 +2,7 @@ package repository.hibernate;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 import org.hibernate.jdbc.Work;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
@@ -23,20 +24,20 @@ public class EventRecordDAO implements AllEventRecords{
 
     @Override
     public void add(final EventRecord eventRecord) {
-        Session currentSession = sessionFactory.getCurrentSession();
+        final Session currentSession = sessionFactory.getCurrentSession();
         currentSession.doWork(new Work() {
             @Override
             public void execute(final Connection connection) throws SQLException {
                 AllEventRecordsJdbcImpl eventRecords = new AllEventRecordsJdbcImpl(new JdbcConnectionProvider() {
                     @Override
                     public Connection getConnection() throws SQLException {
-                        //TODO: Should not be setting this. Explore alternatives.
-                        connection.setAutoCommit(true);
                         return connection;
                     }
                 });
+                Transaction transaction = currentSession.beginTransaction();
                 eventRecords.setSchema("");
                 eventRecords.add(eventRecord);
+                transaction.commit();
             }
         });
     }
