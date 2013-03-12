@@ -4,10 +4,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.ict4htw.atomfeed.server.service.Event;
 import org.joda.time.DateTime;
 import org.openmrs.DrugOrder;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+@Component
 public class DrugOrderSerializer {
     public Event asEvent(DrugOrder drugOrder) throws URISyntaxException, IOException {
         DosageRequest dosageRequest = DosageRequest.create(drugOrder);

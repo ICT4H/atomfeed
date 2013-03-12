@@ -9,6 +9,7 @@ import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.event.Event;
 import org.openmrs.event.SubscribableEventListener;
+import org.openmrs.module.feedpublishermodule.context.ContextWrapper;
 import org.openmrs.module.feedpublishermodule.mapper.DrugOrderSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,13 +25,14 @@ public class DrugRegimenEventListener implements SubscribableEventListener {
 
     private EventService eventService;
     private DrugOrderSerializer serializer;
+    private ContextWrapper contextWrapper;
     protected final Log logger = LogFactory.getLog(DrugRegimenEventListener.class);
 
     @Autowired
-    public DrugRegimenEventListener(EventService eventService) {
+    public DrugRegimenEventListener(EventService eventService, DrugOrderSerializer drugOrderSerializer,ContextWrapper contextWrapper) {
         this.eventService = eventService;
-        //TODO: AutoWire
-        this.serializer = new DrugOrderSerializer();
+        this.serializer = drugOrderSerializer;
+        this.contextWrapper = contextWrapper;
     }
 
     @Override
@@ -47,11 +49,10 @@ public class DrugRegimenEventListener implements SubscribableEventListener {
     @Override
     public void onMessage(Message message){
         try{
-            Context.openSession();
-            authenticate();
+            contextWrapper.openAuthenticatedSession();
             String uuid = ((MapMessage) message).getString("uuid");
-            //Wrap these in another class. Create a Context Wrapper to facilitate easier testing
-            DrugOrder order = (DrugOrder) Context.getService(OrderService.class).getOrderByUuid(uuid);
+            OrderService orderService = contextWrapper.getService(OrderService.class);
+            DrugOrder order = (DrugOrder) orderService.getOrderByUuid(uuid);
             //ignore implications of frequency for now. Just Publish one event.
             eventService.notify(serializer.asEvent(order));
         }
@@ -64,14 +65,7 @@ public class DrugRegimenEventListener implements SubscribableEventListener {
             ex.printStackTrace();
         }
         finally {
-            Context.closeSession();
+            contextWrapper.closeSession();
         }
-    }
-
-    //TODO: read from admin global properties.
-    private void authenticate(){
-        String username = "admin";
-        String password =  "!4321Abcd";
-        Context.authenticate(username, password);
     }
 }
