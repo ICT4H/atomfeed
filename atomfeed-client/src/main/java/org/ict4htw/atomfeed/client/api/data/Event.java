@@ -32,6 +32,6 @@ public class Event {
             return null;
         }
         String value = ((Content) (entry.getContents().get(0))).getValue();
-        return String.format("%s%s%s","<![CDATA[", value,"]]>");
+        return value.replaceFirst("^<!\\[CDATA\\[","").replaceFirst("\\]\\]>$","");
     }
 }
