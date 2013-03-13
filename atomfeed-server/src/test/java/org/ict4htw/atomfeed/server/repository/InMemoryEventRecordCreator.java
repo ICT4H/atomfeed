@@ -28,4 +28,8 @@ public class InMemoryEventRecordCreator extends EventRecordCreator {
                     cal.getTime()));
         }
     }
+
+    public void create(EventRecord eventRecord) {
+        allEventRecords.add(eventRecord);
+    }
 }

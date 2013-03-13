@@ -2,6 +2,7 @@ package org.ict4htw.atomfeed.server.service;
 
 import com.sun.syndication.feed.atom.*;
 import junit.framework.Assert;
+import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
 import org.ict4htw.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4htw.atomfeed.server.repository.InMemoryEventRecordCreator;
@@ -12,10 +13,7 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class EventFeedServiceTest {
     private EventFeedService eventFeedService;
@@ -94,5 +92,15 @@ public class EventFeedServiceTest {
         String contents = ((Content)(entry.getContents().get(0))).getValue();
         Assert.assertTrue(contents.startsWith("<![CDATA["));
         Assert.assertTrue(contents.endsWith("]]>"));
+    }
+
+    @Test
+    public void shouldNotWrapContentsInCDATAWhenContentsAreNotPresent() throws URISyntaxException {
+        String recentUrl = "http://hostname/feedgenerator/1";
+        allEventRecords.clear();
+        recordCreator.create(new EventRecord("","", new URI(""),null,new Date()));
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        Entry entry = (Entry) feed.getEntries().get(0);
+        Assert.assertNull(((Content)entry.getContents().get(0)).getValue());
     }
 }
