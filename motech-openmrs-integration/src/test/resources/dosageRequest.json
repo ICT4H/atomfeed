@@ -1,10 +1,7 @@
 {
-   "externalId": "77b8de8b29fb4134aec26974b56a33b6",
-   "reminderRepeatIntervalInMinutes": 15,
-   "pillWindowInHours": 2,
-   "bufferOverDosageTimeInMinutes": 5,
-    "dosageRequests": [
-        {"startHour": 21,"startMinute": 30,
-            "medicineRequests": [{ "name": "d4T3TC_Lamivir-S","startDate": "2012-05-31"}]
-        }]
+    "numberOfDaysInAWeek":7,
+    "numberOfTimesInADay":2,
+    "drugName":"Triomune-30",
+    "startDate":1362853800000,
+    "uuid":"3842b4fb-f3d4-4088-ac15-eee4ed619098"
 }
