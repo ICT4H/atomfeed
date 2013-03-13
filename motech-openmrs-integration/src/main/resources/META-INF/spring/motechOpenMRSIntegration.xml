@@ -14,12 +14,6 @@
             <ref bean="pillReminderServiceImplOsgi"/>
         </constructor-arg>
         <constructor-arg>
-            <ref bean="schedulerServiceOsgi"/>
-        </constructor-arg>
-        <constructor-arg type="java.lang.String">
-            <value>0 0/1 * 1/1 * ? *</value>
-        </constructor-arg>
-        <constructor-arg>
             <bean class="org.ict4h.atomfeed.integration.motech.openmrs.mapper.EventMapper"></bean>
         </constructor-arg>
     </bean>

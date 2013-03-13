@@ -32,13 +32,13 @@ public class PillRegimenTest {
         MotechEvent event = createMotechEvent();
         DailyPillRegimenRequest request = new DailyPillRegimenRequest(null,0,0,0,null);
         when(mapper.toDailyPillRegimenRequest("foobar")).thenReturn(request);
-        new PillRegimen(service,null,"",mapper).create(event);
+        new PillRegimen(service, mapper).create(event);
         verify(service).createNew(request);
     }
 
     private MotechEvent createMotechEvent() {
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("contents", "<![CDATA[foobar]]>");
+        map.put("contents", "foobar");
         return new MotechEvent("",map);
     }
 }
