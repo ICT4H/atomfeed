@@ -1,4 +1,4 @@
-package repository.hibernate;
+package org.openmrs.module.feedpublishermodule.repository.hibernate;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.hibernate.SessionFactory;
