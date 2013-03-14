@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.motechclient;
+package org.ict4h.atomfeed.motechclient;
 
 import org.ict4htw.atomfeed.client.domain.Marker;
 import org.ict4htw.atomfeed.client.repository.datasource.MarkerDataSource;

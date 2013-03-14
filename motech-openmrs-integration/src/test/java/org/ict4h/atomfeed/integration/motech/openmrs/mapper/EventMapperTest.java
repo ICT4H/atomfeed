@@ -1,6 +1,5 @@
 package org.ict4h.atomfeed.integration.motech.openmrs.mapper;
 
-import junit.framework.Assert;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.motechproject.server.pillreminder.api.contract.DailyPillRegimenRequest;

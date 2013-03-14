@@ -1,4 +1,4 @@
-package org.ict4htw.atomfeed.motechclient;
+package org.ict4h.atomfeed.motechclient;
 
 import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.atom.Entry;

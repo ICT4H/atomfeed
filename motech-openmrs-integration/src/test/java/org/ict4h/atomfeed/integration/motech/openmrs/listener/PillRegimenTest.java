@@ -1,6 +1,5 @@
-package listener;
+package org.ict4h.atomfeed.integration.motech.openmrs.listener;
 
-import org.ict4h.atomfeed.integration.motech.openmrs.listener.PillRegimen;
 import org.ict4h.atomfeed.integration.motech.openmrs.mapper.EventMapper;
 import org.junit.Before;
 import org.junit.Test;
