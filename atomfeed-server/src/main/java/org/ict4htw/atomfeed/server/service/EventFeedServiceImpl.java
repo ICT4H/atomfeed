@@ -17,6 +17,7 @@ public class EventFeedServiceImpl implements EventFeedService {
     private static final String LINK_TYPE_SELF = "self";
     private static final String LINK_TYPE_VIA = "via";
     private static final String ATOMFEED_MEDIA_TYPE = "application/vnd.atomfeed+xml";
+    private static final String UNIQUE_FEED_IDENTIFIER = "00118420-97b0-403c-a5b6-1031a00e126c";
 
 	private FeedGenerator feedGenerator;
 
@@ -81,7 +82,7 @@ public class EventFeedServiceImpl implements EventFeedService {
         EventFeed feedForId = feedGenerator.getFeedForId(feedId);
         return new FeedBuilder()
                 .type("atom_1.0")
-                .id("urn:uuid:" + UUID.randomUUID().toString())
+                .id("urn:uuid:" + generateUUIDForEventFeed(feedId))
                 .title("TITLE")
                 .generator(getGenerator())
                 .entries(getEntries(feedForId.getEvents(), requestUri))
@@ -90,6 +91,15 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .links(generatePagingLinks(requestUri,feedForId))
                 .build();
 
+    }
+
+    private String generateUUIDForEventFeed(Integer feedId){
+        String feedIdAsString = feedId.toString();
+        int endIndex = UNIQUE_FEED_IDENTIFIER.length();
+        int startIndex = endIndex - feedIdAsString.length();
+
+        String replacementRegex = String.format("%s$", UNIQUE_FEED_IDENTIFIER.subSequence(startIndex, endIndex));
+        return UNIQUE_FEED_IDENTIFIER.replaceFirst(replacementRegex,feedIdAsString);
     }
 
     private Generator getGenerator() {

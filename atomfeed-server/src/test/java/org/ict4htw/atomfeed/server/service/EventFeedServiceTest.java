@@ -15,6 +15,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static junit.framework.Assert.assertEquals;
+
 public class EventFeedServiceTest {
     private EventFeedService eventFeedService;
     private AllEventRecordsStub allEventRecords;
@@ -39,16 +41,16 @@ public class EventFeedServiceTest {
         HashMap<String, Link> links = getAllFeedLinks(feed);
         Assert.assertNull(links.get("next-archive"));
         Assert.assertNotNull(links.get("prev-archive"));
-        Assert.assertEquals(recentUrl, links.get("self").getHref());
+        assertEquals(recentUrl, links.get("self").getHref());
     }
 
 //  Should fail when we read author data from the database
     @Test
-    public void shouldGetAnAuthorForAnEnEntry() throws URISyntaxException {
+    public void shouldGetAnAuthorForAnEntry() throws URISyntaxException {
         String recentUrl = "http://hostname/feedgenerator/recent";
         Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
         Entry entry = (Entry) feed.getEntries().get(0);
-        Assert.assertEquals("OpenMRS", ((Person)entry.getAuthors().get(0)).getName());
+        assertEquals("OpenMRS", ((Person) entry.getAuthors().get(0)).getName());
     }
 
     @Test
@@ -62,7 +64,7 @@ public class EventFeedServiceTest {
         date.set(Calendar.MILLISECOND, 0);
 
         Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
-        Assert.assertEquals(date.getTime(), feed.getUpdated());
+        assertEquals(date.getTime(), feed.getUpdated());
     }
 
     private HashMap<String, Link> getAllFeedLinks(Feed feed) {
@@ -81,7 +83,15 @@ public class EventFeedServiceTest {
         HashMap<String, Link> links = getAllFeedLinks(feed);
         Assert.assertNotNull(links.get("next-archive"));
         Assert.assertNull(links.get("prev-archive"));
-        Assert.assertEquals(feedUrl, links.get("self").getHref());
+        assertEquals(feedUrl, links.get("self").getHref());
+    }
+
+    @Test
+    public void shouldGenerateTheSameUUIDForFeedsThatAreNotRecent() throws URISyntaxException {
+        String feedUrl = "http://hostname/feedgenerator/1";
+        Feed feed = eventFeedService.getEventFeed(new URI(feedUrl), 2);
+        Feed theSameFeed = eventFeedService.getEventFeed(new URI(feedUrl),2);
+        assertEquals(feed.getId(),theSameFeed.getId());
     }
 
     @Test
