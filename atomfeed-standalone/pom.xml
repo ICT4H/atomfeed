@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>org.ict4htw</groupId>
-            <artifactId>atomfeed-spring</artifactId>
+            <artifactId>atomfeed-spring-server</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
