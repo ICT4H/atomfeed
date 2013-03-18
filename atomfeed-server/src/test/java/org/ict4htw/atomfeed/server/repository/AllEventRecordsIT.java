@@ -1,6 +1,6 @@
 package org.ict4htw.atomfeed.server.repository;
 
-import org.ict4htw.atomfeed.SpringIntegrationIT;
+import org.ict4htw.atomfeed.IntegrationTest;
 import org.ict4htw.atomfeed.server.domain.EventRecord;
 import org.ict4htw.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
 import org.junit.After;
@@ -22,7 +22,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 
-public class AllEventRecordsIT extends SpringIntegrationIT {
+public class AllEventRecordsIT extends IntegrationTest {
 
     private AllEventRecords allEventRecords;
     private Connection connection;

@@ -1,6 +1,6 @@
 package org.ict4htw.atomfeed.server.repository;
 
-import org.ict4htw.atomfeed.SpringIntegrationIT;
+import org.ict4htw.atomfeed.IntegrationTest;
 import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistoryEntry;
 import org.ict4htw.atomfeed.server.repository.jdbc.AllChunkingEntriesJdbcImpl;
 import org.junit.After;
@@ -13,7 +13,7 @@ import java.util.List;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
-public class NumberBasedChunkingHistoryEntryIT extends SpringIntegrationIT{
+public class NumberBasedChunkingHistoryEntryIT extends IntegrationTest {
 
     private Connection connection;
 

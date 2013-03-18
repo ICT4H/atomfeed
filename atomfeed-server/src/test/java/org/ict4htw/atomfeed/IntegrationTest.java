@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
-public abstract class SpringIntegrationIT {
+public abstract class IntegrationTest {
     protected Connection getConnection() throws SQLException {
         ResourceBundle bundle = ResourceBundle.getBundle("atomfeed");
         return DriverManager.getConnection(bundle.getString("jdbc.url"),
