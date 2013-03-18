@@ -1,7 +1,7 @@
 package org.openmrs.module.feedpublishermodule.mapper;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.ict4htw.atomfeed.server.service.Event;
+import org.ict4h.atomfeed.server.service.Event;
 import org.joda.time.DateTime;
 import org.openmrs.DrugOrder;
 import org.springframework.stereotype.Component;

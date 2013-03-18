@@ -2,11 +2,10 @@ package org.openmrs.module.feedpublishermodule.event.listener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ict4htw.atomfeed.server.service.EventService;
+import org.ict4h.atomfeed.server.service.EventService;
 import org.openmrs.DrugOrder;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.api.OrderService;
-import org.openmrs.api.context.Context;
 import org.openmrs.event.Event;
 import org.openmrs.event.SubscribableEventListener;
 import org.openmrs.module.feedpublishermodule.context.ContextWrapper;

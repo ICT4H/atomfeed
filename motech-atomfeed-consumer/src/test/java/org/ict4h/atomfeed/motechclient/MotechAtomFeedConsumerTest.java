@@ -2,8 +2,8 @@ package org.ict4h.atomfeed.motechclient;
 
 import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.atom.Entry;
-import org.ict4htw.atomfeed.client.api.FeedClient;
-import org.ict4htw.atomfeed.client.api.data.Event;
+import org.ict4h.atomfeed.client.api.FeedClient;
+import org.ict4h.atomfeed.client.api.data.Event;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;

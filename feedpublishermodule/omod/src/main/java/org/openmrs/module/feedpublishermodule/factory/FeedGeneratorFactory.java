@@ -1,12 +1,12 @@
 package org.openmrs.module.feedpublishermodule.factory;
 
-import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
-import org.ict4htw.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistoryEntry;
-import org.ict4htw.atomfeed.server.repository.jdbc.AllChunkingEntriesJdbcImpl;
-import org.ict4htw.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
-import org.ict4htw.atomfeed.server.repository.jdbc.JdbcConnectionProvider;
-import org.ict4htw.atomfeed.server.service.feedgenerator.FeedGenerator;
-import org.ict4htw.atomfeed.server.service.feedgenerator.NumberFeedGenerator;
+import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
+import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistoryEntry;
+import org.ict4h.atomfeed.server.repository.jdbc.AllChunkingEntriesJdbcImpl;
+import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
+import org.ict4h.atomfeed.server.repository.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.server.service.feedgenerator.FeedGenerator;
+import org.ict4h.atomfeed.server.service.feedgenerator.NumberFeedGenerator;
 
 import java.util.List;
 

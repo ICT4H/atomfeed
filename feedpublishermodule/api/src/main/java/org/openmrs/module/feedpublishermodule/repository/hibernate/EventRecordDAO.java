@@ -5,11 +5,11 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 import org.hibernate.jdbc.Work;
-import org.ict4htw.atomfeed.server.domain.EventRecord;
-import org.ict4htw.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
-import org.ict4htw.atomfeed.server.repository.AllEventRecords;
-import org.ict4htw.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
-import org.ict4htw.atomfeed.server.repository.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.server.domain.EventRecord;
+import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
+import org.ict4h.atomfeed.server.repository.AllEventRecords;
+import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
+import org.ict4h.atomfeed.server.repository.jdbc.JdbcConnectionProvider;
 
 import java.sql.Connection;
 import java.sql.SQLException;

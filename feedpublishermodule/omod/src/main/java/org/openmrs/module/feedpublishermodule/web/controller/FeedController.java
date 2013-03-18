@@ -17,7 +17,7 @@ import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.WireFeedOutput;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.ict4htw.atomfeed.server.service.EventFeedService;
+import org.ict4h.atomfeed.server.service.EventFeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

@@ -1,8 +1,8 @@
 package org.openmrs.module.feedpublishermodule.factory;
 
 import org.hibernate.SessionFactory;
-import org.ict4htw.atomfeed.server.service.EventService;
-import org.ict4htw.atomfeed.server.service.EventServiceImpl;
+import org.ict4h.atomfeed.server.service.EventService;
+import org.ict4h.atomfeed.server.service.EventServiceImpl;
 import org.openmrs.module.feedpublishermodule.repository.hibernate.*;
 
 public class EventServiceFactory {

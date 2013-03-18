@@ -15,10 +15,10 @@
 
     <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor"/>
 
-    <bean id="atomClientFactory" class="org.ict4htw.atomfeed.motechclient.AtomClientFactory"></bean>
+    <bean id="atomClientFactory" class="org.ict4h.atomfeed.motechclient.AtomClientFactory"></bean>
     <bean id="atomClient" factory-bean="atomClientFactory" factory-method="get"></bean>
 
-    <bean class="org.ict4htw.atomfeed.motechclient.MotechAtomFeedConsumer" id="atomConsumer">
+    <bean class="org.ict4h.atomfeed.motechclient.MotechAtomFeedConsumer" id="atomConsumer">
         <constructor-arg>
             <bean class="java.net.URI">
                 <constructor-arg type="java.lang.String">

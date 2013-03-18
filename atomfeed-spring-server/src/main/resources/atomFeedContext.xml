@@ -34,8 +34,8 @@
 	</tx:advice>
 
     <aop:config>
-        <aop:pointcut id="eventCreation" expression="execution(* org.ict4htw.atomfeed.server.service.EventService.*(..))"/>
-        <aop:pointcut id="eventFeeds" expression="execution(* org.ict4htw.atomfeed.server.service.EventFeedService.*(..))"/>
+        <aop:pointcut id="eventCreation" expression="execution(* org.ict4h.atomfeed.server.service.EventService.*(..))"/>
+        <aop:pointcut id="eventFeeds" expression="execution(* org.ict4h.atomfeed.server.service.EventFeedService.*(..))"/>
         <aop:advisor advice-ref="defaultTxAdvice" pointcut-ref="eventCreation"/>
         <aop:advisor advice-ref="noTxAdvice" pointcut-ref="eventFeeds"/>
     </aop:config>
@@ -51,18 +51,18 @@
     </bean>
 
 
-    <bean id="generatorFactory" class="org.ict4htw.atomfeed.server.service.feedgenerator.FeedGeneratorFactory">
+    <bean id="generatorFactory" class="org.ict4h.atomfeed.server.service.feedgenerator.FeedGeneratorFactory">
     </bean>
     <bean id="feedGenerator" factory-bean="generatorFactory" factory-method="getFeedGenerator">
         <constructor-arg ref="allEventRecords"/>
         <constructor-arg ref="allChunkingEntries"/>
     </bean>
     
-    <bean id="eventFeedService" class="org.ict4htw.atomfeed.server.service.EventFeedServiceImpl">
+    <bean id="eventFeedService" class="org.ict4h.atomfeed.server.service.EventFeedServiceImpl">
         <constructor-arg ref="feedGenerator"/>
     </bean>
     
-    <bean id="eventService" class="org.ict4htw.atomfeed.server.service.EventServiceImpl">
+    <bean id="eventService" class="org.ict4h.atomfeed.server.service.EventServiceImpl">
         <constructor-arg ref="allEventRecords"/>
     </bean>
     

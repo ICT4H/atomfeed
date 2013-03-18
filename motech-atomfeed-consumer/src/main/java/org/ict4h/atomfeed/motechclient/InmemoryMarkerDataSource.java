@@ -1,7 +1,7 @@
 package org.ict4h.atomfeed.motechclient;
 
-import org.ict4htw.atomfeed.client.domain.Marker;
-import org.ict4htw.atomfeed.client.repository.datasource.MarkerDataSource;
+import org.ict4h.atomfeed.client.domain.Marker;
+import org.ict4h.atomfeed.client.repository.datasource.MarkerDataSource;
 
 import java.net.URI;
 import java.util.HashMap;

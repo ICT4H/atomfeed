@@ -3,7 +3,7 @@ package org.openmrs.module.feedpublishermodule.repository.jdbc;
 import org.hibernate.SessionFactory;
 import org.hibernate.connection.C3P0ConnectionProvider;
 import org.hibernate.engine.SessionFactoryImplementor;
-import org.ict4htw.atomfeed.server.repository.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.server.repository.jdbc.JdbcConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;

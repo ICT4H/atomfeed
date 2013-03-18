@@ -2,8 +2,8 @@ package org.openmrs.module.feedpublisher.event.listener;
 
 
 import org.apache.activemq.command.ActiveMQMapMessage;
-import org.ict4htw.atomfeed.server.service.Event;
-import org.ict4htw.atomfeed.server.service.EventService;
+import org.ict4h.atomfeed.server.service.Event;
+import org.ict4h.atomfeed.server.service.EventService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
