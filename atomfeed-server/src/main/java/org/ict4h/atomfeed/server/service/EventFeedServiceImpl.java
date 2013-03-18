@@ -1,6 +1,7 @@
 package org.ict4h.atomfeed.server.service;
 
 import com.sun.syndication.feed.atom.*;
+import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.server.domain.EventFeed;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.EventRecordComparator;
@@ -17,14 +18,19 @@ public class EventFeedServiceImpl implements EventFeedService {
     private static final String LINK_TYPE_SELF = "self";
     private static final String LINK_TYPE_VIA = "via";
     private static final String ATOMFEED_MEDIA_TYPE = "application/vnd.atomfeed+xml";
-    private static final String UNIQUE_FEED_IDENTIFIER = "00118420-97b0-403c-a5b6-1031a00e126c";
+    private final Logger logger = Logger.getLogger(this.getClass());
 
 	private FeedGenerator feedGenerator;
+    private ResourceBundle bundle;
 
     public EventFeedServiceImpl(FeedGenerator generator) {
         this.feedGenerator = generator;
+        try {
+            bundle = ResourceBundle.getBundle("atomfeed");
+        }catch (MissingResourceException e){
+            bundle = null;
+        }
     }
-
 
     /* (non-Javadoc)
 	 * @see org.ict4h.atomfeed.server.service.EventFeedServiceInterface#getRecentFeed(java.net.URI)
@@ -94,12 +100,26 @@ public class EventFeedServiceImpl implements EventFeedService {
     }
 
     private String generateUUIDForEventFeed(Integer feedId){
-        String feedIdAsString = feedId.toString();
-        int endIndex = UNIQUE_FEED_IDENTIFIER.length();
-        int startIndex = endIndex - feedIdAsString.length();
+        if(bundle == null){
+            return randomUUIDAsString();
+        }
+        String uuid = null;
+        try {
+            uuid = bundle.getString("uuid.template");
+            String feedIdAsString = feedId.toString();
+            int endIndex = uuid.length();
+            int startIndex = endIndex - feedIdAsString.length();
+            String replacementRegex = String.format("%s$", uuid.subSequence(startIndex, endIndex));
+            return uuid.replaceFirst(replacementRegex,feedIdAsString);
 
-        String replacementRegex = String.format("%s$", UNIQUE_FEED_IDENTIFIER.subSequence(startIndex, endIndex));
-        return UNIQUE_FEED_IDENTIFIER.replaceFirst(replacementRegex,feedIdAsString);
+        }catch (MissingResourceException ex){
+            return randomUUIDAsString();
+        }
+    }
+
+    private String randomUUIDAsString() {
+        logger.warn("Cannot find a UUID Template. Generating random UUID now.");
+        return UUID.randomUUID().toString();
     }
 
     private Generator getGenerator() {
