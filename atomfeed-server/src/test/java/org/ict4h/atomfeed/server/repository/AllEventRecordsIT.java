@@ -2,17 +2,18 @@ package org.ict4h.atomfeed.server.repository;
 
 import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.server.domain.EventRecord;
+import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
+import org.junit.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,7 @@ import static junit.framework.Assert.assertTrue;
 
 public class AllEventRecordsIT extends IntegrationTest {
 
-    private AllEventRecords allEventRecords;
+    private AllEventRecordsJdbcImpl allEventRecords;
     private Connection connection;
 
     @Before
@@ -53,7 +54,6 @@ public class AllEventRecordsIT extends IntegrationTest {
         assertTrue((new Date()).after(eventRecordFetched.getTimeStamp()));
     }
 
-  //@Ignore(value = "Transaction Snafu after Transaction handling was moved to SpringIT.")
     @Test
     public void shouldGetTotalCountOfEventRecords() throws URISyntaxException {
     	System.out.println("executing shouldGetTotalCountOfEventRecords");
@@ -82,9 +82,19 @@ public class AllEventRecordsIT extends IntegrationTest {
         assertEquals(e5.getUuid(), events.get(events.size()-1).getUuid());
     }
 
+    @Test
+    public void shouldFindEventsInTimeRange() throws URISyntaxException, InterruptedException {
+        Timestamp startTime = new Timestamp(new Date().getTime());
+        addEvents(6, "ooga");
+        Timestamp endTime = new Timestamp(new Date().getTime());
+        List<EventRecord> events = allEventRecords.getEventsFromTimeRange(startTime, endTime);
+        EventRecord firstEvent = events.get(0);
+        EventRecord lastEvent = events.get(5);
+        assertEquals("Event1",firstEvent.getTitle());
+        assertEquals("Event6",lastEvent.getTitle());
+    }
+
     private void addEvents(int eventNumber, String uuidStartsWith) throws URISyntaxException {
-    	Calendar c = Calendar.getInstance();
-    	c.add(Calendar.SECOND, 10);
         for (int i= 1; i <= eventNumber; i++) {
             String title = "Event" + i;
             allEventRecords.add(new EventRecord(uuidStartsWith + i, title, new URI("http://uri/"+title), null,new Date()));
