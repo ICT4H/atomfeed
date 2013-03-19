@@ -32,9 +32,6 @@ public class EventFeedServiceImpl implements EventFeedService {
         }
     }
 
-    /* (non-Javadoc)
-	 * @see org.ict4h.atomfeed.server.service.EventFeedServiceInterface#getRecentFeed(java.net.URI)
-	 */
     @Override
 	public Feed getRecentFeed(URI requestUri) {
     	EventFeed recentFeed = feedGenerator.getRecentFeed();
@@ -78,11 +75,7 @@ public class EventFeedServiceImpl implements EventFeedService {
         }
         return links;
     }
-    
 
-    /* (non-Javadoc)
-	 * @see org.ict4h.atomfeed.server.service.EventFeedServiceInterface#getEventFeed(java.net.URI, java.lang.Integer)
-	 */
     @Override
 	public Feed getEventFeed(URI requestUri, Integer feedId) {
         EventFeed feedForId = feedGenerator.getFeedForId(feedId);
@@ -100,30 +93,16 @@ public class EventFeedServiceImpl implements EventFeedService {
     }
 
     private String generateUUIDForEventFeed(Integer feedId){
-        if(bundle == null){
-            return randomUUIDAsString();
-        }
-        String uuid = null;
-        try {
-            uuid = bundle.getString("uuid.template");
-            String feedIdAsString = feedId.toString();
-            int endIndex = uuid.length();
-            int startIndex = endIndex - feedIdAsString.length();
-            String replacementRegex = String.format("%s$", uuid.subSequence(startIndex, endIndex));
-            return uuid.replaceFirst(replacementRegex,feedIdAsString);
-
-        }catch (MissingResourceException ex){
-            return randomUUIDAsString();
-        }
-    }
-
-    private String randomUUIDAsString() {
-        logger.warn("Cannot find a UUID Template. Generating random UUID now.");
-        return UUID.randomUUID().toString();
+        String uuid = getPropertyWithDefault("uuid.template", UUID.randomUUID().toString());
+        String feedIdAsString = feedId.toString();
+        int endIndex = uuid.length();
+        int startIndex = endIndex - feedIdAsString.length();
+        String replacementRegex = String.format("%s$", uuid.subSequence(startIndex, endIndex));
+        return uuid.replaceFirst(replacementRegex,feedIdAsString);
     }
 
     private String getPropertyWithDefault(String property, String defaultValue) {
-        return bundle.containsKey(property) ? bundle.getString(property) : defaultValue;
+        return bundle != null && bundle.containsKey(property) ? bundle.getString(property) : defaultValue;
     }
 
     private Generator getGenerator() {
