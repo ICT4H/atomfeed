@@ -140,13 +140,13 @@ public class EventFeedServiceImpl implements EventFeedService {
         } else {
             return scheme + "://" + hostname + path;
         }
-    }        
-    //TODO: Read authors for the DB instead of hardcoding it to OpenMrs here.
+    }
+
     private List<Entry> getEntries(List<EventRecord> eventRecordList, URI requestUri) {
         List<Entry> entryList = new ArrayList<Entry>();
         List authors = new ArrayList<Person>();
         Person person = new Person();
-        person.setName("OpenMRS");
+        person.setName(getPropertyWithDefault("feed.author","Atomfeed"));
         authors.add(person);
 
         for (EventRecord eventRecord : eventRecordList) {

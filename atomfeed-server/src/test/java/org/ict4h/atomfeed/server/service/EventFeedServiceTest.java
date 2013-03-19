@@ -44,7 +44,6 @@ public class EventFeedServiceTest {
         assertEquals(recentUrl, links.get("self").getHref());
     }
 
-//  Should fail when we read author data from the database
     @Test
     public void shouldGetAnAuthorForAnEntry() throws URISyntaxException {
         String recentUrl = "http://hostname/feedgenerator/recent";
