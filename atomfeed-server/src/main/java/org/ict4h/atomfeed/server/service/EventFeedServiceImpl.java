@@ -37,8 +37,7 @@ public class EventFeedServiceImpl implements EventFeedService {
     	EventFeed recentFeed = feedGenerator.getRecentFeed();
         return new FeedBuilder()
                 .type("atom_1.0")
-                        // Presence of feedgenerator ID not necessary. We might choose to remove it
-                .id("urn:uuid:" + UUID.randomUUID().toString())
+                .id(generateIdForEventFeed(recentFeed.getId()))
                 .title(getPropertyWithDefault("feed.title", "Event feed"))
                 .generator(getGenerator())
 //                .authors() // TODO : Use Person class or rome and link to OpenMRS URI for user
@@ -81,24 +80,18 @@ public class EventFeedServiceImpl implements EventFeedService {
         EventFeed feedForId = feedGenerator.getFeedForId(feedId);
         return new FeedBuilder()
                 .type("atom_1.0")
-                .id("urn:uuid:" + generateUUIDForEventFeed(feedId))
+                .id(generateIdForEventFeed(feedId))
                 .title(getPropertyWithDefault("feed.title", "Event feed"))
                 .generator(getGenerator())
                 .entries(getEntries(feedForId.getEvents(), requestUri))
                 .updated(newestEventDate(feedForId.getEvents()))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
-                .links(generatePagingLinks(requestUri,feedForId))
+                .links(generatePagingLinks(requestUri, feedForId))
                 .build();
-
     }
 
-    private String generateUUIDForEventFeed(Integer feedId){
-        String uuid = getPropertyWithDefault("uuid.template", UUID.randomUUID().toString());
-        String feedIdAsString = feedId.toString();
-        int endIndex = uuid.length();
-        int startIndex = endIndex - feedIdAsString.length();
-        String replacementRegex = String.format("%s$", uuid.subSequence(startIndex, endIndex));
-        return uuid.replaceFirst(replacementRegex,feedIdAsString);
+    private String generateIdForEventFeed(Integer feedId){
+        return getPropertyWithDefault("feed.id.prefix", "") + "+" + feedId;
     }
 
     private String getPropertyWithDefault(String property, String defaultValue) {
