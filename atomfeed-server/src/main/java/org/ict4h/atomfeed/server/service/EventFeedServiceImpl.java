@@ -42,7 +42,7 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .type("atom_1.0")
                         // Presence of feedgenerator ID not necessary. We might choose to remove it
                 .id("urn:uuid:" + UUID.randomUUID().toString())
-                .title("TITLE") // TODO: This should be dictated by the application using it.
+                .title(getPropertyWithDefault("feed.title", "Event feed"))
                 .generator(getGenerator())
 //                .authors() // TODO : Use Person class or rome and link to OpenMRS URI for user
                 .entries(getEntries(recentFeed.getEvents(), requestUri))
@@ -89,7 +89,7 @@ public class EventFeedServiceImpl implements EventFeedService {
         return new FeedBuilder()
                 .type("atom_1.0")
                 .id("urn:uuid:" + generateUUIDForEventFeed(feedId))
-                .title("TITLE")
+                .title(getPropertyWithDefault("feed.title", "Event feed"))
                 .generator(getGenerator())
                 .entries(getEntries(feedForId.getEvents(), requestUri))
                 .updated(newestEventDate(feedForId.getEvents()))
@@ -122,10 +122,14 @@ public class EventFeedServiceImpl implements EventFeedService {
         return UUID.randomUUID().toString();
     }
 
+    private String getPropertyWithDefault(String property, String defaultValue) {
+        return bundle.containsKey(property) ? bundle.getString(property) : defaultValue;
+    }
+
     private Generator getGenerator() {
         Generator generator = new Generator();
-        generator.setUrl("http://uri");
-        generator.setValue("FEED_SERVICE");
+        generator.setUrl(getPropertyWithDefault("feed.generator.uri", "https://github.com/ICT4H/atomfeed"));
+        generator.setValue(getPropertyWithDefault("feed.generator.title", "Atomfeed"));
         return generator;
     }
 
