@@ -152,7 +152,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 	}
 
 
-    public List<EventRecord> getEventsFromTimeRange(Timestamp start, Timestamp end) {
+    public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange, boolean useless) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -161,8 +161,8 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             connection = getDbConnection();
             String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ?",getTableName("event_records"));
             statement = connection.prepareStatement(sql);
-            statement.setTimestamp(1, start);
-            statement.setTimestamp(2, end);
+            statement.setTimestamp(1, timeRange.getStartTimestamp());
+            statement.setTimestamp(2, timeRange.getEndTimeStamp());
             ResultSet results = statement.executeQuery();
             List<EventRecord> eventRecords = mapEventRecords(results);
             return eventRecords;

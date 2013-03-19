@@ -2,13 +2,23 @@ package org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration;
 
 import org.joda.time.LocalDateTime;
 
+import java.sql.Timestamp;
+
 public class TimeRange {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private Timestamp startTimestamp;
+    private Timestamp endTimeStamp;
 
     public TimeRange(LocalDateTime startTime, LocalDateTime endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public TimeRange(Timestamp startTimestamp, Timestamp endTimeStamp){
+
+        this.startTimestamp = startTimestamp;
+        this.endTimeStamp = endTimeStamp;
     }
 
     public LocalDateTime getStartTime() {
@@ -18,6 +28,15 @@ public class TimeRange {
     public LocalDateTime getEndTime() {
         return endTime;
     }
+
+    public Timestamp getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public Timestamp getEndTimeStamp() {
+        return endTimeStamp;
+    }
+
 
     @Override
     public boolean equals(Object o) {

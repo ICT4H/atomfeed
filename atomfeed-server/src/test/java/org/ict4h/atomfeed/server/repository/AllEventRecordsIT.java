@@ -85,9 +85,9 @@ public class AllEventRecordsIT extends IntegrationTest {
     @Test
     public void shouldFindEventsInTimeRange() throws URISyntaxException, InterruptedException {
         Timestamp startTime = new Timestamp(new Date().getTime());
-        addEvents(6, "ooga");
+        addEvents(6, "uuid");
         Timestamp endTime = new Timestamp(new Date().getTime());
-        List<EventRecord> events = allEventRecords.getEventsFromTimeRange(startTime, endTime);
+        List<EventRecord> events = allEventRecords.getEventsFromTimeRange(new TimeRange(startTime,endTime), true);
         EventRecord firstEvent = events.get(0);
         EventRecord lastEvent = events.get(5);
         assertEquals("Event1",firstEvent.getTitle());
