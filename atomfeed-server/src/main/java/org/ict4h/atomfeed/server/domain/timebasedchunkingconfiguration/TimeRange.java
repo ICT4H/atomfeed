@@ -5,38 +5,25 @@ import org.joda.time.LocalDateTime;
 import java.sql.Timestamp;
 
 public class TimeRange {
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
     private Timestamp startTimestamp;
-    private Timestamp endTimeStamp;
+    private Timestamp endTimestamp;
 
     public TimeRange(LocalDateTime startTime, LocalDateTime endTime) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this(new Timestamp(startTime.toDateTime().getMillis()),endTime == null ? null : new Timestamp(endTime.toDateTime().getMillis()));
     }
 
-    public TimeRange(Timestamp startTimestamp, Timestamp endTimeStamp){
-
+    public TimeRange(Timestamp startTimestamp, Timestamp endTimestamp){
         this.startTimestamp = startTimestamp;
-        this.endTimeStamp = endTimeStamp;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
+        this.endTimestamp = endTimestamp;
     }
 
     public Timestamp getStartTimestamp() {
         return startTimestamp;
     }
 
-    public Timestamp getEndTimeStamp() {
-        return endTimeStamp;
+    public Timestamp getEndTimestamp() {
+        return endTimestamp;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -45,24 +32,24 @@ public class TimeRange {
 
         TimeRange timeRange = (TimeRange) o;
 
-        if (endTime != null ? !endTime.equals(timeRange.endTime) : timeRange.endTime != null) return false;
-        if (!startTime.equals(timeRange.startTime)) return false;
+        if (!startTimestamp.equals(timeRange.startTimestamp)) return false;
+        if (endTimestamp != null ? !endTimestamp.equals(timeRange.endTimestamp) : timeRange.endTimestamp != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = startTime.hashCode();
-        result = 31 * result + (endTime != null ? endTime.hashCode() : 0);
+        int result = startTimestamp.hashCode();
+        result = 31 * result + (endTimestamp != null ? endTimestamp.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
         return "TimeRange{" +
-                "startTime=" + startTime +
-                ", endTime=" + endTime +
+                "startTime=" + startTimestamp +
+                ", endTime=" + endTimestamp +
                 '}';
     }
 }

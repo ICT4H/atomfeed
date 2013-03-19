@@ -35,7 +35,9 @@ public class TimeBasedChunkingHistoryTest {
         TimeBasedChunkingHistoryEntry timeBasedChunkingHistoryEntry1 = new TimeBasedChunkingHistoryEntry(startOfGame, startOfGame.plusHours(4), Duration.standardHours(2));
         TimeBasedChunkingHistoryEntry timeBasedChunkingHistoryEntry2 = new TimeBasedChunkingHistoryEntry(startOfGame.plusHours(4), null, Duration.standardHours(5));
         TimeBasedChunkingHistory timeBasedChunkingHistory = new TimeBasedChunkingHistory(timeBasedChunkingHistoryEntry1, timeBasedChunkingHistoryEntry2);
-        Assert.assertEquals(new TimeRange(startOfGame, startOfGame.plusHours(2)), timeBasedChunkingHistory.timeRangeFor(1));
+        TimeRange expected = new TimeRange(startOfGame, startOfGame.plusHours(2));
+        TimeRange actual = timeBasedChunkingHistory.timeRangeFor(1);
+        Assert.assertEquals(expected, actual);
         Assert.assertEquals(new TimeRange(startOfGame.plusHours(4), startOfGame.plusHours(9)), timeBasedChunkingHistory.timeRangeFor(3));
     }
 

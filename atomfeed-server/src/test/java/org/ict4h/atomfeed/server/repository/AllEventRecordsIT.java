@@ -25,7 +25,7 @@ import static junit.framework.Assert.assertTrue;
 
 public class AllEventRecordsIT extends IntegrationTest {
 
-    private AllEventRecordsJdbcImpl allEventRecords;
+    private AllEventRecords allEventRecords;
     private Connection connection;
 
     @Before
@@ -87,7 +87,7 @@ public class AllEventRecordsIT extends IntegrationTest {
         Timestamp startTime = new Timestamp(new Date().getTime());
         addEvents(6, "uuid");
         Timestamp endTime = new Timestamp(new Date().getTime());
-        List<EventRecord> events = allEventRecords.getEventsFromTimeRange(new TimeRange(startTime,endTime), true);
+        List<EventRecord> events = allEventRecords.getEventsFromTimeRange(new TimeRange(startTime,endTime));
         EventRecord firstEvent = events.get(0);
         EventRecord lastEvent = events.get(5);
         assertEquals("Event1",firstEvent.getTitle());

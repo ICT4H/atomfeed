@@ -36,9 +36,8 @@ public class AllEventRecordsStub implements AllEventRecords {
     public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange) {
         ArrayList<EventRecord> recordsWithinTimeRange = new ArrayList<EventRecord>();
         for (EventRecord record : eventRecords.values()) {
-            //LocalDateTime recordTime = new LocalDateTime(record.getTimeStamp().getTime());
-            if (timeRange.getStartTime().toDate().before(record.getTimeStamp())
-                    && timeRange.getEndTime().toDate().after(record.getTimeStamp())) {
+            if (timeRange.getStartTimestamp().before(record.getTimeStamp())
+                    && timeRange.getEndTimestamp().after(record.getTimeStamp())) {
                 recordsWithinTimeRange.add(record);
             }
         }

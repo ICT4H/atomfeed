@@ -1,15 +1,11 @@
 package org.ict4h.atomfeed.server.repository.jdbc;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.List;
 
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormatter;
 
 public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
@@ -125,34 +121,8 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 		}
 	}
 
-	@Override
-	public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange) {
-        LocalDateTime startTime = timeRange.getStartTime();
-        LocalDateTime endTime = timeRange.getEndTime();
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try
-        {
-            connection = getDbConnection();
-            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ?",getTableName("event_records"));
-            statement = connection.prepareStatement(sql);
-            statement.setTimestamp(1, new Timestamp(startTime.toDateTime().getMillis()));
-            statement.setTimestamp(2, new Timestamp(endTime.toDateTime().getMillis()));
-            ResultSet results = statement.executeQuery();
-            List<EventRecord> eventRecords = mapEventRecords(results);
-            return eventRecords;
-        }
-        catch (SQLException ex){
-            throw new RuntimeException(ex);
-        }
-        finally {
-           closeAll(statement,resultSet);
-        }
-	}
-
-
-    public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange, boolean useless) {
+    @Override
+    public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -162,7 +132,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ?",getTableName("event_records"));
             statement = connection.prepareStatement(sql);
             statement.setTimestamp(1, timeRange.getStartTimestamp());
-            statement.setTimestamp(2, timeRange.getEndTimeStamp());
+            statement.setTimestamp(2, timeRange.getEndTimestamp());
             ResultSet results = statement.executeQuery();
             List<EventRecord> eventRecords = mapEventRecords(results);
             return eventRecords;
