@@ -35,12 +35,15 @@ public class EventFeedServiceImpl implements EventFeedService {
     @Override
 	public Feed getRecentFeed(URI requestUri) {
     	EventFeed recentFeed = feedGenerator.getRecentFeed();
+
+
+
         return new FeedBuilder()
                 .type("atom_1.0")
                 .id(generateIdForEventFeed(recentFeed.getId()))
                 .title(getPropertyWithDefault("feed.title", "Event feed"))
                 .generator(getGenerator())
-//                .authors() // TODO : Use Person class or rome and link to OpenMRS URI for user
+                .authors(getAuthors())
                 .entries(getEntries(recentFeed.getEvents(), requestUri))
                 .updated(newestEventDate(recentFeed.getEvents()))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
@@ -48,7 +51,13 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .links(generatePagingLinks(requestUri, recentFeed))
                 .build();
     }
-    
+
+    private List<Person> getAuthors() {
+        Person person = new Person();
+        person.setName(getPropertyWithDefault("feed.author","Atomfeed"));
+        return Arrays.asList(person);
+    }
+
     private String generateCanonicalUri(URI requestUri, Integer feedId) {
         return getServiceUri(requestUri) + "/" + feedId;
     }
@@ -83,6 +92,7 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .id(generateIdForEventFeed(feedId))
                 .title(getPropertyWithDefault("feed.title", "Event feed"))
                 .generator(getGenerator())
+                .authors(getAuthors())
                 .entries(getEntries(feedForId.getEvents(), requestUri))
                 .updated(newestEventDate(feedForId.getEvents()))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
@@ -137,10 +147,6 @@ public class EventFeedServiceImpl implements EventFeedService {
 
     private List<Entry> getEntries(List<EventRecord> eventRecordList, URI requestUri) {
         List<Entry> entryList = new ArrayList<Entry>();
-        List authors = new ArrayList<Person>();
-        Person person = new Person();
-        person.setName(getPropertyWithDefault("feed.author","Atomfeed"));
-        authors.add(person);
 
         for (EventRecord eventRecord : eventRecordList) {
             final Entry entry = new Entry();
@@ -149,7 +155,6 @@ public class EventFeedServiceImpl implements EventFeedService {
             entry.setUpdated(eventRecord.getTimeStamp());
             entry.setAlternateLinks(generateLinks(eventRecord, requestUri));
             entry.setContents(generateContents(eventRecord));
-            entry.setAuthors(authors);
             entryList.add(entry);
         }
 
