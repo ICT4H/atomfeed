@@ -18,7 +18,8 @@ public class TimeFeedGeneratorTest {
     public void shouldGetWorkingFeed() throws Exception {
         LocalDateTime startTime = LocalDateTime.now().minusHours(3);
 
-        TimeBasedChunkingHistoryStub history = new TimeBasedChunkingHistoryStub(4);
+        TimeBasedChunkingHistoryStub history = new TimeBasedChunkingHistoryStub();
+        history.setCurrentSequenceNumber(4);
         history.setTimeRange(4, new TimeRange(startTime,startTime.plusHours(2)));
 
         AllEventRecordsStub allEventRecordsStub = new AllEventRecordsStub();

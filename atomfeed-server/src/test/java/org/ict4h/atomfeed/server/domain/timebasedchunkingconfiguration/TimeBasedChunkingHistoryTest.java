@@ -5,6 +5,8 @@ import org.joda.time.LocalDateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class TimeBasedChunkingHistoryTest {
     @Test
     public void sequenceNumberWhenThereIsOnlyOneItemInHistory() {
@@ -12,10 +14,10 @@ public class TimeBasedChunkingHistoryTest {
         Duration duration = Duration.standardHours(2);
         LocalDateTime now = LocalDateTime.now();
         TimeBasedChunkingHistoryEntry timeBasedChunkingHistoryEntry = new TimeBasedChunkingHistoryEntry(now.minusHours(3), now, duration);
-        Assert.assertEquals(2, new TimeBasedChunkingHistory(timeBasedChunkingHistoryEntry).currentSequenceNumber());
+        Assert.assertEquals(2, new TimeBasedChunkingHistory(Arrays.asList(timeBasedChunkingHistoryEntry)).currentSequenceNumber());
 
         timeBasedChunkingHistoryEntry = new TimeBasedChunkingHistoryEntry(now.minusHours(1), now, duration);
-        Assert.assertEquals(1, new TimeBasedChunkingHistory(timeBasedChunkingHistoryEntry).currentSequenceNumber());
+        Assert.assertEquals(1, new TimeBasedChunkingHistory(Arrays.asList(timeBasedChunkingHistoryEntry)).currentSequenceNumber());
     }
 
     @Test
@@ -25,7 +27,7 @@ public class TimeBasedChunkingHistoryTest {
         LocalDateTime startOfGame = now.minusHours(8);
         TimeBasedChunkingHistoryEntry timeBasedChunkingHistoryEntry1 = new TimeBasedChunkingHistoryEntry(startOfGame, startOfGame.plusHours(4), Duration.standardHours(2));
         TimeBasedChunkingHistoryEntry timeBasedChunkingHistoryEntry2 = new TimeBasedChunkingHistoryEntry(startOfGame.plusHours(4), null, Duration.standardHours(3));
-        Assert.assertEquals(4, new TimeBasedChunkingHistory(timeBasedChunkingHistoryEntry1, timeBasedChunkingHistoryEntry2).currentSequenceNumber());
+        Assert.assertEquals(4, new TimeBasedChunkingHistory(Arrays.asList(timeBasedChunkingHistoryEntry1, timeBasedChunkingHistoryEntry2)).currentSequenceNumber());
     }
 
     @Test
@@ -34,7 +36,7 @@ public class TimeBasedChunkingHistoryTest {
         LocalDateTime startOfGame = new LocalDateTime(2012, 1, 1, 0, 0, 0);
         TimeBasedChunkingHistoryEntry timeBasedChunkingHistoryEntry1 = new TimeBasedChunkingHistoryEntry(startOfGame, startOfGame.plusHours(4), Duration.standardHours(2));
         TimeBasedChunkingHistoryEntry timeBasedChunkingHistoryEntry2 = new TimeBasedChunkingHistoryEntry(startOfGame.plusHours(4), null, Duration.standardHours(5));
-        TimeBasedChunkingHistory timeBasedChunkingHistory = new TimeBasedChunkingHistory(timeBasedChunkingHistoryEntry1, timeBasedChunkingHistoryEntry2);
+        TimeBasedChunkingHistory timeBasedChunkingHistory = new TimeBasedChunkingHistory(Arrays.asList(timeBasedChunkingHistoryEntry1, timeBasedChunkingHistoryEntry2));
         TimeRange expected = new TimeRange(startOfGame, startOfGame.plusHours(2));
         TimeRange actual = timeBasedChunkingHistory.timeRangeFor(1);
         Assert.assertEquals(expected, actual);
@@ -45,7 +47,7 @@ public class TimeBasedChunkingHistoryTest {
     public void timeRangeForWorkingSequence() {
         LocalDateTime startOfGame = LocalDateTime.now().minusHours(1);
         TimeBasedChunkingHistoryEntry entry = new TimeBasedChunkingHistoryEntry(startOfGame, null, Duration.standardHours(2));
-        TimeBasedChunkingHistory history = new TimeBasedChunkingHistory(entry);
+        TimeBasedChunkingHistory history = new TimeBasedChunkingHistory(Arrays.asList(entry));
         long workingFeedId = history.currentSequenceNumber();
         Assert.assertEquals(new TimeRange(startOfGame, startOfGame.plusHours(2)), history.timeRangeFor((int) workingFeedId));
     }

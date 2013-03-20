@@ -25,8 +25,7 @@ public class NumberBasedChunkingHistoryEntryIT extends IntegrationTest {
     @Test
     public void shouldGetAllNumberBasedChunkingHistoryEntries() throws SQLException {
         connection = getConnection();
-        ChunkingEntries entry = new ChunkingEntriesJdbcImpl(getProvider(connection));
-        List<?> items = entry.all(NumberBasedChunkingHistoryEntry.class);
+        List<?> items = new ChunkingEntriesJdbcImpl(getProvider(connection)).all(NumberBasedChunkingHistoryEntry.class);
         assertNotNull(items);
         assertTrue(items.size() > 0);
     }

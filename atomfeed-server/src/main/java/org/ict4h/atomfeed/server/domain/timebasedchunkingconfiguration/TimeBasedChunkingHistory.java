@@ -10,9 +10,8 @@ import org.joda.time.LocalDateTime;
 public class TimeBasedChunkingHistory {
     private List<TimeBasedChunkingHistoryEntry> chunkingHistoryEntries;
 
-    public TimeBasedChunkingHistory(TimeBasedChunkingHistoryEntry... chunkingHistoryEntries) {
-        this.chunkingHistoryEntries = new ArrayList<TimeBasedChunkingHistoryEntry>();
-        Collections.addAll(this.chunkingHistoryEntries, chunkingHistoryEntries);
+    public TimeBasedChunkingHistory(List<TimeBasedChunkingHistoryEntry> chunkingHistoryEntries) {
+        this.chunkingHistoryEntries = chunkingHistoryEntries;
     }
 
     public long currentSequenceNumber() {
