@@ -6,16 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.ict4h.atomfeed.server.repository.ChunkingHistories;
+import org.ict4h.atomfeed.server.repository.ChunkingEntries;
 
-public class AllChunkingEntriesJdbcImpl implements ChunkingHistories {
+public class ChunkingEntriesJdbcImpl implements ChunkingEntries {
 
 	
 	private String schema = "atomfeed";
 
 	private JdbcConnectionProvider provider;	
 	
-	public AllChunkingEntriesJdbcImpl(JdbcConnectionProvider provider) {
+	public ChunkingEntriesJdbcImpl(JdbcConnectionProvider provider) {
 		this.provider = provider;
 	}
 	

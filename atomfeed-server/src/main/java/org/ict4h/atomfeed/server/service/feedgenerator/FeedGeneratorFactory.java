@@ -5,10 +5,10 @@ import java.util.List;
 import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
 import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistoryEntry;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
-import org.ict4h.atomfeed.server.repository.ChunkingHistories;
+import org.ict4h.atomfeed.server.repository.ChunkingEntries;
 
 public class FeedGeneratorFactory {
-    public FeedGenerator getFeedGenerator(AllEventRecords allEventRecords, ChunkingHistories allChunkingEntries) throws Exception {
+    public FeedGenerator getFeedGenerator(AllEventRecords allEventRecords, ChunkingEntries allChunkingEntries) throws Exception {
         //TODO: more work here. NumberBasedChunkingHistory would not work over time strategy 
     	NumberBasedChunkingHistory numberBasedChunking = new NumberBasedChunkingHistory();
         List<NumberBasedChunkingHistoryEntry> allEntries = allChunkingEntries.all(NumberBasedChunkingHistoryEntry.class);
