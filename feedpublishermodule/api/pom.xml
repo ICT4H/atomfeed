@@ -21,7 +21,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.ict4htw</groupId>
+            <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-server</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>

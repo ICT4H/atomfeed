@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>atomfeed</artifactId>
-        <groupId>org.ict4htw</groupId>
+        <groupId>org.ict4h</groupId>
         <version>0.1-SNAPSHOT</version>
     </parent>
 
