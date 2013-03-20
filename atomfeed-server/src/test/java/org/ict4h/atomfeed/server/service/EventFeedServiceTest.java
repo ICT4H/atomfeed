@@ -45,7 +45,7 @@ public class EventFeedServiceTest {
     }
 
     @Test
-    public void shouldGetAnAuthorForAnEntry() throws URISyntaxException {
+    public void shouldGetAnAuthorForTheFeed() throws URISyntaxException {
         String recentUrl = "http://hostname/feedgenerator/recent";
         Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
         assertEquals("OpenMRS", ((Person) feed.getAuthors().get(0)).getName());

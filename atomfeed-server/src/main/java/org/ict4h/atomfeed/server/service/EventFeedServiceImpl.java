@@ -44,7 +44,7 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .title(getPropertyWithDefault("feed.title", "Event feed"))
                 .generator(getGenerator())
                 .authors(getAuthors())
-                .entries(getEntries(recentFeed.getEvents(), requestUri))
+                .entries(getEntries(recentFeed.getEvents()))
                 .updated(newestEventDate(recentFeed.getEvents()))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
                 .link(getLink(generateCanonicalUri(requestUri, recentFeed.getId()), LINK_TYPE_VIA, ATOM_MEDIA_TYPE))
@@ -93,7 +93,7 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .title(getPropertyWithDefault("feed.title", "Event feed"))
                 .generator(getGenerator())
                 .authors(getAuthors())
-                .entries(getEntries(feedForId.getEvents(), requestUri))
+                .entries(getEntries(feedForId.getEvents()))
                 .updated(newestEventDate(feedForId.getEvents()))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
                 .links(generatePagingLinks(requestUri, feedForId))
@@ -145,7 +145,7 @@ public class EventFeedServiceImpl implements EventFeedService {
         }
     }
 
-    private List<Entry> getEntries(List<EventRecord> eventRecordList, URI requestUri) {
+    private List<Entry> getEntries(List<EventRecord> eventRecordList) {
         List<Entry> entryList = new ArrayList<Entry>();
 
         for (EventRecord eventRecord : eventRecordList) {
@@ -153,24 +153,11 @@ public class EventFeedServiceImpl implements EventFeedService {
             entry.setId(eventRecord.getTagUri());
             entry.setTitle(eventRecord.getTitle());
             entry.setUpdated(eventRecord.getTimeStamp());
-            entry.setAlternateLinks(generateLinks(eventRecord, requestUri));
             entry.setContents(generateContents(eventRecord));
             entryList.add(entry);
         }
 
         return entryList;
-    }
-
-    private List<Link> generateLinks(EventRecord eventRecord, URI requestUri) {
-        Link self = new Link();
-        self.setHref(getServiceUri(requestUri) + "/entries/" + eventRecord.getId());
-        self.setRel("self");
-
-        Link related = new Link();
-        related.setHref(eventRecord.getUri());
-        related.setRel("related");
-
-        return Arrays.asList(self, related);
     }
 
     private List<Content> generateContents(EventRecord eventRecord) {
