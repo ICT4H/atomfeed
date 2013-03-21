@@ -4,14 +4,13 @@ import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.client.api.AtomFeedClient;
 import org.ict4h.atomfeed.client.api.data.Event;
 import org.ict4h.atomfeed.client.factory.AtomClientFactory;
-import org.ict4h.atomfeed.client.repository.datasource.InMemoryMarkerDataSource;
+import org.ict4h.atomfeed.client.repository.datasource.MemoryMarkerDataSource;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.repository.DbEventRecordCreator;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,7 +49,7 @@ public class AtomFeedClientIT extends IntegrationTest {
     public void shouldReadEventsCreatedEvents() throws URISyntaxException, SQLException {
         List<EventRecord> eventRecords = createEvents(7, "Hello, DiscWorld");
         String uriTemplate = "http://localhost:8080/events/";
-        atomFeedClient = new AtomClientFactory().create(new InMemoryMarkerDataSource());
+        atomFeedClient = new AtomClientFactory().create(new MemoryMarkerDataSource());
 
         atomFeedClient.processedTo(getURI(uriTemplate,2),eventRecords.get(5).getTagUri());
         List<Event> events = atomFeedClient.unprocessedEvents(getURI(uriTemplate, 2));

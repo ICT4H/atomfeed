@@ -5,11 +5,11 @@ import org.ict4h.atomfeed.client.domain.Marker;
 import java.net.URI;
 import java.util.HashMap;
 
-public class InMemoryMarkerDataSource implements MarkerDataSource{
+public class MemoryMarkerDataSource implements MarkerDataSource{
 
     private final HashMap<URI,Marker> map;
 
-    public InMemoryMarkerDataSource() {
+    public MemoryMarkerDataSource() {
         map = new HashMap<URI,Marker>();
     }
 
