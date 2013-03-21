@@ -1,14 +1,16 @@
 package org.ict4h.atomfeed.client;
 
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
 import org.ict4h.atomfeed.IntegrationTest;
-import org.ict4h.atomfeed.client.repository.AllFeeds;
-import org.ict4h.atomfeed.client.repository.datasource.WebClient;
+import org.ict4h.atomfeed.client.api.AtomFeedClient;
+import org.ict4h.atomfeed.client.api.data.Event;
+import org.ict4h.atomfeed.client.factory.AtomClientFactory;
+import org.ict4h.atomfeed.client.repository.datasource.InMemoryMarkerDataSource;
+import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.repository.DbEventRecordCreator;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URI;
@@ -16,6 +18,7 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +29,7 @@ public class AtomFeedClientIT extends IntegrationTest {
     private DbEventRecordCreator recordCreator;
     private Connection connection;
     private AllEventRecordsJdbcImpl eventRecords;
-    private AllFeeds allFeeds;
+    private AtomFeedClient atomFeedClient;
 
     @Before
     public void before() throws SQLException {
@@ -36,7 +39,6 @@ public class AtomFeedClientIT extends IntegrationTest {
         statement.close();
         eventRecords = new AllEventRecordsJdbcImpl(getProvider(connection));
         recordCreator = new DbEventRecordCreator(eventRecords);
-        allFeeds = new AllFeeds(new WebClient());
     }
 
     @After
@@ -44,18 +46,35 @@ public class AtomFeedClientIT extends IntegrationTest {
         connection.close();
     }
 
-    @Test
+    @Ignore
     public void shouldReadEventsCreatedEvents() throws URISyntaxException, SQLException {
-        createOneEvent("One Event", "http://google.com");
-        Feed feed = allFeeds.getFor(new URI(String.format("http://localhost:8080/events/1")));
-        List entries = feed.getEntries();
-        assertEquals(1, entries.size());
-        Entry entry = (Entry) entries.get(0);
-        assertEquals("One Event",entry.getTitle());
+        List<EventRecord> eventRecords = createEvents(7, "Hello, DiscWorld");
+        String uriTemplate = "http://localhost:8080/events/";
+        atomFeedClient = new AtomClientFactory().create(new InMemoryMarkerDataSource());
+
+        atomFeedClient.processedTo(getURI(uriTemplate,2),eventRecords.get(5).getTagUri());
+        List<Event> events = atomFeedClient.unprocessedEvents(getURI(uriTemplate, 2));
+        assertEquals(2,events.size());
     }
 
-    private void createOneEvent(String title, String url) throws URISyntaxException, SQLException {
-        recordCreator.create(UUID.randomUUID().toString(),title,url,null);
+    private URI getURI(String template,int feedId) throws URISyntaxException {
+        return new URI(String.format("%s%s", template, feedId));
+    }
+
+    private List<EventRecord> createEvents(int numberOfEventsToCreate, String titleTemplate) throws URISyntaxException, SQLException {
+        List<EventRecord> records = new ArrayList<EventRecord>();
+        int index = 0;
+        do
+        {
+            index++;
+            records.add(createOneEvent(String.format("%s%s", titleTemplate, index), String.format("%s%s", "http://google.com?q=", index)));
+        }while (index <= numberOfEventsToCreate);
+        return records;
+    }
+
+    private EventRecord createOneEvent(String title, String url) throws URISyntaxException, SQLException {
+        EventRecord eventRecord = recordCreator.create(UUID.randomUUID().toString(), title, url, null);
         connection.commit();
+        return eventRecord;
     }
 }
