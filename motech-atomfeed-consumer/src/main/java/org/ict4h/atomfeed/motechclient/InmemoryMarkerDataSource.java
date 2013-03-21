@@ -6,11 +6,7 @@ import org.ict4h.atomfeed.client.repository.datasource.MarkerDataSource;
 import java.net.URI;
 import java.util.HashMap;
 
-
-/**
- * For sample Marker Datasource
- */
-public class InmemoryMarkerDataSource implements MarkerDataSource{
+public class InMemoryMarkerDataSource implements MarkerDataSource{
     private HashMap<URI, Marker> map=new HashMap<URI, Marker>();
 
     @Override

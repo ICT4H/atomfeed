@@ -15,8 +15,11 @@
 
     <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor"/>
 
-    <bean id="atomClientFactory" class="org.ict4h.atomfeed.motechclient.AtomClientFactory"></bean>
-    <bean id="atomClient" factory-bean="atomClientFactory" factory-method="get"></bean>
+    <bean id="markerDataSource" class="org.ict4h.atomfeed.motechclient.InMemoryMarkerDataSource"/>
+    <bean id="atomClientFactory" class="org.ict4h.atomfeed.client.factory.AtomClientFactory"></bean>
+    <bean id="atomFeedClient" factory-bean="atomClientFactory" factory-method="create">
+        <constructor-arg ref="markerDataSource"/>
+    </bean>
 
     <bean class="org.ict4h.atomfeed.motechclient.MotechAtomFeedConsumer" id="atomConsumer">
         <constructor-arg>
@@ -26,7 +29,7 @@
                 </constructor-arg>
             </bean>
         </constructor-arg>
-        <constructor-arg ref="atomClient"/>
+        <constructor-arg ref="atomFeedClient"/>
         <constructor-arg type="java.lang.String">
             <value>${atom_properties.cronExpression}</value>
         </constructor-arg>
