@@ -29,7 +29,7 @@ public class EventResource {
         this.eventService = eventService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/events/recent", produces = "application/atom+xml")
+    @RequestMapping(method = RequestMethod.GET, value = "/feed/recent", produces = "application/atom+xml")
     @ResponseBody
     public String getRecentEventFeed(HttpServletRequest httpServletRequest) {
     	try {
@@ -45,11 +45,11 @@ public class EventResource {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/events/{feedId}")
+    @RequestMapping(method = RequestMethod.GET, value = "/feed/{n}")
     @ResponseBody
-    public String getEventFeed(HttpServletRequest httpServletRequest, @PathVariable int feedId) {
+    public String getEventFeed(HttpServletRequest httpServletRequest, @PathVariable int n) {
     	try {
-            Feed feed = eventFeedService.getEventFeed(new URI(httpServletRequest.getRequestURL().toString()), feedId);
+            Feed feed = eventFeedService.getEventFeed(new URI(httpServletRequest.getRequestURL().toString()), n);
             return new WireFeedOutput().outputString(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);

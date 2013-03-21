@@ -21,7 +21,7 @@
 
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/events/recent"/>
+            <mvc:mapping path="/feed/recent"/>
             <bean id="nonCachingWebContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
                 <property name="cacheSeconds" value="0"/>
                 <property name="useCacheControlHeader" value="true"/>
