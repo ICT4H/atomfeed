@@ -9,6 +9,7 @@ import java.util.HashMap;
 public class InMemoryMarkerDataSource implements MarkerDataSource{
     private HashMap<URI, Marker> map=new HashMap<URI, Marker>();
 
+
     @Override
     public Marker get(URI feedUri) {
         return map.get(feedUri);
