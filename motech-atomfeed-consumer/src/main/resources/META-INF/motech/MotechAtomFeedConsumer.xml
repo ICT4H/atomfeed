@@ -15,7 +15,7 @@
 
     <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor"/>
 
-    <bean id="markerDataSource" class="org.ict4h.atomfeed.motechclient.InMemoryMarkerDataSource"/>
+    <bean id="markerDataSource" class="org.ict4h.atomfeed.motechclient.MemoryMarkerDataSource"/>
     <bean id="atomClientFactory" class="org.ict4h.atomfeed.client.factory.AtomClientFactory"></bean>
     <bean id="atomFeedClient" factory-bean="atomClientFactory" factory-method="create">
         <constructor-arg ref="markerDataSource"/>
