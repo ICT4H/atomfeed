@@ -77,7 +77,7 @@ public class EventRecord {
     }
 
     public String getTagUri() {
-        return "tag.atomfeed.ict4h.org:" + uuid;
+        return "tag:atomfeed.ict4h.org:" + uuid;
     }
 
     public String getUri() {
