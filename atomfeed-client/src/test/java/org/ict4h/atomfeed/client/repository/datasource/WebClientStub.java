@@ -20,7 +20,7 @@ public class WebClientStub extends WebClient {
     @Override
     public String fetch(URI uri) {
     	when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer(uri.toString()));
-        String feedId = uri.getPath().replace("/", "");
+        String feedId = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
         try {
             return eventResource.getEventFeed(httpServletRequest, Integer.valueOf(feedId));
         } catch (NumberFormatException e) {
