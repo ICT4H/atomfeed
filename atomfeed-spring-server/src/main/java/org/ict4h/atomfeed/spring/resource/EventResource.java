@@ -5,7 +5,6 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedOutput;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.server.service.EventFeedService;
-import org.ict4h.atomfeed.server.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,13 +19,11 @@ import java.net.URISyntaxException;
 @Controller
 public class EventResource {
     private EventFeedService eventFeedService;
-    private EventService eventService;
     private static Logger logger = Logger.getLogger(EventResource.class);
 
     @Autowired
-    public EventResource(EventFeedService eventFeedService, EventService eventService) {
+    public EventResource(EventFeedService eventFeedService) {
         this.eventFeedService = eventFeedService;
-        this.eventService = eventService;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/feed/recent", produces = "application/atom+xml")

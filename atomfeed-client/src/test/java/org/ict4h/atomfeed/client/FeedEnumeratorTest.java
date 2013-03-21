@@ -1,9 +1,6 @@
 package org.ict4h.atomfeed.client;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
+import com.sun.syndication.feed.atom.Entry;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.datasource.WebClientStub;
 import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
@@ -11,17 +8,17 @@ import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4h.atomfeed.server.repository.InMemoryEventRecordCreator;
 import org.ict4h.atomfeed.server.service.EventFeedService;
-import org.ict4h.atomfeed.server.service.EventService;
-import org.ict4h.atomfeed.server.service.EventServiceImpl;
-import org.ict4h.atomfeed.spring.resource.EventResource;
 import org.ict4h.atomfeed.server.service.EventFeedServiceImpl;
 import org.ict4h.atomfeed.server.service.feedgenerator.FeedGenerator;
 import org.ict4h.atomfeed.server.service.feedgenerator.NumberFeedGenerator;
+import org.ict4h.atomfeed.spring.resource.EventResource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.syndication.feed.atom.Entry;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 
 public class FeedEnumeratorTest {
 	
@@ -32,10 +29,9 @@ public class FeedEnumeratorTest {
 	@Before
 	public void setUp() {
 		AllEventRecordsStub allEventRecords = new AllEventRecordsStub();
-        EventService eventService = new EventServiceImpl(allEventRecords);
         FeedGenerator generator = getFeedGenerator(allEventRecords);
         EventFeedService eventFeedService = new EventFeedServiceImpl(generator);
-        webClientStub = new WebClientStub(new EventResource(eventFeedService, eventService));
+        webClientStub = new WebClientStub(new EventResource(eventFeedService));
         feedRecordCreator = new InMemoryEventRecordCreator(allEventRecords);
         allFeeds = new AllFeeds(webClientStub);
 	}
