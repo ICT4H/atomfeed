@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 @Controller
 public class NotificationController {
@@ -33,7 +34,12 @@ public class NotificationController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/entry/new")
     public String addEntry(Entry entry, BindingResult result) throws URISyntaxException {
-        Event event = new Event("foo", entry.getTitle(), DateTime.now(), "http://foo.com", "woo");
+        Event event = new Event(
+                UUID.randomUUID().toString(),
+                entry.getTitle(),
+                DateTime.now(),
+                entry.getUrl(),
+                entry.getContent());
         eventService.notify(event);
         return showForm(new ModelMap());
     }

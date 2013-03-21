@@ -13,6 +13,14 @@
 				<td>Title :</td>
 				<td><form:input path="title" /></td>
 			</tr>
+            <tr>
+                    <td>URL :</td>
+                    <td><form:input path="url" /></td>
+         	</tr>
+            <tr>
+                    <td>Content :</td>
+                    <td><form:input path="content" /></td>
+         	</tr>
 			<tr>
 				<td colspan="3"><input type="submit" /></td>
 			</tr>
