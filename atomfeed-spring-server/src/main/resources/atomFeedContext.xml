@@ -51,8 +51,8 @@
     </bean>
 
 
-    <bean id="generatorFactory" class="org.ict4h.atomfeed.server.service.feedgenerator.FeedGeneratorFactory">
-    </bean>
+    <bean id="generatorFactory" class="org.ict4h.atomfeed.server.service.feedgenerator.FeedGeneratorFactory" />
+
     <bean id="feedGenerator" factory-bean="generatorFactory" factory-method="getFeedGenerator">
         <constructor-arg ref="allEventRecords"/>
         <constructor-arg ref="allChunkingEntries"/>

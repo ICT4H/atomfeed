@@ -10,6 +10,15 @@
     <context:component-scan base-package="org.ict4h.atomfeed.spring"/>
     <import resource="classpath:atomFeedContext.xml"/>
 
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+   		<property name="prefix">
+   			<value>/WEB-INF/pages/</value>
+   		</property>
+   		<property name="suffix">
+   			<value>.jsp</value>
+   		</property>
+   	</bean>
+
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/events/recent"/>

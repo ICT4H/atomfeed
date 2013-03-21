@@ -43,7 +43,6 @@ public class EventResource {
         	//to be resolved by an exception resolver to  return error code 400 or so
         	throw new RuntimeException("Unexpected error", e); //TODO
         }
-
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/events/{feedId}")
