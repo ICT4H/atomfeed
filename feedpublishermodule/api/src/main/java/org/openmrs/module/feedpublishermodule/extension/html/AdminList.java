@@ -32,7 +32,7 @@ public class AdminList extends AdministrationSectionExt {
 	public Map<String, String> getLinks() {
 		
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("module/feedpublishermodule/events/recent.json", "recent events");
+		map.put("/ws/feed/recent", "recent events");
 		return map;
 	}
 }

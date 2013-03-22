@@ -42,7 +42,7 @@ public class FeedController {
         this.feedService = eventFeedService;
     }
 
-    @RequestMapping(value = "/module/feedpublishermodule/events/recent", method = RequestMethod.GET)
+    @RequestMapping(value = "feed/recent", method = RequestMethod.GET)
     @ResponseBody
 	public ResponseEntity<String> get(HttpServletRequest request){
         try {
