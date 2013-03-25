@@ -13,11 +13,9 @@
  */
 package org.openmrs.module.feedpublishermodule.web.controller;
 
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.io.WireFeedOutput;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.server.service.EventFeedService;
+import org.ict4h.atomfeed.server.service.helper.EventFeedServiceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,32 +27,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
 
 @Controller
 public class FeedController {
-
-    protected final Log logger = LogFactory.getLog(FeedController.class);
-    private EventFeedService feedService;
+    protected final Logger logger = Logger.getLogger(FeedController.class);
+    private EventFeedService eventFeedService;
 
     @Autowired
     public FeedController(EventFeedService eventFeedService) {
-        this.feedService = eventFeedService;
+        this.eventFeedService = eventFeedService;
+
     }
 
     @RequestMapping(value = "feed/recent", method = RequestMethod.GET)
     @ResponseBody
 	public ResponseEntity<String> get(HttpServletRequest request){
-        try {
-            Feed feed = feedService.getRecentFeed(new URI(request.getRequestURL().toString()));
-            String output = new WireFeedOutput().outputString(feed);
-            MultiValueMap<String, String> headers = new HttpHeaders();
-            headers.add("Content-Type", "application/atom+xml");
-            ResponseEntity<String> entity = new ResponseEntity<String>(output, headers,HttpStatus.OK);
-            return entity;
-        } catch (Exception e) {
-            logger.error("error occurred while getting recent feeds", e);
-            throw new RuntimeException("Unexpected error", e);
-        }
+        String response = EventFeedServiceHelper.getRecentFeed(eventFeedService,request.getRequestURL().toString(),logger);
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.add("Content-Type", "application/atom+xml");
+        return new ResponseEntity<String>(response, headers,HttpStatus.OK);
 	}
 }
