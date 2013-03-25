@@ -79,7 +79,7 @@
                         <configuration>
                             <contextPath>/</contextPath>
                             <tmpDirectory>/tmp</tmpDirectory>
-                            <webAppSourceDirectory>atomfeed-standalone/target/atomfeed-standalone-0.1-SNAPSHOT</webAppSourceDirectory>
+                            <webAppSourceDirectory>target/atomfeed-standalone-0.1-SNAPSHOT</webAppSourceDirectory>
                             <stopKey/>
                             <stopPort/>
                         </configuration>
