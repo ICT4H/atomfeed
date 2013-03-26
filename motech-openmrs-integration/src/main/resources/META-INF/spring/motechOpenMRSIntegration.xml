@@ -8,7 +8,6 @@
        xmlns:context="http://www.springframework.org/schema/context">
     <context:annotation-config />
 
-    <bean class="org.motechproject.event.listener.annotations.EventAnnotationBeanPostProcessor"/>
     <bean class="org.ict4h.atomfeed.integration.motech.openmrs.listener.PillRegimen" id="pillRegimen">
         <constructor-arg>
             <ref bean="pillReminderServiceImplOsgi"/>

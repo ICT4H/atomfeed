@@ -13,6 +13,11 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <motech.version>0.19-SNAPSHOT</motech.version>
+    </properties>
+
     <repositories>
         <repository>
             <id>spring-maven-release</id>
@@ -34,7 +39,12 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-scheduler</artifactId>
-            <version>0.17</version>
+            <version>${motech.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
+            <artifactId>motech-platform-event</artifactId>
+            <version>${motech.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ict4h</groupId>
@@ -45,11 +55,6 @@
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-client</artifactId>
             <version>0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>motech-platform-event</artifactId>
-            <version>0.17</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

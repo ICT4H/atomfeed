@@ -13,6 +13,9 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <motech.version>0.19-SNAPSHOT</motech.version>
+    </properties>
     <repositories>
         <repository>
             <id>motech-repo</id>
@@ -28,12 +31,12 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-event</artifactId>
-            <version>0.17</version>
+            <version>${motech.version}</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-pillreminder-api</artifactId>
-            <version>0.17</version>
+            <version>${motech.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>

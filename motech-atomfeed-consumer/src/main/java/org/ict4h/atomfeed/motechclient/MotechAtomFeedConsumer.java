@@ -16,7 +16,6 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
-@Component
 public class MotechAtomFeedConsumer {
 
     public static final String EVENT_FROM_OPEN_MRS = "eventFromOpenMRS";
@@ -29,7 +28,7 @@ public class MotechAtomFeedConsumer {
 
     @PostConstruct
     public void startScheduler(){
-        schedulerService.scheduleJob(new CronSchedulableJob(new MotechEvent(ATOM_UPDATE_MESSAGE),cronExpression));
+        schedulerService.safeScheduleJob(new CronSchedulableJob(new MotechEvent(ATOM_UPDATE_MESSAGE),cronExpression));
     }
 
     @PreDestroy

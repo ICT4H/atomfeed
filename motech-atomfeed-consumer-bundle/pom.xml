@@ -13,6 +13,11 @@
     <version>0.01-SNAPSHOT</version>
     <name>motech-atomfeed-consumer-bundle</name>
     <packaging>bundle</packaging>
+
+    <properties>
+        <motech.version>0.19-SNAPSHOT</motech.version>
+    </properties>
+
     <repositories>
         <repository>
             <id>motech-repo</id>
@@ -49,17 +54,17 @@
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-osgi-web-util</artifactId>
-            <version>0.17</version>
+            <version>${motech.version}</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-event</artifactId>
-            <version>0.17</version>
+            <version>${motech.version}</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-scheduler</artifactId>
-            <version>0.17</version>
+            <version>${motech.version}</version>
         </dependency>
     </dependencies>
     <build>
