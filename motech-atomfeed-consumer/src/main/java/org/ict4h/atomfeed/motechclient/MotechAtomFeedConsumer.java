@@ -1,5 +1,6 @@
 package org.ict4h.atomfeed.motechclient;
 
+import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.api.FeedClient;
 import org.ict4h.atomfeed.client.api.data.Event;
 import org.motechproject.event.MotechEvent;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MotechAtomFeedConsumer {
-
+    public final Logger logger = Logger.getLogger(MotechAtomFeedConsumer.class);
     public static final String EVENT_FROM_OPEN_MRS = "eventFromOpenMRS";
     private URI entryURL;
     private MotechSchedulerService schedulerService;
@@ -28,7 +29,7 @@ public class MotechAtomFeedConsumer {
 
     @PostConstruct
     public void startScheduler(){
-        schedulerService.safeScheduleJob(new CronSchedulableJob(new MotechEvent(ATOM_UPDATE_MESSAGE),cronExpression));
+        schedulerService.safeScheduleJob(new CronSchedulableJob(new MotechEvent(ATOM_UPDATE_MESSAGE), cronExpression));
     }
 
     @PreDestroy
@@ -53,7 +54,7 @@ public class MotechAtomFeedConsumer {
             thread.setContextClassLoader(this.getClass().getClassLoader());
             this.update();
         }catch (Exception ex){
-            throw new RuntimeException(String.format("Event Update Failure. Error %s",ex.getMessage()), ex);
+            throw new RuntimeException("AtomFeed Event Update Failure", ex);
         }
         finally {
             thread.setContextClassLoader(oldContextClassLoader);
@@ -62,9 +63,9 @@ public class MotechAtomFeedConsumer {
 
     private void update() throws URISyntaxException {
         List<Event> events = feedClient.unprocessedEvents(entryURL);
-        System.out.println("marker - before processing events");
+        logger.info("AtomFeed listener invoked");
         if(!events.isEmpty()){
-            System.out.println("marker - event. In event processor");
+            logger.info("New Events Found. Processing events");
             for (Event event : events) {
                 HashMap<String, Object> map = new HashMap<String, Object>();
                 map.put("contents", event.getContent());
