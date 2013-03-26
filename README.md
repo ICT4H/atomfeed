@@ -1,9 +1,9 @@
-atomfeed
+Atomfeed
 ========
 
 [![Build Status](https://travis-ci.org/ICT4H/atomfeed.png)](https://travis-ci.org/ICT4H/atomfeed)
 
-build
+Build
 -----
 To build:
 * mvn compile
@@ -22,8 +22,12 @@ To start up:
 To integration test:
 * mvn integration-test -P IT
 
-design
+Design
 ------
 Our design assumes:
 * We have a database with autoincrementing ids for non-time-based feed pagination.
 * We need to support a clustered environment, so our only synchronisation point is the database.
+
+Documentation
+------
+Please see the (wiki)[https://github.com/ICT4H/atomfeed/wiki] for documentation on using Atomfeed.
