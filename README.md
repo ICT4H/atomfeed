@@ -30,4 +30,4 @@ Our design assumes:
 
 Documentation
 ------
-Please see the (wiki)[https://github.com/ICT4H/atomfeed/wiki] for documentation on using Atomfeed.
+Please see the [wiki](https://github.com/ICT4H/atomfeed/wiki) for documentation on using Atomfeed.
