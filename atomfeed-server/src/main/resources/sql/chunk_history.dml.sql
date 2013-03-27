@@ -1,1 +1,0 @@
-INSERT INTO atomfeed.chunking_history (chunk_size, start_pos) VALUES (5, 1); 

@@ -27,19 +27,21 @@
         </createTable>
     </changeSet>
     <changeSet id="2" author="ict4h">
-        <!--  We should move this to a separate mvn execution or profile. Must have atleast one -->
-        <sqlFile path="src/main/resources/sql/chunk_history.dml.sql"/>
-    </changeSet>
-    <changeSet id="3" author="ict4h">
         <dropColumn tableName="chunking_history" columnName="end_pos"/>
     </changeSet>
-    <changeSet id="4" author="ict4h">
+    <changeSet id="3" author="ict4h">
         <renameTable oldTableName="chunking_history" newTableName="number_based_chunking_histories"/>
     </changeSet>
-    <changeSet id="5" author="ict4h" dbms="mssql">
+    <changeSet id="4" author="ict4h" dbms="mssql">
         <modifyDataType tableName="number_based_chunking_histories" columnName="id" newDataType="int"/>
         <addAutoIncrement tableName="number_based_chunking_histories" columnName="id" columnDataType="int"/>
         <modifyDataType tableName="event_records" columnName="id" newDataType="int"/>
         <addAutoIncrement tableName="event_records" columnName="id" columnDataType="int"/>
+    </changeSet>
+    <changeSet id="5" author="ict4h">
+        <insert tableName="number_based_chunking_histories">
+            <column name="chunk_size" valueNumeric="5"></column>
+            <column name="start_pos" valueNumeric="1"></column>
+        </insert>
     </changeSet>
 </databaseChangeLog>
