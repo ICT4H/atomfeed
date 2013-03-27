@@ -9,6 +9,9 @@ import org.ict4h.atomfeed.server.service.EventFeedService;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * A Helper class that can be used to generate a {@code String} representation of a {@code Feed}.
+ */
 public class EventFeedServiceHelper {
     public static String getRecentFeed(EventFeedService eventFeedService, String requestURL, Logger logger ){
         try {
