@@ -12,7 +12,7 @@
             </column>
             <column name="uuid" type="varchar(40)"/>
             <column name="title" type="varchar(255)"/>
-            <column name="timestamp" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP"/>
+            <column name="timestamp" type="TIMESTAMP(6)" defaultValueDate="NOW(6)"/>
             <column name="uri" type="varchar(255)"/>
             <!-- Change to CLOB -->
             <column name="object" type="varchar(1000)"/>
@@ -31,5 +31,10 @@
         <modifyDataType tableName="event_records" columnName="id" newDataType="int"/>
         <addAutoIncrement tableName="event_records" columnName="id" columnDataType="int"/>
     </changeSet>
-    <!-- Add initial chunking entires here-->
+    <changeSet id="ict4h.feedpublishermodule-2013-03-27-15:30" author="ict4h">
+        <insert tableName="number_based_chunking_histories">
+            <column name="chunk_size" valueNumeric="5"></column>
+            <column name="start_pos" valueNumeric="1"></column>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
