@@ -10,12 +10,15 @@ import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
 
 public class FeedGeneratorFactory {
+
+    public static final String NumberBasedChunkingStrategy = "number";
+
     public FeedGenerator getFeedGenerator(AllEventRecords allEventRecords, ChunkingEntries allChunkingEntries) throws Exception {
         return get(getChunkingStrategy(), allEventRecords, allChunkingEntries);
     }
 
     private FeedGenerator get(String chunkingStrategy, AllEventRecords allEventRecords, ChunkingEntries allChunkingEntries) {
-        return chunkingStrategy == "number" ?
+        return chunkingStrategy == NumberBasedChunkingStrategy ?
                 getNumberBasedFeedGenerator(allEventRecords,allChunkingEntries) :
                 getTimeBasedFeedGenerator(allEventRecords,allChunkingEntries);
     }
@@ -33,12 +36,12 @@ public class FeedGeneratorFactory {
         {
             bundle = ResourceBundle.getBundle("atomfeed");
         }catch (MissingResourceException ex){
-            return "number";
+            return NumberBasedChunkingStrategy;
         }
         if(bundle.containsKey("chunking.strategy")){
              return bundle.getString("chunking.strategy").toLowerCase();
         }
-        return "number";
+        return NumberBasedChunkingStrategy;
     }
 
     private FeedGenerator getNumberBasedFeedGenerator(AllEventRecords allEventRecords, ChunkingEntries allChunkingEntries) {
