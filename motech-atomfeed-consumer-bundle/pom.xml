@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-client</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${atomfeed.version}</version>
         </dependency>
         <dependency>
             <groupId>org.quartz-scheduler</groupId>

@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-spring-server</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${atomfeed.version}</version>
         </dependency>
         <dependency>
             <groupId>postgresql</groupId>
@@ -42,6 +42,11 @@
             <version>1.6.1</version>
         </dependency>
         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
@@ -56,14 +61,14 @@
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-server</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${atomfeed.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-client</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${atomfeed.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -79,7 +84,7 @@
                         <configuration>
                             <contextPath>/</contextPath>
                             <tmpDirectory>/tmp</tmpDirectory>
-                            <webAppSourceDirectory>target/atomfeed-standalone-0.1-SNAPSHOT</webAppSourceDirectory>
+                            <webAppSourceDirectory>target/atomfeed-standalone-${atomfeed.version}</webAppSourceDirectory>
                             <stopKey/>
                             <stopPort/>
                         </configuration>
