@@ -51,6 +51,7 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.ict4h</groupId>
@@ -68,6 +69,9 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
+        <!--
+        Make all spring dependencies provided
+        -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
