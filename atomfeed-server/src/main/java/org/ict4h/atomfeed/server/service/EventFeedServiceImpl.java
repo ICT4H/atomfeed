@@ -35,9 +35,6 @@ public class EventFeedServiceImpl implements EventFeedService {
     @Override
 	public Feed getRecentFeed(URI requestUri) {
     	EventFeed recentFeed = feedGenerator.getRecentFeed();
-
-
-
         return new FeedBuilder()
                 .type("atom_1.0")
                 .id(generateIdForEventFeed(recentFeed.getId()))

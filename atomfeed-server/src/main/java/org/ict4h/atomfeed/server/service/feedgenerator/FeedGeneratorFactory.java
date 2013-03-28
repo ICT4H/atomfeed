@@ -18,7 +18,7 @@ public class FeedGeneratorFactory {
     }
 
     private FeedGenerator get(String chunkingStrategy, AllEventRecords allEventRecords, ChunkingEntries allChunkingEntries) {
-        return chunkingStrategy == NumberBasedChunkingStrategy ?
+        return chunkingStrategy.equals(NumberBasedChunkingStrategy) ?
                 getNumberBasedFeedGenerator(allEventRecords,allChunkingEntries) :
                 getTimeBasedFeedGenerator(allEventRecords,allChunkingEntries);
     }
