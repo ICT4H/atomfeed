@@ -31,7 +31,7 @@ public class ChunkingEntriesJdbcImpl implements ChunkingEntries {
 		ResultSet rs = null;
 		try {
 			connection = getDbConnection();
-			String sql = String.format("select id, interval, start from %s order by id", getTableName("chunking_history"));
+			String sql = String.format("select id, chunk_length, start from %s order by id", getTableName("chunking_history"));
 			stmt = connection.prepareStatement(sql);
 			rs = stmt.executeQuery();
 			return mapHistories(rs);

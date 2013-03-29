@@ -10,7 +10,7 @@ public class ChunkingHistoryEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int sequenceNumber;
 
-    @Column(name = "interval")
+    @Column(name = "chunk_length")
     private Long interval;
 
     @Column(name = "start")

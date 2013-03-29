@@ -19,7 +19,7 @@
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="interval" type="BIGINT"/>
+            <column name="chunk_length" type="BIGINT"/>
             <column name="start" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -33,7 +33,7 @@
     </changeSet>
     <changeSet id="3" author="ict4h">
         <insert tableName="chunking_history" schemaName="atomfeed">
-            <column name="interval" valueNumeric="5"></column>
+            <column name="chunk_length" valueNumeric="5"></column>
             <column name="start" valueNumeric="1"></column>
         </insert>
     </changeSet>

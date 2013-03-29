@@ -21,7 +21,7 @@
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="interval" type="BIGINT"/>
+            <column name="chunk_length" type="BIGINT"/>
             <column name="start" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
@@ -33,7 +33,7 @@
     </changeSet>
     <changeSet id="ict4h.feedpublishermodule-2013-03-27-15:30" author="ict4h">
         <insert tableName="chunking_history">
-            <column name="interval" valueNumeric="5"></column>
+            <column name="chunk_length" valueNumeric="5"></column>
             <column name="start" valueNumeric="1"></column>
         </insert>
     </changeSet>
