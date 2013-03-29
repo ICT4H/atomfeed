@@ -1,7 +1,6 @@
 package org.ict4h.atomfeed.server.repository;
 
 import org.ict4h.atomfeed.IntegrationTest;
-import org.ict4h.atomfeed.server.domain.chunking.ChunkingHistoryEntry;
 import org.ict4h.atomfeed.server.repository.jdbc.ChunkingEntriesJdbcImpl;
 import org.junit.After;
 import org.junit.Test;

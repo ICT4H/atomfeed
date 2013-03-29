@@ -34,7 +34,7 @@ public class ChunkingEntriesJdbcImpl implements ChunkingEntries {
 			String sql = String.format("select id, interval, start from %s order by id", getTableName("chunking_history"));
 			stmt = connection.prepareStatement(sql);
 			rs = stmt.executeQuery();
-			return mapHistories(rs, ChunkingHistoryEntry.class);
+			return mapHistories(rs);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -56,10 +56,9 @@ public class ChunkingEntriesJdbcImpl implements ChunkingEntries {
 		}
 	}
 
-	private <T> List<T> mapHistories(ResultSet results, Class<T> clazz) {
-		JdbcResultSetMapper<T> resultSetMapper = new JdbcResultSetMapper<T>();
-		List<T> events = resultSetMapper.mapResultSetToObject(results, clazz);
-		return events;
+	private List<ChunkingHistoryEntry> mapHistories(ResultSet results) {
+		JdbcResultSetMapper<ChunkingHistoryEntry> resultSetMapper = new JdbcResultSetMapper<ChunkingHistoryEntry>();
+        return resultSetMapper.mapResultSetToObject(results, ChunkingHistoryEntry.class);
 	}
 
 	private Object getTableName(String table) {
