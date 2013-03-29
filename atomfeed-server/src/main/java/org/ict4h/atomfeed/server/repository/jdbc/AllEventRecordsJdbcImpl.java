@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.List;
 
 import org.ict4h.atomfeed.server.domain.EventRecord;
-import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
+import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 
 public class AllEventRecordsJdbcImpl implements AllEventRecords {

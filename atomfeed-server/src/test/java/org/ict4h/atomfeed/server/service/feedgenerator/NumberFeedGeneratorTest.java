@@ -3,7 +3,7 @@ package org.ict4h.atomfeed.server.service.feedgenerator;
 import junit.framework.Assert;
 import org.ict4h.atomfeed.server.domain.EventFeed;
 import org.ict4h.atomfeed.server.domain.EventRecord;
-import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
+import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsStub;
 import org.junit.Before;
@@ -21,7 +21,7 @@ public class NumberFeedGeneratorTest {
 
     @Before
     public void setUp() {
-        NumberBasedChunkingHistory config = new NumberBasedChunkingHistory();
+        NumberChunkingHistory config = new NumberChunkingHistory();
         config.add(1, 5, 1);
         feedGenerator = new NumberFeedGenerator(eventsRecord, config);
     }

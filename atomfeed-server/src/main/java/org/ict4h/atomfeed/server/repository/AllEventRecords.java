@@ -3,7 +3,7 @@ package org.ict4h.atomfeed.server.repository;
 import java.util.List;
 
 import org.ict4h.atomfeed.server.domain.EventRecord;
-import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
+import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 
 /**
  * The interface {@code AllEventRecords} contains methods to perform {@code EventRecord} retrieval and

@@ -1,4 +1,4 @@
-package org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration;
+package org.ict4h.atomfeed.server.domain.chunking.number;
 
 public class NumberRange {
     Integer first;

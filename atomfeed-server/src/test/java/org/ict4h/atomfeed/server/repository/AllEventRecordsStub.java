@@ -4,7 +4,7 @@ import java.util.*;
 
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.EventRecordComparator;
-import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
+import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 
 public class AllEventRecordsStub implements AllEventRecords {
     private Map<String, EventRecord> eventRecords = new HashMap<String, EventRecord>();

@@ -3,7 +3,7 @@ package org.ict4h.atomfeed.client;
 import com.sun.syndication.feed.atom.Entry;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.datasource.WebClientStub;
-import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
+import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4h.atomfeed.server.repository.InMemoryEventRecordCreator;
@@ -37,7 +37,7 @@ public class FeedEnumeratorTest {
 	}
 	
 	private FeedGenerator getFeedGenerator(AllEventRecords eventRecords) {
-		NumberBasedChunkingHistory config = new NumberBasedChunkingHistory();
+		NumberChunkingHistory config = new NumberChunkingHistory();
         config.add(1, 5, 1);
         return new NumberFeedGenerator(eventRecords, config);
 	}

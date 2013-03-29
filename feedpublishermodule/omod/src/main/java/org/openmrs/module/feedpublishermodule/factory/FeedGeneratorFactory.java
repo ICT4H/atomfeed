@@ -1,7 +1,7 @@
 package org.openmrs.module.feedpublishermodule.factory;
 
-import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
-import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistoryEntry;
+import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
+import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistoryEntry;
 import org.ict4h.atomfeed.server.repository.jdbc.ChunkingEntriesJdbcImpl;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
 import org.ict4h.atomfeed.server.repository.jdbc.JdbcConnectionProvider;
@@ -16,9 +16,9 @@ public class FeedGeneratorFactory {
         ChunkingEntriesJdbcImpl allChunkingEntries = new ChunkingEntriesJdbcImpl(provider);
         allEventRecords.setSchema("");
         allChunkingEntries.setSchema("");
-        NumberBasedChunkingHistory numberBasedChunking = new NumberBasedChunkingHistory();
-        List<NumberBasedChunkingHistoryEntry> allEntries = allChunkingEntries.all(NumberBasedChunkingHistoryEntry.class);
-        for (NumberBasedChunkingHistoryEntry entry : allEntries){
+        NumberChunkingHistory numberBasedChunking = new NumberChunkingHistory();
+        List<NumberChunkingHistoryEntry> allEntries = allChunkingEntries.all(NumberChunkingHistoryEntry.class);
+        for (NumberChunkingHistoryEntry entry : allEntries){
             numberBasedChunking.add(entry.getSeqNum(),entry.getChunkSize(),entry.getStartPosition());
         }
         return new NumberFeedGenerator(allEventRecords,numberBasedChunking);

@@ -1,4 +1,4 @@
-package org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration;
+package org.ict4h.atomfeed.server.domain.chunking.time;
 
 import org.joda.time.LocalDateTime;
 

@@ -1,10 +1,10 @@
-package org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration;
+package org.ict4h.atomfeed.server.domain.chunking.number;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name ="number_based_chunking_histories")
-public class NumberBasedChunkingHistoryEntry {
+public class NumberChunkingHistoryEntry {
 
     @Id
     @Column(name = "id")
@@ -21,14 +21,14 @@ public class NumberBasedChunkingHistoryEntry {
     private int endPos;
     private static final int UNBOUNDED = -1;
 
-    public NumberBasedChunkingHistoryEntry(int seqNum, int chunkSize, Integer startPos) {
+    public NumberChunkingHistoryEntry(int seqNum, int chunkSize, Integer startPos) {
         this.seqNum = seqNum;
         this.chunkSize = chunkSize;
         this.startPos = (startPos == null) ? 1 : startPos;
         this.endPos = UNBOUNDED;
     }
 
-    public NumberBasedChunkingHistoryEntry(){}
+    public NumberChunkingHistoryEntry(){}
 
     public int getFeedCount(int upperBound) {
         int endPosition = isOpen() ? upperBound : endPos;

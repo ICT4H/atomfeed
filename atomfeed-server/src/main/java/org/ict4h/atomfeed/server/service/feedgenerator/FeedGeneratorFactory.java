@@ -2,10 +2,10 @@ package org.ict4h.atomfeed.server.service.feedgenerator;
 
 import java.util.*;
 
-import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistory;
-import org.ict4h.atomfeed.server.domain.numberbasedchunkingconfiguration.NumberBasedChunkingHistoryEntry;
-import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeBasedChunkingHistory;
-import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeBasedChunkingHistoryEntry;
+import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
+import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistoryEntry;
+import org.ict4h.atomfeed.server.domain.chunking.time.TimeChunkingHistory;
+import org.ict4h.atomfeed.server.domain.chunking.time.TimeChunkingHistoryEntry;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
 
@@ -24,9 +24,9 @@ public class FeedGeneratorFactory {
     }
 
     private FeedGenerator getTimeBasedFeedGenerator(AllEventRecords allEventRecords, ChunkingEntries allChunkingEntries) {
-        List<TimeBasedChunkingHistoryEntry> allEntries = allChunkingEntries.all(TimeBasedChunkingHistoryEntry.class);
-        TimeBasedChunkingHistory timeBasedChunkingHistory = new TimeBasedChunkingHistory(allEntries);
-        return new TimeFeedGenerator(timeBasedChunkingHistory,allEventRecords);
+        List<TimeChunkingHistoryEntry> allEntries = allChunkingEntries.all(TimeChunkingHistoryEntry.class);
+        TimeChunkingHistory timeChunkingHistory = new TimeChunkingHistory(allEntries);
+        return new TimeFeedGenerator(timeChunkingHistory,allEventRecords);
     }
 
     //TODO:This logic of retrieving keys using a bundle is duplicated. Use a ResourceWrapper.
@@ -45,9 +45,9 @@ public class FeedGeneratorFactory {
     }
 
     private FeedGenerator getNumberBasedFeedGenerator(AllEventRecords allEventRecords, ChunkingEntries allChunkingEntries) {
-        NumberBasedChunkingHistory numberBasedChunking = new NumberBasedChunkingHistory();
-        List<NumberBasedChunkingHistoryEntry> allEntries = allChunkingEntries.all(NumberBasedChunkingHistoryEntry.class);
-        for (NumberBasedChunkingHistoryEntry entry : allEntries){
+        NumberChunkingHistory numberBasedChunking = new NumberChunkingHistory();
+        List<NumberChunkingHistoryEntry> allEntries = allChunkingEntries.all(NumberChunkingHistoryEntry.class);
+        for (NumberChunkingHistoryEntry entry : allEntries){
             numberBasedChunking.add(entry.getSeqNum(),entry.getChunkSize(),entry.getStartPosition());
         }
         return new NumberFeedGenerator(allEventRecords,numberBasedChunking);

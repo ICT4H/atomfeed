@@ -2,7 +2,7 @@ package org.ict4h.atomfeed.server.repository;
 
 import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.server.domain.EventRecord;
-import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
+import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;

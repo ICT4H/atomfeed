@@ -1,14 +1,14 @@
-package org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration;
+package org.ict4h.atomfeed.server.domain.chunking.time;
 
 import java.util.Collections;
 import java.util.HashMap;
 
-public class TimeBasedChunkingHistoryStub extends TimeBasedChunkingHistory {
+public class TimeChunkingHistoryStub extends TimeChunkingHistory {
     private HashMap<Integer,TimeRange> map = new HashMap<Integer, TimeRange>();
     private long currentSequenceNumber;
 
-    public TimeBasedChunkingHistoryStub() {
-        super(Collections.<TimeBasedChunkingHistoryEntry>emptyList());
+    public TimeChunkingHistoryStub() {
+        super(Collections.<TimeChunkingHistoryEntry>emptyList());
     }
 
     public void setCurrentSequenceNumber(long currentSequenceNumber){

@@ -6,8 +6,8 @@ import junit.framework.Assert;
 
 import org.ict4h.atomfeed.server.domain.EventFeed;
 import org.ict4h.atomfeed.server.domain.EventRecord;
-import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeBasedChunkingHistoryStub;
-import org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration.TimeRange;
+import org.ict4h.atomfeed.server.domain.chunking.time.TimeChunkingHistoryStub;
+import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsStub;
 import org.joda.time.LocalDateTime;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class TimeFeedGeneratorTest {
     public void shouldGetWorkingFeed() throws Exception {
         LocalDateTime startTime = LocalDateTime.now().minusHours(3);
 
-        TimeBasedChunkingHistoryStub history = new TimeBasedChunkingHistoryStub();
+        TimeChunkingHistoryStub history = new TimeChunkingHistoryStub();
         history.setCurrentSequenceNumber(4);
         history.setTimeRange(4, new TimeRange(startTime,startTime.plusHours(2)));
 

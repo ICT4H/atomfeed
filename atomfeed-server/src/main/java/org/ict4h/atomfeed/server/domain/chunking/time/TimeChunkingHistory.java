@@ -1,16 +1,14 @@
-package org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration;
+package org.ict4h.atomfeed.server.domain.chunking.time;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.joda.time.LocalDateTime;
 
-public class TimeBasedChunkingHistory {
-    private List<TimeBasedChunkingHistoryEntry> chunkingHistoryEntries;
+public class TimeChunkingHistory {
+    private List<TimeChunkingHistoryEntry> chunkingHistoryEntries;
 
-    public TimeBasedChunkingHistory(List<TimeBasedChunkingHistoryEntry> chunkingHistoryEntries) {
+    public TimeChunkingHistory(List<TimeChunkingHistoryEntry> chunkingHistoryEntries) {
         this.chunkingHistoryEntries = chunkingHistoryEntries;
     }
 
@@ -28,14 +26,14 @@ public class TimeBasedChunkingHistory {
 
     public TimeRange timeRangeFor(int sequenceNumber) {
         int feedsSoFar = 0;
-        for (TimeBasedChunkingHistoryEntry timeBasedChunkingHistoryEntry : chunkingHistoryEntries) {
+        for (TimeChunkingHistoryEntry timeChunkingHistoryEntry : chunkingHistoryEntries) {
             int relativeSequenceNumber = sequenceNumber - feedsSoFar;
 
-            if (timeBasedChunkingHistoryEntry.isUnbounded()
-             || sequenceNumber <= timeBasedChunkingHistoryEntry.numberOfFeeds() + feedsSoFar) {
-                return timeBasedChunkingHistoryEntry.getTimeRangeForChunk(relativeSequenceNumber);
+            if (timeChunkingHistoryEntry.isUnbounded()
+             || sequenceNumber <= timeChunkingHistoryEntry.numberOfFeeds() + feedsSoFar) {
+                return timeChunkingHistoryEntry.getTimeRangeForChunk(relativeSequenceNumber);
             }
-            feedsSoFar += timeBasedChunkingHistoryEntry.numberOfFeeds();
+            feedsSoFar += timeChunkingHistoryEntry.numberOfFeeds();
         }
         throw new AtomFeedRuntimeException(String.format("The sequence number:%d lies in future", sequenceNumber));
     }

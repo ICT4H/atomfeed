@@ -1,16 +1,16 @@
-package org.ict4h.atomfeed.server.domain.timebasedchunkingconfiguration;
+package org.ict4h.atomfeed.server.domain.chunking.time;
 
 import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
 
-public class TimeBasedChunkingHistoryEntry {
+public class TimeChunkingHistoryEntry {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Duration duration;
 
-    public TimeBasedChunkingHistoryEntry(LocalDateTime startTime, LocalDateTime endTime, Duration duration) {
+    public TimeChunkingHistoryEntry(LocalDateTime startTime, LocalDateTime endTime, Duration duration) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = duration;
@@ -41,7 +41,7 @@ public class TimeBasedChunkingHistoryEntry {
 
     @Override
     public String toString() {
-        return "TimeBasedChunkingHistoryEntry{" +
+        return "TimeChunkingHistoryEntry{" +
                 "startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", duration=" + duration +
