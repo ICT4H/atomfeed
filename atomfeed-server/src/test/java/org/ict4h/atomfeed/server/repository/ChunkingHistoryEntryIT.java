@@ -1,7 +1,7 @@
 package org.ict4h.atomfeed.server.repository;
 
 import org.ict4h.atomfeed.IntegrationTest;
-import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistoryEntry;
+import org.ict4h.atomfeed.server.domain.chunking.ChunkingHistoryEntry;
 import org.ict4h.atomfeed.server.repository.jdbc.ChunkingEntriesJdbcImpl;
 import org.junit.After;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import java.util.List;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
-public class NumberBasedChunkingHistoryEntryIT extends IntegrationTest {
+public class ChunkingHistoryEntryIT extends IntegrationTest {
 
     private Connection connection;
 
@@ -23,9 +23,9 @@ public class NumberBasedChunkingHistoryEntryIT extends IntegrationTest {
     }
 
     @Test
-    public void shouldGetAllNumberBasedChunkingHistoryEntries() throws SQLException {
+    public void shouldGetAllChunkingHistoryEntries() throws SQLException {
         connection = getConnection();
-        List<?> items = new ChunkingEntriesJdbcImpl(getProvider(connection)).all(NumberChunkingHistoryEntry.class);
+        List<?> items = new ChunkingEntriesJdbcImpl(getProvider(connection)).all();
         assertNotNull(items);
         assertTrue(items.size() > 0);
     }

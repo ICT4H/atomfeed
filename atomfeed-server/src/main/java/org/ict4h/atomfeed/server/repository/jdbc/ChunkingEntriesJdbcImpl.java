@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.ict4h.atomfeed.server.domain.chunking.ChunkingHistoryEntry;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
 
 public class ChunkingEntriesJdbcImpl implements ChunkingEntries {
@@ -24,16 +25,16 @@ public class ChunkingEntriesJdbcImpl implements ChunkingEntries {
 	}
 	
 	@Override
-	public <T> List<T> all(Class<T> clazz) {
+	public List<ChunkingHistoryEntry> all() {
 		Connection connection = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			connection = getDbConnection();
-			String sql = String.format("select id, chunk_size, start_pos from %s order by id", getTableName("number_based_chunking_histories"));
+			String sql = String.format("select id, interval, start from %s order by id", getTableName("chunking_history"));
 			stmt = connection.prepareStatement(sql);
 			rs = stmt.executeQuery();
-			return mapHistories(rs, clazz);
+			return mapHistories(rs, ChunkingHistoryEntry.class);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {

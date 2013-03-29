@@ -14,7 +14,7 @@ public class NumberChunkingHistory {
 		entryNumberBasedHistories.add(entryNumberBasedHistory);
 		Collections.sort(entryNumberBasedHistories, new Comparator<NumberChunkingHistoryEntry>() {
 			public int compare(NumberChunkingHistoryEntry e1, NumberChunkingHistoryEntry e2) {
-				return (e1.getSeqNum() > e2.getSeqNum()) ? 1 : (e1.getSeqNum() == e2.getSeqNum() ? 0 : -1);
+				return (e1.getSequenceNumber() > e2.getSequenceNumber()) ? 1 : (e1.getSequenceNumber() == e2.getSequenceNumber() ? 0 : -1);
 			}
 		});
 	}

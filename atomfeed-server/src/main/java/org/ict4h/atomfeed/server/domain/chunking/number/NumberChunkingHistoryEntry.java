@@ -1,68 +1,53 @@
 package org.ict4h.atomfeed.server.domain.chunking.number;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name ="number_based_chunking_histories")
 public class NumberChunkingHistoryEntry {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int seqNum;
-
-    @Column(name = "chunk_size")
-    private int chunkSize;
-
-    @Column(name = "start_pos")
-    private int startPos;
-
-    @Transient
-    private int endPos;
+    private int sequenceNumber;
+    private int chunkLength;
+    private int leftBound;
+    private int rightBound;
     private static final int UNBOUNDED = -1;
 
-    public NumberChunkingHistoryEntry(int seqNum, int chunkSize, Integer startPos) {
-        this.seqNum = seqNum;
-        this.chunkSize = chunkSize;
-        this.startPos = (startPos == null) ? 1 : startPos;
-        this.endPos = UNBOUNDED;
+    public NumberChunkingHistoryEntry(int sequenceNumber, int chunkSize, Integer startPos) {
+        this.sequenceNumber = sequenceNumber;
+        this.chunkLength = chunkSize;
+        this.leftBound = (startPos == null) ? 1 : startPos;
+        this.rightBound = UNBOUNDED;
     }
 
-    public NumberChunkingHistoryEntry(){}
-
     public int getFeedCount(int upperBound) {
-        int endPosition = isOpen() ? upperBound : endPos;
-        int count = ((Math.min(endPosition, upperBound) - startPos) + 1);
+        int endPosition = isOpen() ? upperBound : rightBound;
+        int count = ((Math.min(endPosition, upperBound) - leftBound) + 1);
         if (count <= 0) return 0;
-        Double feedCount = Math.ceil((count * 1.0) / chunkSize);
+        Double feedCount = Math.ceil((count * 1.0) / chunkLength);
         return feedCount.intValue();
     }
 
     public NumberRange getRange(Integer relativeFeedId) {
-        int start = startPos + (relativeFeedId - 1) * chunkSize;
-        int naturalLimit = start + chunkSize - 1;
-        int end = isOpen() ? naturalLimit : Math.min(endPos, naturalLimit);
+        int start = leftBound + (relativeFeedId - 1) * chunkLength;
+        int naturalLimit = start + chunkLength - 1;
+        int end = isOpen() ? naturalLimit : Math.min(rightBound, naturalLimit);
         return new NumberRange(start, end);
     }
 
     public boolean isOpen() {
-        return (endPos == UNBOUNDED);
+        return (rightBound == UNBOUNDED);
     }
 
-    public int getSeqNum() {
-        return seqNum;
+    public int getSequenceNumber() {
+        return sequenceNumber;
     }
 
     public int getChunkSize() {
-        return chunkSize;
+        return chunkLength;
     }
 
     public int getStartPosition() {
-        return startPos;
+        return leftBound;
     }
 
 
     public void close(int endPosition) {
-        this.endPos = endPosition;
+        this.rightBound = endPosition;
     }
 }

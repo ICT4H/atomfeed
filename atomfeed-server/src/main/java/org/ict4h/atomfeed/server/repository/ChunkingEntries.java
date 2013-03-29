@@ -1,7 +1,9 @@
 package org.ict4h.atomfeed.server.repository;
 
+import org.ict4h.atomfeed.server.domain.chunking.ChunkingHistoryEntry;
+
 import java.util.List;
 
 public interface ChunkingEntries {
-    public <T> List<T> all(Class<T> t);
+    public List<ChunkingHistoryEntry> all();
 }
