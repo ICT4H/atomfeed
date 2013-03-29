@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
+import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 
 public class TimeChunkingHistory {
     private List<TimeChunkingHistoryEntry> chunkingHistoryEntries = new ArrayList<TimeChunkingHistoryEntry>();
-
-    public TimeChunkingHistory(List<TimeChunkingHistoryEntry> chunkingHistoryEntries) {
-        this.chunkingHistoryEntries = chunkingHistoryEntries;
-    }
 
     public TimeChunkingHistory(){}
 
@@ -45,7 +42,17 @@ public class TimeChunkingHistory {
         return new Long(currentSequenceNumber()).intValue();
     }
 
-    //TODO: Complete This
-    public void add(int sequenceNumber, Long startTime, Long interval) {
+    public void add(Long startTime, Long interval) {
+        enforceRightBoundOnPreviousEntry(startTime);
+        TimeChunkingHistoryEntry historyEntry = new TimeChunkingHistoryEntry(new LocalDateTime(startTime),null,new Duration(interval));
+        chunkingHistoryEntries.add(historyEntry);
+    }
+
+    private void enforceRightBoundOnPreviousEntry(Long startTime) {
+        int size = chunkingHistoryEntries.size();
+        if(size == 0){
+            return;
+        }
+        chunkingHistoryEntries.get(size - 1).enforceRightBound(startTime);
     }
 }

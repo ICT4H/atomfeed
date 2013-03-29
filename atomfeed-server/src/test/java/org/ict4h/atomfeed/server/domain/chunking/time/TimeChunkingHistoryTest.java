@@ -7,17 +7,27 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static junit.framework.Assert.assertEquals;
+
 public class TimeChunkingHistoryTest {
     @Test
-    public void sequenceNumberWhenThereIsOnlyOneItemInHistory() {
+    public void shouldGetTwoFeedSequenceNumbersWhenThereIsOnlyOneItemInHistory() {
         // duration in hours -- 2; now = 3; start=0 end=null
-        Duration duration = Duration.standardHours(2);
-        LocalDateTime now = LocalDateTime.now();
-        TimeChunkingHistoryEntry timeChunkingHistoryEntry = new TimeChunkingHistoryEntry(now.minusHours(3), now, duration);
-        Assert.assertEquals(2, new TimeChunkingHistory(Arrays.asList(timeChunkingHistoryEntry)).currentSequenceNumber());
+        Long interval = Duration.standardHours(2).getMillis();
 
-        timeChunkingHistoryEntry = new TimeChunkingHistoryEntry(now.minusHours(1), now, duration);
-        Assert.assertEquals(1, new TimeChunkingHistory(Arrays.asList(timeChunkingHistoryEntry)).currentSequenceNumber());
+        TimeChunkingHistory timeChunkingHistory = new TimeChunkingHistory();
+        long startTime = LocalDateTime.now().minusHours(3).toDate().getTime();
+        timeChunkingHistory.add(startTime,interval);
+        Assert.assertEquals(2, timeChunkingHistory.currentSequenceNumber());
+    }
+
+    @Test
+    public void shouldGetOnlyOneFeedWhenDurationExceedsTimeRangeWhenThereIsOnlyOneItemInHistory(){
+        TimeChunkingHistory timeChunkingHistory = new TimeChunkingHistory();
+        long duration = Duration.standardHours(2).getMillis();
+        long startTime = LocalDateTime.now().minusHours(1).toDate().getTime();
+        timeChunkingHistory.add(startTime,duration);
+        assertEquals(1, timeChunkingHistory.currentSequenceNumber());
     }
 
     @Test
@@ -25,18 +35,20 @@ public class TimeChunkingHistoryTest {
         // hours -- 0-2; 2-4; 4-7; 7-. now = 8
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startOfGame = now.minusHours(8);
-        TimeChunkingHistoryEntry timeChunkingHistoryEntry1 = new TimeChunkingHistoryEntry(startOfGame, startOfGame.plusHours(4), Duration.standardHours(2));
-        TimeChunkingHistoryEntry timeChunkingHistoryEntry2 = new TimeChunkingHistoryEntry(startOfGame.plusHours(4), null, Duration.standardHours(3));
-        Assert.assertEquals(4, new TimeChunkingHistory(Arrays.asList(timeChunkingHistoryEntry1, timeChunkingHistoryEntry2)).currentSequenceNumber());
+        TimeChunkingHistory timeChunkingHistory = new TimeChunkingHistory();
+        timeChunkingHistory.add(startOfGame.toDate().getTime(),Duration.standardHours(2).getMillis());
+        timeChunkingHistory.add(startOfGame.plusHours(4).toDate().getTime(),Duration.standardHours(3).getMillis());
+        Assert.assertEquals(4, timeChunkingHistory.currentSequenceNumber());
     }
 
     @Test
     public void timeRangeForASequenceNumber() {
         // hours -- 0-2; 2-4; 4-9; 9-. now = 10.
         LocalDateTime startOfGame = new LocalDateTime(2012, 1, 1, 0, 0, 0);
-        TimeChunkingHistoryEntry timeChunkingHistoryEntry1 = new TimeChunkingHistoryEntry(startOfGame, startOfGame.plusHours(4), Duration.standardHours(2));
-        TimeChunkingHistoryEntry timeChunkingHistoryEntry2 = new TimeChunkingHistoryEntry(startOfGame.plusHours(4), null, Duration.standardHours(5));
-        TimeChunkingHistory timeChunkingHistory = new TimeChunkingHistory(Arrays.asList(timeChunkingHistoryEntry1, timeChunkingHistoryEntry2));
+
+        TimeChunkingHistory timeChunkingHistory = new TimeChunkingHistory();
+        timeChunkingHistory.add(startOfGame.toDate().getTime(),Duration.standardHours(2).getMillis());
+        timeChunkingHistory.add(startOfGame.plusHours(4).toDate().getTime(),Duration.standardHours(5).getMillis());
         TimeRange expected = new TimeRange(startOfGame, startOfGame.plusHours(2));
         TimeRange actual = timeChunkingHistory.timeRangeFor(1);
         Assert.assertEquals(expected, actual);
@@ -46,8 +58,8 @@ public class TimeChunkingHistoryTest {
     @Test
     public void timeRangeForWorkingSequence() {
         LocalDateTime startOfGame = LocalDateTime.now().minusHours(1);
-        TimeChunkingHistoryEntry entry = new TimeChunkingHistoryEntry(startOfGame, null, Duration.standardHours(2));
-        TimeChunkingHistory history = new TimeChunkingHistory(Arrays.asList(entry));
+        TimeChunkingHistory history = new TimeChunkingHistory();
+        history.add(startOfGame.toDate().getTime(),Duration.standardHours(2).getMillis());
         long workingFeedId = history.currentSequenceNumber();
         Assert.assertEquals(new TimeRange(startOfGame, startOfGame.plusHours(2)), history.timeRangeFor((int) workingFeedId));
     }

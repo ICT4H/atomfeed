@@ -25,10 +25,10 @@ public class FeedGeneratorFactory {
     }
 
     private FeedGenerator getTimeBasedFeedGenerator(AllEventRecords allEventRecords, ChunkingEntries allChunkingEntries) {
-        TimeChunkingHistory timeChunkingHistory = new TimeChunkingHistory(null);
+        TimeChunkingHistory timeChunkingHistory = new TimeChunkingHistory();
         List<ChunkingHistoryEntry> allEntries = allChunkingEntries.all();
         for(ChunkingHistoryEntry entry : allEntries){
-            timeChunkingHistory.add(entry.getSequenceNumber(),entry.getInterval(),entry.getLeftBound());
+            timeChunkingHistory.add(entry.getInterval(),entry.getLeftBound());
         }
         return new TimeFeedGenerator(timeChunkingHistory,allEventRecords);
     }

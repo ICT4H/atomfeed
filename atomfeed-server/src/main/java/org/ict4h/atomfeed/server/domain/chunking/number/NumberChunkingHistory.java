@@ -7,7 +7,7 @@ import java.util.List;
 
 public class NumberChunkingHistory {
 	List<NumberChunkingHistoryEntry> entryNumberBasedHistories = new ArrayList<NumberChunkingHistoryEntry>();
-	
+
 	public void add(int seqNum, int chunkSize, int startPosition) {
 		closeOffCurrent(startPosition-1);		
 		NumberChunkingHistoryEntry entryNumberBasedHistory = new NumberChunkingHistoryEntry(seqNum, chunkSize, startPosition);
@@ -49,7 +49,6 @@ public class NumberChunkingHistory {
 
 	private NumberChunkingHistoryEntry getCurrentEntry() {
 		int size = entryNumberBasedHistories.size();
-		return (size > 0) ? entryNumberBasedHistories.get(entryNumberBasedHistories.size()-1) : null;
+		return (size > 0) ? entryNumberBasedHistories.get(size - 1) : null;
 	}
-
 }

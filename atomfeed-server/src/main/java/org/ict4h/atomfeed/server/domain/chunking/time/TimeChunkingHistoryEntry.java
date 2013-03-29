@@ -51,4 +51,8 @@ public class TimeChunkingHistoryEntry {
     public boolean isUnbounded() {
         return endTime == null;
     }
+
+    public void enforceRightBound(long rightBound) {
+        endTime = new LocalDateTime(rightBound);
+    }
 }

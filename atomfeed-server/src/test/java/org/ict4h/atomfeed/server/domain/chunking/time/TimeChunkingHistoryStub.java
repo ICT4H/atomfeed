@@ -7,14 +7,9 @@ public class TimeChunkingHistoryStub extends TimeChunkingHistory {
     private HashMap<Integer,TimeRange> map = new HashMap<Integer, TimeRange>();
     private long currentSequenceNumber;
 
-    public TimeChunkingHistoryStub() {
-        super(Collections.<TimeChunkingHistoryEntry>emptyList());
-    }
-
     public void setCurrentSequenceNumber(long currentSequenceNumber){
         this.currentSequenceNumber = currentSequenceNumber;
     }
-
 
     @Override
     public TimeRange timeRangeFor(int sequenceNumber) {
