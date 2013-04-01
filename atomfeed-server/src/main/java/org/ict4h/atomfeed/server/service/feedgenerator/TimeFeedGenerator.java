@@ -6,6 +6,7 @@ import org.ict4h.atomfeed.server.domain.EventFeed;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeChunkingHistory;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
+import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 
 public class TimeFeedGenerator implements FeedGenerator {
@@ -19,6 +20,7 @@ public class TimeFeedGenerator implements FeedGenerator {
 
     @Override
     public EventFeed getFeedForId(Integer feedId) {
+        validateFeedId(feedId);
         TimeRange timeRange = timeChunkingHistory.timeRangeFor(feedId);
         List<EventRecord> eventRecords = allEventRecords.getEventsFromTimeRange(timeRange);
         return new EventFeed(feedId,eventRecords);
@@ -27,5 +29,13 @@ public class TimeFeedGenerator implements FeedGenerator {
     @Override
     public EventFeed getRecentFeed() {
         return getFeedForId(timeChunkingHistory.getWorkingFeedId());
+    }
+
+    @Override
+    public void validateFeedId(Integer feedId) {
+        Integer upperLimit = timeChunkingHistory.getWorkingFeedId();
+        if(feedId > upperLimit){
+            throw new AtomFeedRuntimeException(String.format("The sequence number:%d lies in future", feedId));
+        }
     }
 }

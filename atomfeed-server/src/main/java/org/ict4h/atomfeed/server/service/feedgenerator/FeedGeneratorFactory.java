@@ -28,7 +28,8 @@ public class FeedGeneratorFactory {
         TimeChunkingHistory timeChunkingHistory = new TimeChunkingHistory();
         List<ChunkingHistoryEntry> allEntries = allChunkingEntries.all();
         for(ChunkingHistoryEntry entry : allEntries){
-            timeChunkingHistory.add(entry.getInterval(),entry.getLeftBound());
+
+            timeChunkingHistory.add(entry.getLeftBound().longValue(),entry.getInterval());
         }
         return new TimeFeedGenerator(timeChunkingHistory,allEventRecords);
     }

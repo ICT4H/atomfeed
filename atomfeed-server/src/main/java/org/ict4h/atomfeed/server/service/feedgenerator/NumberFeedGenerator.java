@@ -39,7 +39,8 @@ public class NumberFeedGenerator implements FeedGenerator {
 		return numberChunkingHistory.findRange(feedId, allEventRecords.getTotalCount());
 	}
 
-	private void validateFeedId(Integer feedId) {
+	@Override
+    public void validateFeedId(Integer feedId) {
 		if ( (feedId == null) || (feedId <= 0)  ) {
 			throw new RuntimeException("feedId must not be null and must be greater than 0");
 		}
