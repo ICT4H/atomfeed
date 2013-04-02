@@ -13,8 +13,8 @@ AtomFeed is an implementation of the ATOM protocol in Java. It consists of modul
 Design
 ------
 
-<p>
 AtomFeed is designed to work in a clustered evnironment. Our only point of synchronisation is the database
+
 We allow for two different pagination strategies. Time and Number based pagination. 
 
 * Number based pagination works by creating chunks based on sequence ids.
@@ -22,6 +22,7 @@ We allow for two different pagination strategies. Time and Number based paginati
 
 By allowing support to these two pagination mechanisms, AtomFeed works with databases that support auto incrementing Ids and those that don't.
 
+<p>
 We have support to change the pagination chunk size after the module has been installed and feeds have been generated.
 As expected, this change will only affect the feeds created after the change in page size has been effected.
 
