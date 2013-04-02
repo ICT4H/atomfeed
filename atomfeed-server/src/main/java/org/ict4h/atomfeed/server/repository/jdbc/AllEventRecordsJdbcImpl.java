@@ -134,8 +134,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             statement.setTimestamp(1, timeRange.getStartTimestamp());
             statement.setTimestamp(2, timeRange.getEndTimestamp());
             ResultSet results = statement.executeQuery();
-            List<EventRecord> eventRecords = mapEventRecords(results);
-            return eventRecords;
+            return mapEventRecords(results);
         }
         catch (SQLException ex){
             throw new RuntimeException(ex);
@@ -154,11 +153,6 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 	}
 
 	private List<EventRecord> mapEventRecords(ResultSet results) {
-		JdbcResultSetMapper<EventRecord> resultSetMapper = new JdbcResultSetMapper<EventRecord>();
-		List<EventRecord> events = resultSetMapper.mapResultSetToObject(results, EventRecord.class);
-		return events;
+        return new JdbcResultSetMapper<EventRecord>().mapResultSetToObject(results, EventRecord.class);
 	}
-	
-	
-
 }

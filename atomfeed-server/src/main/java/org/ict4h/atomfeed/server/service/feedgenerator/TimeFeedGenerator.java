@@ -21,14 +21,12 @@ public class TimeFeedGenerator implements FeedGenerator {
     @Override
     public EventFeed getFeedForId(Integer feedId) {
         validateFeedId(feedId);
-        TimeRange timeRange = timeChunkingHistory.timeRangeFor(feedId);
-        List<EventRecord> eventRecords = allEventRecords.getEventsFromTimeRange(timeRange);
-        return new EventFeed(feedId,eventRecords);
+        return feedFor(feedId);
     }
 
     @Override
     public EventFeed getRecentFeed() {
-        return getFeedForId(timeChunkingHistory.getWorkingFeedId());
+        return feedFor(timeChunkingHistory.getWorkingFeedId());
     }
 
     @Override
@@ -38,4 +36,11 @@ public class TimeFeedGenerator implements FeedGenerator {
             throw new AtomFeedRuntimeException(String.format("The sequence number:%d lies in future", feedId));
         }
     }
+
+    private EventFeed feedFor(Integer feedId) {
+        TimeRange timeRange = timeChunkingHistory.timeRangeFor(feedId);
+        List<EventRecord> eventRecords = allEventRecords.getEventsFromTimeRange(timeRange);
+        return new EventFeed(feedId,eventRecords);
+    }
+
 }
