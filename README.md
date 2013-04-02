@@ -3,7 +3,7 @@ Atomfeed
 
 [![Build Status](https://travis-ci.org/ICT4H/atomfeed.png)](https://travis-ci.org/ICT4H/atomfeed)
 
-AtomFeed is an implementation of the ATOM protocol in Java. It consists of modules such as
+AtomFeed is an implementation of the ATOM protocol in Java. It consists of the following modules
 
 * atomfeed-server - An ATOM server implementaion that broadcasts events
 * atomfeed-client - An ATOM client implementation that consumes events.
@@ -23,8 +23,8 @@ We allow for two different pagination strategies. Time and Number based paginati
 By allowing support to these two pagination mechanisms, AtomFeed works with databases that support auto incrementing Ids and those that don't.
 
 <p>
-We have support to change the pagination chunk size after the module has been installed and feeds have been generated.
-As expected, this change will only affect the feeds created after the change in page size has been effected.
+AtomFeed has the ability to support multiple changes to the pagination chunk size after the module has been installed and feeds have been generated.
+As expected, this change will only affect the feeds created after the change in pagination chunk size has been effected.
 
 Please take a look at the documentation to see how this can be achieved.
 </p>
