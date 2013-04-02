@@ -1,4 +1,0 @@
-1. The server side should not be dependent on spring. May be springing it should be done in a separate module.
-People who are just using Java and not spring can use it that way.
-2. Fix the maven dependency management and dependency
-3. Get all the links correct in the feed xml
