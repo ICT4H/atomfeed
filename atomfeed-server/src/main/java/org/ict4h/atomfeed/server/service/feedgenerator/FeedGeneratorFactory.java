@@ -1,14 +1,13 @@
 package org.ict4h.atomfeed.server.service.feedgenerator;
 
-import java.util.*;
-
 import org.ict4h.atomfeed.server.domain.chunking.ChunkingHistoryEntry;
 import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
-import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistoryEntry;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeChunkingHistory;
-import org.ict4h.atomfeed.server.domain.chunking.time.TimeChunkingHistoryEntry;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
+import org.ict4h.atomfeed.server.service.helper.ResourceHelper;
+
+import java.util.List;
 
 public class FeedGeneratorFactory {
 
@@ -46,16 +45,6 @@ public class FeedGeneratorFactory {
 
     //TODO:This logic of retrieving keys using a bundle is duplicated. Use a ResourceWrapper.
     private String getChunkingStrategy() {
-        ResourceBundle bundle;
-        try
-        {
-            bundle = ResourceBundle.getBundle("atomfeed");
-        }catch (MissingResourceException ex){
-            return NumberBasedChunkingStrategy;
-        }
-        if(bundle.containsKey("chunking.strategy")){
-             return bundle.getString("chunking.strategy").toLowerCase();
-        }
-        return NumberBasedChunkingStrategy;
+        return new ResourceHelper().fetchKeyOrDefault("chunking.strategy",NumberBasedChunkingStrategy);
     }
 }
