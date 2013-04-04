@@ -3,9 +3,33 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ict4h</groupId>
     <artifactId>atomfeed</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.9.0</version>
     <packaging>pom</packaging>
     <name>atomfeed</name>
+    <description></description>
+    <url>https://github.com/ICT4H/atomfeed</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/ICT4H/atomfeed</url>
+        <connection>scm:git:git@github.com:ICT4H/atomfeed.git</connection>
+        <developerConnection>scm:git:git@github.com:ICT4H/atomfeed.git</developerConnection>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>1</id>
+            <name>ICT4H</name>
+            <email>ict4h@thoughtworks.com</email>
+            <organization>ThoughtWorks, Inc.</organization>
+        </developer>
+    </developers>
 
     <modules>
         <module>atomfeed-server</module>
@@ -105,6 +129,16 @@
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
         </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.release</id>
+            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </repository>
+        <repository>
+            <id>com.springsource.repository.bundles.external</id>
+            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -140,5 +174,4 @@
             </plugin>
         </plugins>
     </reporting>
-
 </project>
