@@ -6,7 +6,7 @@
     <version>0.9.0</version>
     <packaging>pom</packaging>
     <name>atomfeed</name>
-    <description></description>
+    <description />
     <url>https://github.com/ICT4H/atomfeed</url>
 
     <licenses>
@@ -33,13 +33,13 @@
 
     <modules>
         <module>atomfeed-server</module>
-        <module>atomfeed-client</module>
-        <module>atomfeed-spring-server</module>
-        <module>atomfeed-standalone</module>
-        <module>motech-atomfeed-consumer</module>
-        <module>motech-atomfeed-consumer-bundle</module>
-        <module>motech-openmrs-integration</module>
-        <module>feedpublishermodule</module>
+        <!--<module>atomfeed-client</module>-->
+        <!--<module>atomfeed-spring-server</module>-->
+        <!--<module>atomfeed-standalone</module>-->
+        <!--<module>motech-atomfeed-consumer</module>-->
+        <!--<module>motech-atomfeed-consumer-bundle</module>-->
+        <!--<module>motech-openmrs-integration</module>-->
+        <!--<module>feedpublishermodule</module>-->
   </modules>
 
     <properties>
@@ -166,7 +166,7 @@
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.5.2</version>
                 <configuration>
-                    <check/>
+                    <check />
                     <formats>
                         <format>html</format>
                     </formats>
