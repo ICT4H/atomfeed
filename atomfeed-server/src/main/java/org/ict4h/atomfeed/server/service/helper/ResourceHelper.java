@@ -1,8 +1,5 @@
 package org.ict4h.atomfeed.server.service.helper;
 
-import com.sun.syndication.io.impl.PropertiesLoader;
-
-import java.util.Enumeration;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 

@@ -12,8 +12,10 @@ import java.util.List;
 public class FeedGeneratorFactory {
 
     public static final String NumberBasedChunkingStrategy = "number";
+    private ResourceHelper resourceHelper;
 
-    public FeedGenerator getFeedGenerator(AllEventRecords allEventRecords, ChunkingEntries allChunkingEntries){
+    public FeedGenerator getFeedGenerator(AllEventRecords allEventRecords, ChunkingEntries allChunkingEntries, ResourceHelper resourceHelper){
+        this.resourceHelper = resourceHelper;
         return get(getChunkingStrategy(), allEventRecords, allChunkingEntries);
     }
 
@@ -45,6 +47,6 @@ public class FeedGeneratorFactory {
 
     //TODO:This logic of retrieving keys using a bundle is duplicated. Use a ResourceWrapper.
     private String getChunkingStrategy() {
-        return new ResourceHelper().fetchKeyOrDefault("chunking.strategy",NumberBasedChunkingStrategy);
+        return resourceHelper.fetchKeyOrDefault("chunking.strategy", NumberBasedChunkingStrategy);
     }
 }
