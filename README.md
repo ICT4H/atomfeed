@@ -3,12 +3,11 @@ Atomfeed
 
 [![Build Status](https://travis-ci.org/ICT4H/atomfeed.png)](https://travis-ci.org/ICT4H/atomfeed)
 
-AtomFeed is an implementation of the ATOM protocol in Java. It consists of the following modules
+AtomFeed is an implementation of the [ATOM protocol](https://github.com/ICT4H/simplefeed) in Java. It consists of the following modules
 
 * atomfeed-server - An ATOM server implementaion that broadcasts events
 * atomfeed-client - An ATOM client implementation that consumes events.
 * atomfeed-spring-server - A spring wrapper on atomfeed-server
-* atomfeed-standalone - A reference web application that demonstrates how events can be created and consumed.
 
 Design
 ------
