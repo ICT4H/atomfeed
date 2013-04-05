@@ -46,7 +46,6 @@
         <!--<module>motech-atomfeed-consumer</module>-->
         <!--<module>motech-atomfeed-consumer-bundle</module>-->
         <!--<module>motech-openmrs-integration</module>-->
-        <!--<module>feedpublishermodule</module>-->
   </modules>
 
     <properties>
