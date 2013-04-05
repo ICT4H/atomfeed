@@ -10,12 +10,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ict4h</groupId>
     <artifactId>motech-atomfeed-consumer-bundle</artifactId>
-    <version>0.01-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <name>motech-atomfeed-consumer-bundle</name>
     <packaging>bundle</packaging>
 
     <properties>
         <motech.version>0.19-SNAPSHOT</motech.version>
+        <motech.atomfeed.version>0.1-SNAPSHOT</motech.atomfeed.version>
     </properties>
 
     <repositories>
@@ -39,12 +40,12 @@
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>motech-atomfeed-consumer</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${motech.atomfeed.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>motech-openmrs-integration</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${motech.atomfeed.version}</version>
         </dependency>
         <dependency>
             <groupId>rome</groupId>

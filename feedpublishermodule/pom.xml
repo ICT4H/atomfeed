@@ -66,6 +66,7 @@
 
 	<properties>
 		<openMRSVersion>1.9.2</openMRSVersion>
+        <feedPublisherModule.version>0.1-SNAPSHOT</feedPublisherModule.version>
 	</properties>
 
 	<build>
