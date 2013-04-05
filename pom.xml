@@ -33,8 +33,8 @@
 
     <modules>
         <module>atomfeed-server</module>
-        <!--<module>atomfeed-client</module>-->
-        <!--<module>atomfeed-spring-server</module>-->
+        <module>atomfeed-client</module>
+        <module>atomfeed-spring-server</module>
         <!--<module>atomfeed-standalone</module>-->
         <!--<module>motech-atomfeed-consumer</module>-->
         <!--<module>motech-atomfeed-consumer-bundle</module>-->
