@@ -52,10 +52,12 @@
 
 
     <bean id="generatorFactory" class="org.ict4h.atomfeed.server.service.feedgenerator.FeedGeneratorFactory" />
+    <bean id="resourceHelper" class="org.ict4h.atomfeed.server.service.helper.ResourceHelper"/>
 
     <bean id="feedGenerator" factory-bean="generatorFactory" factory-method="getFeedGenerator">
         <constructor-arg ref="allEventRecords"/>
         <constructor-arg ref="allChunkingEntries"/>
+        <constructor-arg ref="resourceHelper"/>
     </bean>
     
     <bean id="eventFeedService" class="org.ict4h.atomfeed.server.service.EventFeedServiceImpl">
