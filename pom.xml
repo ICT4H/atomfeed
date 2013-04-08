@@ -42,9 +42,6 @@
         <module>atomfeed-server</module>
         <module>atomfeed-client</module>
         <module>atomfeed-spring-server</module>
-        <!--<module>motech-atomfeed-consumer</module>-->
-        <!--<module>motech-atomfeed-consumer-bundle</module>-->
-        <!--<module>motech-openmrs-integration</module>-->
   </modules>
 
     <properties>
