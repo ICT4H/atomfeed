@@ -30,13 +30,13 @@
             <artifactId>atomfeed-server</artifactId>
             <scope>test</scope>
             <classifier>tests</classifier>
-            <version>${atomfeed.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-spring-server</artifactId>
             <scope>test</scope>
-            <version>${atomfeed.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
