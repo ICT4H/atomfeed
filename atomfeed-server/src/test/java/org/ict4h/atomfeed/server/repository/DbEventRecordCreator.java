@@ -13,7 +13,7 @@ public class DbEventRecordCreator extends EventRecordCreator{
     }
 
     public EventRecord create(String uuid, String title, String url, String contents) throws URISyntaxException {
-        EventRecord eventRecord = new EventRecord(uuid, title, new URI(url), contents, null);
+        EventRecord eventRecord = new EventRecord(uuid, title, new URI(url), contents, null, "");
         allEventRecords.add(eventRecord);
         return eventRecord;
     }

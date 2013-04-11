@@ -49,11 +49,16 @@ public class EventRecord {
     @XmlElement
     private String serializedContents;
 
+    @Column(name = "category")
+    @XmlTransient
+    private String category;
+
     public EventRecord() { }
 
-    public EventRecord(String uuid, String title, URI uri, String serializedContents, Date timeStamp) {
+    public EventRecord(String uuid, String title, URI uri, String serializedContents, Date timeStamp, String category) {
         this.uuid = uuid;
         this.title = title;
+        this.category = category;
         this.uri = uri.toString();
         this.serializedContents = serializedContents;
         //note: this is not the date used. the date will be assigned by database
@@ -94,5 +99,8 @@ public class EventRecord {
 				+ ", timeStamp=" + timeStamp + ", uri=" + uri + ", contents="
 				+ serializedContents + "]";
 	}
-	
+
+    public String getCategory() {
+        return category;
+    }
 }

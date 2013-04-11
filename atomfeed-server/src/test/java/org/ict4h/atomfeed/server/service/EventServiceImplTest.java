@@ -16,7 +16,7 @@ public class EventServiceImplTest {
         EventService eventService = new EventServiceImpl(allEventRecords);
         String uuid = "51850820-6071-11e2-bcfd-0800200c9a66";
 
-        Event event = new Event(uuid, "title", new DateTime(123), "http://uri", "");
+        Event event = new Event(uuid, "title", new DateTime(123), "http://uri", "", "category");
         eventService.notify(event);
         EventRecord eventRecord = allEventRecords.get(uuid);
 
@@ -28,5 +28,6 @@ public class EventServiceImplTest {
         assertEquals(event.getTitle(), eventRecord.getTitle());
         assertEquals(event.getUri().toString(), eventRecord.getUri());
         assertEquals(event.getContents(), eventRecord.getContents());
+        assertEquals(event.getCategory(), eventRecord.getCategory());
     }
 }

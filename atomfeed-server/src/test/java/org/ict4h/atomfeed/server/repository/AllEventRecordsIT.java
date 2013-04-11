@@ -4,8 +4,6 @@ import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 import org.junit.*;
 
 import java.net.URI;
@@ -14,7 +12,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -46,19 +43,20 @@ public class AllEventRecordsIT extends IntegrationTest {
     public void shouldAddEventRecordAndFetchByUUID() throws URISyntaxException {
     	System.out.println("executing shouldAddEventRecordAndFetchByUUID");
         String uuid = UUID.randomUUID().toString();
-        EventRecord eventRecordAdded = new EventRecord(uuid, "title", new URI("http://uri"), null,new Date());
+        EventRecord eventRecordAdded = new EventRecord(uuid, "title", new URI("http://uri"), null,new Date(), "category");
         allEventRecords.add(eventRecordAdded);
         EventRecord eventRecordFetched = allEventRecords.get(uuid);
         assertEquals(eventRecordAdded.getUuid(), eventRecordFetched.getUuid());
         assertEquals(eventRecordAdded.getTitle(), eventRecordFetched.getTitle());
+        assertEquals(eventRecordAdded.getCategory(),eventRecordFetched.getCategory());
         assertTrue((new Date()).after(eventRecordFetched.getTimeStamp()));
     }
 
     @Test
     public void shouldGetTotalCountOfEventRecords() throws URISyntaxException {
     	System.out.println("executing shouldGetTotalCountOfEventRecords");
-        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null,new Date());
-        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null,new Date());
+        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null,new Date(), "");
+        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null,new Date(), "");
 
         allEventRecords.add(eventRecordAdded1);
         allEventRecords.add(eventRecordAdded2);
@@ -97,7 +95,7 @@ public class AllEventRecordsIT extends IntegrationTest {
     private void addEvents(int eventNumber, String uuidStartsWith) throws URISyntaxException {
         for (int i= 1; i <= eventNumber; i++) {
             String title = "Event" + i;
-            allEventRecords.add(new EventRecord(uuidStartsWith + i, title, new URI("http://uri/"+title), null,new Date()));
+            allEventRecords.add(new EventRecord(uuidStartsWith + i, title, new URI("http://uri/"+title), null,new Date(), ""));
         }
     }
 }

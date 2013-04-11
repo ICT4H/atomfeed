@@ -35,6 +35,7 @@ public class EventFeedServiceImpl implements EventFeedService {
     @Override
 	public Feed getRecentFeed(URI requestUri) {
     	EventFeed recentFeed = feedGenerator.getRecentFeed();
+
         return new FeedBuilder()
                 .type("atom_1.0")
                 .id(generateIdForEventFeed(recentFeed.getId()))
@@ -48,6 +49,23 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .links(generatePagingLinks(requestUri, recentFeed))
                 .build();
     }
+
+    @Override
+    public Feed getEventFeed(URI requestUri, Integer feedId) {
+        EventFeed feedForId = feedGenerator.getFeedForId(feedId);
+        return new FeedBuilder()
+                .type("atom_1.0")
+                .id(generateIdForEventFeed(feedId))
+                .title(getPropertyWithDefault("feed.title", "Event feed"))
+                .generator(getGenerator())
+                .authors(getAuthors())
+                .entries(getEntries(feedForId.getEvents()))
+                .updated(newestEventDate(feedForId.getEvents()))
+                .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
+                .links(generatePagingLinks(requestUri, feedForId))
+                .build();
+    }
+
 
     private List<Person> getAuthors() {
         Person person = new Person();
@@ -79,22 +97,6 @@ public class EventFeedServiceImpl implements EventFeedService {
             links.add(prev);
         }
         return links;
-    }
-
-    @Override
-	public Feed getEventFeed(URI requestUri, Integer feedId) {
-        EventFeed feedForId = feedGenerator.getFeedForId(feedId);
-        return new FeedBuilder()
-                .type("atom_1.0")
-                .id(generateIdForEventFeed(feedId))
-                .title(getPropertyWithDefault("feed.title", "Event feed"))
-                .generator(getGenerator())
-                .authors(getAuthors())
-                .entries(getEntries(feedForId.getEvents()))
-                .updated(newestEventDate(feedForId.getEvents()))
-                .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
-                .links(generatePagingLinks(requestUri, feedForId))
-                .build();
     }
 
     private String generateIdForEventFeed(Integer feedId){
@@ -151,10 +153,19 @@ public class EventFeedServiceImpl implements EventFeedService {
             entry.setTitle(eventRecord.getTitle());
             entry.setUpdated(eventRecord.getTimeStamp());
             entry.setContents(generateContents(eventRecord));
+            entry.setCategories(getCategories(eventRecord.getCategory()));
             entryList.add(entry);
         }
 
         return entryList;
+    }
+
+    private List getCategories(String categoryName) {
+        List categories = new ArrayList<Category>();
+        Category category = new Category();
+        category.setTerm(categoryName);
+        categories.add(category);
+        return categories;
     }
 
     private List<Content> generateContents(EventRecord eventRecord) {

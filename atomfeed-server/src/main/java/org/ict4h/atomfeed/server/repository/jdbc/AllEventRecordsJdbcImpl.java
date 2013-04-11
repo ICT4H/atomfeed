@@ -28,12 +28,13 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 		try {
 			connection = getDbConnection();
             connection.setAutoCommit(false);
-			String insertSql = String.format("insert into %s (uuid, title, uri, object) values (?, ?, ?, ?)", getTableName("event_records"));
+			String insertSql = String.format("insert into %s (uuid, title, uri, object,category) values (?, ?, ?, ?,?)", getTableName("event_records"));
 			stmt = connection.prepareStatement(insertSql);
 			stmt.setString(1, eventRecord.getUuid());
 			stmt.setString(2, eventRecord.getTitle());
 			stmt.setString(3, eventRecord.getUri());
 			stmt.setString(4, eventRecord.getContents());
+            stmt.setString(5, eventRecord.getCategory());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -53,7 +54,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 		ResultSet rs = null;
 		try {
 			connection = getDbConnection();
-			String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where uuid = ?", getTableName("event_records"));
+			String sql = String.format("select id, uuid, title, timestamp, uri, object, category from %s where uuid = ?", getTableName("event_records"));
 			stmt = connection.prepareStatement(sql);
 			stmt.setString(1, uuid);
 			rs = stmt.executeQuery();

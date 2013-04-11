@@ -25,7 +25,7 @@ public class TimeFeedGeneratorTest {
         history.setTimeRange(4, new TimeRange(startTime,startTime.plusHours(2)));
 
         AllEventRecords allEventRecordsStub = new AllEventRecordsStub();
-        EventRecord eventRecord = new EventRecord(null, null, new URI(""), null, startTime.plusHours(1).toDate());
+        EventRecord eventRecord = new EventRecord(null, null, new URI(""), null, startTime.plusHours(1).toDate(), "");
         allEventRecordsStub.add(eventRecord);
 
         FeedGenerator generator = new TimeFeedGenerator(history,allEventRecordsStub);

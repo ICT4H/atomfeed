@@ -25,7 +25,7 @@ public class InMemoryEventRecordCreator extends EventRecordCreator {
                     "title" + index,
             		new URI("http://foo.bar/" + index),
             		"Event " + index + "'s contents.",
-                    cal.getTime()));
+                    cal.getTime(), "category"));
         }
     }
 
