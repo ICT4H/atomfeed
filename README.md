@@ -47,6 +47,21 @@ To start up:
 To integration test:
 * mvn integration-test -P IT
 
+Usage
+------
+
+Atomfeed server, client and spring-server atrefacts have been been published to maven central.
+
+To use atomfeed-server -
+
+`<dependency>
+  <groupId>org.ict4h</groupId>
+  <artifactId>atomfeed-server</artifactId>
+  <version>0.9.1</version>
+</dependency>`
+
+Please check maven central to get the latest version of the published artefacts.
+
 Documentation
 ------
 Please see the [wiki](https://github.com/ICT4H/atomfeed/wiki) for documentation on using Atomfeed.
