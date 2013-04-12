@@ -54,11 +54,13 @@ Atomfeed server, client and spring-server atrefacts have been been published to 
 
 To use atomfeed-server -
 
-`<dependency>
+```
+<dependency>
   <groupId>org.ict4h</groupId>
   <artifactId>atomfeed-server</artifactId>
   <version>0.9.1</version>
-</dependency>`
+</dependency>
+```
 
 Please check maven central to get the latest version of the published artefacts.
 
