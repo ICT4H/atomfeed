@@ -55,4 +55,13 @@ public class TimeChunkingHistoryEntry {
     public void enforceRightBound(long rightBound) {
         endTime = new LocalDateTime(rightBound);
     }
+
+    public long numberOfEncapsulatedFeeds() {
+        if(isUnbounded()){
+            return numberOfFeedsUpTo(LocalDateTime.now());
+        }
+        else{
+            return numberOfFeeds(startTime,endTime);
+        }
+    }
 }

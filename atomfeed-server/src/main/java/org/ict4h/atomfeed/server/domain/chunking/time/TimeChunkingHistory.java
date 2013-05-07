@@ -1,6 +1,7 @@
 package org.ict4h.atomfeed.server.domain.chunking.time;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
@@ -12,16 +13,17 @@ public class TimeChunkingHistory {
 
     public TimeChunkingHistory(){}
 
-    public long currentSequenceNumber() {
-        int completedFeeds = 0;
-        for (int i = 0; i < chunkingHistoryEntries.size(); i++) {
-            if (chunkingHistoryEntries.get(i).isUnbounded()) {
-                completedFeeds += chunkingHistoryEntries.get(i).numberOfFeedsUpTo(LocalDateTime.now());
-            } else {
-                completedFeeds += chunkingHistoryEntries.get(i).numberOfFeeds();
-            }
+    public long currentSequenceNumber(){
+        return currentSequenceNumber(chunkingHistoryEntries.iterator());
+    }
+
+    private long currentSequenceNumber(Iterator<TimeChunkingHistoryEntry> iterator){
+        if(!iterator.hasNext()){
+            return 1;
         }
-        return completedFeeds + 1;
+        else{
+            return iterator.next().numberOfEncapsulatedFeeds() + currentSequenceNumber(iterator);
+        }
     }
 
     public TimeRange timeRangeFor(int sequenceNumber) {
