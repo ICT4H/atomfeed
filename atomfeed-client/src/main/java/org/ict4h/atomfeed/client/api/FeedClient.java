@@ -6,6 +6,5 @@ import java.net.URI;
 import java.util.List;
 
 public interface FeedClient {
-    List<Event> unprocessedEvents(URI feedUri);
-    void processedTo(URI feedUri, String eventId);
+    void processEvents(URI feedUri, EventWorker eventWorker);
 }
