@@ -18,12 +18,10 @@ public class TimeChunkingHistory {
     }
 
     private long currentSequenceNumber(Iterator<TimeChunkingHistoryEntry> iterator){
-        if(!iterator.hasNext()){
-            return 1;
-        }
-        else{
+        if(iterator.hasNext()){
             return iterator.next().numberOfEncapsulatedFeeds() + currentSequenceNumber(iterator);
         }
+        return 1;
     }
 
     public TimeRange timeRangeFor(int sequenceNumber) {
