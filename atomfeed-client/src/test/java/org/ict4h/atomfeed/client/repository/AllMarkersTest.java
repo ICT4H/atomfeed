@@ -16,33 +16,39 @@ public class AllMarkersTest {
     AllMarkers allMarkers;
     private MarkerDataSource markerDataSource;
 
+    private URI feedUri;
+    private URI lastReadFeedUri;
+    private String testEntryId;
+
     @Before
     public void setup() throws URISyntaxException {
-        markerDataSource=getMarketDatasource();
-        allMarkers=new AllMarkers(markerDataSource);
+        feedUri = new URI("http://testFeedUri");
+        lastReadFeedUri = new URI("http://lastReadFeedUri");
+        testEntryId = "testEntryId";
+
+        markerDataSource = getMarketDataSource();
+        allMarkers = new AllMarkers(markerDataSource);
     }
 
-    private MarkerDataSource getMarketDatasource() throws URISyntaxException {
+    private MarkerDataSource getMarketDataSource() throws URISyntaxException {
         MarkerDataSource mock = mock(MarkerDataSource.class);
-        URI feedUri = new URI("http://testfeeduri");
-        Marker testEntryId = new Marker(feedUri, "testEntryId");
-        when(mock.get(feedUri)).thenReturn(testEntryId);
+        Marker testEntry = new Marker(feedUri, testEntryId, lastReadFeedUri);
+        when(mock.get(feedUri)).thenReturn(testEntry);
         return mock;
     }
 
     @Test
     public void testGet() throws Exception {
-        URI feedUri = new URI("http://testfeeduri");
         Marker marker = allMarkers.get(feedUri);
+
         verify(markerDataSource).get(feedUri);
-        assertEquals(marker, new Marker(feedUri, "testEntryId"));
+        assertEquals(marker, new Marker(feedUri, testEntryId, lastReadFeedUri));
     }
 
     @Test
     public void testProcessedTo() throws Exception {
-        URI testFeedUri = new URI("http://testfeeduri");
-        String testEntryId = "testEntryId";
-        allMarkers.processedTo(testFeedUri, testEntryId);
-        verify(markerDataSource).put(new Marker(testFeedUri, testEntryId));
+        allMarkers.processedTo(feedUri, testEntryId, lastReadFeedUri);
+
+        verify(markerDataSource).put(new Marker(feedUri, testEntryId, lastReadFeedUri));
     }
 }

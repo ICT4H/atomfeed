@@ -16,7 +16,7 @@ public class AllMarkers {
         return markerDataSource.get(feedUri);
     }
 
-    public void processedTo(URI feedUri, String entryId) {
-        markerDataSource.put(new Marker(feedUri, entryId));
+    public void processedTo(URI feedUri, String entryId, URI entryFeedUri) {
+        markerDataSource.put(new Marker(feedUri, entryId, entryFeedUri));
     }
 }
