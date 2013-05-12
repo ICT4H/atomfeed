@@ -9,19 +9,19 @@ import java.util.ArrayList;
 
 public class EventTest {
     @Test
-    public void shouldStripCDATAFromContentsNode(){
+    public void shouldStripCDATAFromContentsNode() {
         Entry entry = new Entry();
         ArrayList<Content> contents = new ArrayList<Content>();
         Content content = new Content();
-        content.setValue(String.format("%s%s%s","<![CDATA[","contents","]]>"));
+        content.setValue(String.format("%s%s%s", "<![CDATA[", "contents", "]]>"));
         contents.add(content);
         entry.setContents(contents);
         Event event = new Event(entry);
-        Assert.assertEquals("contents",event.getContent());
+        Assert.assertEquals("contents", event.getContent());
     }
 
     @Test
-    public void shouldNotStripCDATAFromWhenContentsAreNotPresent(){
+    public void shouldNotStripCDATAFromWhenContentsAreNotPresent() {
         Entry entry = new Entry();
         Event event = new Event(entry);
         Assert.assertNull(event.getContent());

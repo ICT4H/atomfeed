@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface FeedClient {
     void processEvents(URI feedUri, EventWorker eventWorker);
+
+    void processFailedEvents(URI feedUri, EventWorker eventWorker);
 }
