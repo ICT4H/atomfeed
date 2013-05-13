@@ -47,7 +47,7 @@ public class AllMarkersTest {
 
     @Test
     public void testProcessedTo() throws Exception {
-        allMarkers.processedTo(feedUri, testEntryId, lastReadFeedUri);
+        allMarkers.put(feedUri, testEntryId, lastReadFeedUri);
 
         verify(markerDataSource).put(new Marker(feedUri, testEntryId, lastReadFeedUri));
     }

@@ -59,14 +59,14 @@ public class AtomFeedClientTest {
                 return ((Event) o).getId().equals(entry1.getId());
             }
         }));
-        verify(allMarkersMock).processedTo(feedUri, entry1.getId(), new URI(feedLink));
+        verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
             @Override
             public boolean matches(Object o) {
                 return ((Event) o).getId().equals(entry2.getId());
             }
         }));
-        verify(allMarkersMock).processedTo(feedUri, entry2.getId(), new URI(feedLink));
+        verify(allMarkersMock).put(feedUri, entry2.getId(), new URI(feedLink));
     }
 
     @Test(expected = AtomFeedClientException.class)

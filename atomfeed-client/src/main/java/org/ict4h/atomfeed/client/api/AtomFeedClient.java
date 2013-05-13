@@ -52,12 +52,13 @@ public class AtomFeedClient implements FeedClient {
             try {
                 event = new Event(entry);
                 eventWorker.process(event);
-                // Existing bug: If the call below starts failing and the call above passes, we shall
-                // be in an inconsistent state.
-                allMarkers.processedTo(feedUri, entry.getId(), Util.getSelfLink(entry.getSource()));
             } catch (Exception e) {
                 handleFailedEvent(event, feedUri, e);
             }
+
+            // Existing bug: If the call below starts failing and the call above passes, we shall
+            // be in an inconsistent state.
+            allMarkers.put(feedUri, entry.getId(), Util.getSelfLink(entry.getSource()));
         }
     }
 
