@@ -30,7 +30,7 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
     private void initializeEnumeration() {
         // No entry from feed has been processed yet.
         if (marker.getLastReadEntryId() == null) {
-            Feed feed = prefetchAllFeeds(marker.getFeedUri());
+            Feed feed = seekFirstFeed(marker.getFeedUri());
             this.currentFeed = feed;
             this.entries = feed.getEntries();
             return;
@@ -39,11 +39,11 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
         setInitialEntries(marker.getFeedURIForLastReadEntry());
     }
 
-    private Feed prefetchAllFeeds(URI uri) {
+    private Feed seekFirstFeed(URI uri) {
         Feed currentFeed;
         do {
             currentFeed = allFeeds.getFor(uri);
-        } while ((uri = prevArchive(currentFeed)) != null);
+        } while ((uri = Util.getPreviousLink(currentFeed)) != null);
         return currentFeed;
     }
 
@@ -66,16 +66,8 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
         this.currentFeed = feed;
     }
 
-    private URI nextArchive(Feed feed) {
-        return Util.getNextLink(feed);
-    }
-
-    private URI prevArchive(Feed feed) {
-        return Util.getPreviousLink(feed);
-    }
-
     private void fetchEntries() {
-        URI nextArchiveUri = nextArchive(currentFeed);
+        URI nextArchiveUri = Util.getNextLink(currentFeed);
         if (nextArchiveUri != null && entries.isEmpty()) {
             this.currentFeed = allFeeds.getFor(nextArchiveUri);
             this.entries = currentFeed.getEntries();
@@ -85,10 +77,9 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
     @Override
     public boolean hasNext() {
         if (!entries.isEmpty()) return true;
-
-        if (nextArchive(this.currentFeed) == null) return false;
-
-        fetchEntries(); return hasNext();
+        if (Util.getNextLink(this.currentFeed) == null) return false;
+        fetchEntries();
+        return hasNext();
     }
 
     @Override
