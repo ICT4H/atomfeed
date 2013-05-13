@@ -4,6 +4,7 @@ import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.domain.Marker;
+import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.util.Util;
 
@@ -57,7 +58,7 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
                 break;
             }
         }
-        if (lastReadEntryIndex == -1) throw new RuntimeException("Last Read entry not found in feed.");
+        if (lastReadEntryIndex == -1) throw new AtomFeedClientException("Last Read entry not found in feed.");
 
         initialEntries.removeAll(initialEntries.subList(0, lastReadEntryIndex + 1));
 

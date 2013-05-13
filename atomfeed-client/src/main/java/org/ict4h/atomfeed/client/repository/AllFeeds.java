@@ -3,6 +3,7 @@ package org.ict4h.atomfeed.client.repository;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.WireFeedInput;
 import org.apache.log4j.Logger;
+import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.datasource.WebClient;
 
 import java.io.StringReader;
@@ -26,7 +27,7 @@ public class AllFeeds {
             WireFeedInput input = new WireFeedInput();
             return (Feed) input.build(new StringReader(responseString));
         } catch (Exception e) {
-            throw new RuntimeException(responseString, e);
+            throw new AtomFeedClientException(responseString, e);
         }
     }
 }

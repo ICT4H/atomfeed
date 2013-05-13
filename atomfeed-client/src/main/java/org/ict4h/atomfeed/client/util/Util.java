@@ -2,12 +2,12 @@ package org.ict4h.atomfeed.client.util;
 
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
+import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 public class Util {
 
@@ -33,7 +33,7 @@ public class Util {
             }
             return null;
         } catch (URISyntaxException e) {
-            throw new RuntimeException(String.format("Bad %s link", archiveType));
+            throw new AtomFeedClientException(String.format("Bad %s link", archiveType));
         }
     }
 
@@ -60,7 +60,6 @@ public class Util {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
         return sb.toString();
     }
 }

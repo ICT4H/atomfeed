@@ -4,9 +4,11 @@ import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
 import org.ict4h.atomfeed.client.domain.Marker;
+import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.datasource.WebClientStub;
 import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
+import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4h.atomfeed.server.repository.InMemoryEventRecordCreator;
@@ -142,14 +144,9 @@ public class FeedEnumeratorTest {
         assertEquals(Arrays.asList("6,7,8,9,10,11,12,13".split(",")), entryIds);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = AtomFeedClientException.class)
     public void shouldThrowExceptionWhenLastReadIdNotPresent() throws URISyntaxException {
         Marker marker = new Marker(recentFeedUri, "7", firstFeedUri);
-
-        FeedEnumerator feedEnumerator = new FeedEnumerator(allFeedsMock, marker);
-        List<String> entryIds = getEntries(feedEnumerator);
-
-        assertEquals(Arrays.asList("1,2,3,4,5,6,7,8,9,10,11,12,13".split(",")), entryIds);
+        new FeedEnumerator(allFeedsMock, marker);
     }
-
 }
