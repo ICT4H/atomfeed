@@ -79,7 +79,7 @@ public class AtomFeedClient implements FeedClient {
     }
 
     private boolean shouldNotProcessEvents(URI feedUri) {
-        return (this.allFailedEvents.getNumberOfFailedEvents(feedUri.toString()) >= MAX_FAILED_EVENTS);
+        return (allFailedEvents.getNumberOfFailedEvents(feedUri.toString()) >= MAX_FAILED_EVENTS);
     }
 
     private void handleFailedEvent(Event event, URI feedUri, Exception e) {

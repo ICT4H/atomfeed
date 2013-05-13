@@ -2,13 +2,12 @@ package org.ict4h.atomfeed.client;
 
 import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
+import org.ict4h.atomfeed.client.util.Util;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,7 +23,6 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
     public FeedEnumerator(AllFeeds allFeeds, Marker marker) {
         this.allFeeds = allFeeds;
         this.marker = marker;
-
         initializeEnumeration();
     }
 
@@ -67,26 +65,12 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
         this.currentFeed = feed;
     }
 
-    private URI getArchive(Feed feed, String archiveType) {
-        try {
-            for (Object obj : feed.getOtherLinks()) {
-                Link l = (Link) obj;
-                if (l.getRel().equals(archiveType)) {
-                    return new URI(l.getHref());
-                }
-            }
-            return null;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException("Bad archive link.");
-        }
-    }
-
     private URI nextArchive(Feed feed) {
-        return getArchive(feed, "next-archive");
+        return Util.getNextLink(feed);
     }
 
     private URI prevArchive(Feed feed) {
-        return getArchive(feed, "prev-archive");
+        return Util.getPreviousLink(feed);
     }
 
     private void fetchEntries() {

@@ -59,10 +59,10 @@ public class FeedEnumeratorTest {
         when(allFeedsMock.getFor(secondFeedUri)).thenReturn(secondFeedMock);
         when(allFeedsMock.getFor(firstFeedUri)).thenReturn(firstFeedMock);
 
-        when(lastFeedMock.getOtherLinks()).thenReturn(Arrays.asList(new Link[]{getLink("prev-archive", secondFeedUri)}));
-        when(secondFeedMock.getOtherLinks()).thenReturn(Arrays.asList(
+        when(lastFeedMock.getAlternateLinks()).thenReturn(Arrays.asList(new Link[]{getLink("prev-archive", secondFeedUri)}));
+        when(secondFeedMock.getAlternateLinks()).thenReturn(Arrays.asList(
                 new Link[]{getLink("prev-archive", firstFeedUri), getLink("next-archive", thirdFeedUri)}));
-        when(firstFeedMock.getOtherLinks()).thenReturn(Arrays.asList(new Link[]{getLink("next-archive", secondFeedUri)}));
+        when(firstFeedMock.getAlternateLinks()).thenReturn(Arrays.asList(new Link[]{getLink("next-archive", secondFeedUri)}));
 
         when(firstFeedMock.getEntries()).thenReturn(getEntries(1, 5));
         when(secondFeedMock.getEntries()).thenReturn(getEntries(6, 10));
