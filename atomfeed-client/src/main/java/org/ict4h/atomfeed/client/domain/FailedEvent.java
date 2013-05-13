@@ -12,6 +12,9 @@ public class FailedEvent {
     private String feedUri;
 
     public FailedEvent(String feedUri, Event event, String errorMessage) {
+        if (feedUri == null || feedUri.trim().equals("") || event == null)
+            throw new IllegalArgumentException("Arguments provided should not be null.");
+
         this.event = event;
         this.errorMessage = errorMessage;
         this.feedUri = feedUri;
@@ -32,5 +35,9 @@ public class FailedEvent {
 
     public String getFeedUri() {
         return feedUri;
+    }
+
+    public String getId() {
+        return event.getId();
     }
 }
