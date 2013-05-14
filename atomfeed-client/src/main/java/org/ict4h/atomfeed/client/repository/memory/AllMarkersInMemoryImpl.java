@@ -1,16 +1,16 @@
 package org.ict4h.atomfeed.client.repository.memory;
 
 import org.ict4h.atomfeed.client.domain.Marker;
-import org.ict4h.atomfeed.client.repository.datasource.MarkerDataSource;
+import org.ict4h.atomfeed.client.repository.AllMarkers;
 
 import java.net.URI;
 import java.util.HashMap;
 
-public class InMemoryMarkerDataSource implements MarkerDataSource {
+public class AllMarkersInMemoryImpl implements AllMarkers {
 
     private final HashMap<URI,Marker> map;
 
-    public InMemoryMarkerDataSource() {
+    public AllMarkersInMemoryImpl() {
         map = new HashMap<URI,Marker>();
     }
 
@@ -20,7 +20,8 @@ public class InMemoryMarkerDataSource implements MarkerDataSource {
     }
 
     @Override
-    public void put(Marker marker) {
-        map.put(marker.getFeedUri(),marker);
+    public void put(URI feedUri, String entryId, URI entryFeedUri) {
+        map.put(feedUri, new Marker(feedUri, entryId, entryFeedUri));
     }
+
 }
