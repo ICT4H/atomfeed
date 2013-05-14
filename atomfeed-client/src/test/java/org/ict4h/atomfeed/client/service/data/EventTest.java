@@ -1,8 +1,9 @@
-package org.ict4h.atomfeed.client.api.data;
+package org.ict4h.atomfeed.client.service.data;
 
 import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.atom.Entry;
 import junit.framework.Assert;
+import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Test;
 
 import java.util.ArrayList;

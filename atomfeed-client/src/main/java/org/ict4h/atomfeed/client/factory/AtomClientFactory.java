@@ -1,6 +1,6 @@
 package org.ict4h.atomfeed.client.factory;
 
-import org.ict4h.atomfeed.client.api.AtomFeedClient;
+import org.ict4h.atomfeed.client.service.AtomFeedClient;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.AllMarkers;

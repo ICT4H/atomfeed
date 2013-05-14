@@ -1,9 +1,6 @@
-package org.ict4h.atomfeed.client.api;
-
-import org.ict4h.atomfeed.client.api.data.Event;
+package org.ict4h.atomfeed.client.service;
 
 import java.net.URI;
-import java.util.List;
 
 public interface FeedClient {
     void processEvents(URI feedUri, EventWorker eventWorker);

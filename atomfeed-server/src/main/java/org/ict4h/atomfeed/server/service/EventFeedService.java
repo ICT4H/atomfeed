@@ -15,7 +15,7 @@ public interface EventFeedService {
      * @param requestUri  a URI that identifies the recent {@code Feed}.
      * @return The {@code Feed} identified by the requestUri
      */
-	public abstract Feed getRecentFeed(URI requestUri);
+	public Feed getRecentFeed(URI requestUri);
 
     /**
      * Returns the {@code Feed} given a {@code URI} and {@code Integer} identifier for a feed
@@ -23,6 +23,6 @@ public interface EventFeedService {
      * @param feedId an integer that refers the the feed
      * @return The {@code Feed} identified by the feedId parameter
      */
-	public abstract Feed getEventFeed(URI requestUri, Integer feedId);
+	public Feed getEventFeed(URI requestUri, Integer feedId);
 
 }

@@ -1,9 +1,9 @@
-package org.ict4h.atomfeed.client.api;
+package org.ict4h.atomfeed.client.service;
 
 import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
-import org.ict4h.atomfeed.client.api.data.Event;
+import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;

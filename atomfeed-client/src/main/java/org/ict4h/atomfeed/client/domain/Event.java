@@ -1,4 +1,4 @@
-package org.ict4h.atomfeed.client.api.data;
+package org.ict4h.atomfeed.client.domain;
 
 import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.atom.Entry;

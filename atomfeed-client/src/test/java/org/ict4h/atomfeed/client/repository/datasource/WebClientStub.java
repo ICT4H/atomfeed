@@ -6,6 +6,7 @@ import org.mockito.Mockito;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class WebClientStub extends WebClient {
@@ -14,7 +15,7 @@ public class WebClientStub extends WebClient {
 
     public WebClientStub(EventResource eventResource) {
         this.eventResource = eventResource;
-        httpServletRequest = Mockito.mock(HttpServletRequest.class);
+        httpServletRequest = mock(HttpServletRequest.class);
     }
 
     @Override

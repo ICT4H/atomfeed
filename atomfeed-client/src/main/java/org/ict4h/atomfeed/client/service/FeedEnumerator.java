@@ -1,4 +1,4 @@
-package org.ict4h.atomfeed.client;
+package org.ict4h.atomfeed.client.service;
 
 import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
@@ -77,9 +77,10 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
     @Override
     public boolean hasNext() {
         if (!entries.isEmpty()) return true;
+
         if (Util.getNextLink(this.currentFeed) == null) return false;
-        fetchEntries();
-        return hasNext();
+
+        fetchEntries(); return hasNext();
     }
 
     @Override

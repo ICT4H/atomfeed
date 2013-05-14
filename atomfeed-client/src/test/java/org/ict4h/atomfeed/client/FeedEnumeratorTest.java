@@ -6,6 +6,7 @@ import com.sun.syndication.feed.atom.Link;
 import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
+import org.ict4h.atomfeed.client.service.FeedEnumerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,9 +42,9 @@ public class FeedEnumeratorTest {
         secondFeedUri = new URI("http://host/patients/2");
         firstFeedUri = new URI("http://host/patients/1");
 
-        last.setOtherLinks(Arrays.asList(new Link[]{getLink("prev-archive",secondFeedUri)}));
-        second.setOtherLinks(Arrays.asList(getLink("prev-archive",firstFeedUri),getLink("next-archive", recentFeedUri)));
-        first.setOtherLinks(Arrays.asList(new Link[]{getLink("next-archive",secondFeedUri)}));
+        last.setOtherLinks(Arrays.asList(new Link[]{getLink("prev-archive", secondFeedUri)}));
+        second.setOtherLinks(Arrays.asList(getLink("prev-archive", firstFeedUri), getLink("next-archive", recentFeedUri)));
+        first.setOtherLinks(Arrays.asList(new Link[]{getLink("next-archive", secondFeedUri)}));
 
         when(allFeedsMock.getFor(notificationsUri)).thenReturn(last);
         when(allFeedsMock.getFor(recentFeedUri)).thenReturn(last);

@@ -1,7 +1,5 @@
 package org.ict4h.atomfeed.client.domain;
 
-import org.ict4h.atomfeed.client.api.data.Event;
-
 import java.util.Date;
 
 public class FailedEvent {

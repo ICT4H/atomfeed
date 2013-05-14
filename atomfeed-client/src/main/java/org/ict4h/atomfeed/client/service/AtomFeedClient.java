@@ -1,11 +1,10 @@
-package org.ict4h.atomfeed.client.api;
+package org.ict4h.atomfeed.client.service;
 
 import java.net.URI;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.ict4h.atomfeed.client.FeedEnumerator;
-import org.ict4h.atomfeed.client.api.data.Event;
+import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
 import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
