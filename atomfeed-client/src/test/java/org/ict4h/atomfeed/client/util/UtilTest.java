@@ -19,7 +19,7 @@ public class UtilTest {
     @Before
     public void setUp(){
         feed = new Feed();
-        List alternateLinks = new ArrayList();
+        List otherLinks = new ArrayList();
 
         Link selfLink = new Link();
         selfLink.setRel("self");
@@ -33,11 +33,11 @@ public class UtilTest {
         nextLink.setRel("next-archive");
         nextLink.setHref("http://next.me");
 
-        alternateLinks.add(selfLink);
-        alternateLinks.add(previousLink);
-        alternateLinks.add(nextLink);
+        otherLinks.add(selfLink);
+        otherLinks.add(previousLink);
+        otherLinks.add(nextLink);
 
-        feed.setAlternateLinks(alternateLinks);
+        feed.setOtherLinks(otherLinks);
     }
 
     @Test

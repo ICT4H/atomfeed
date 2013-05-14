@@ -41,9 +41,9 @@ public class FeedEnumeratorTest {
         secondFeedUri = new URI("http://host/patients/2");
         firstFeedUri = new URI("http://host/patients/1");
 
-        last.setAlternateLinks(Arrays.asList(new Link[]{getLink("prev-archive",secondFeedUri)}));
-        second.setAlternateLinks(Arrays.asList(getLink("prev-archive",firstFeedUri),getLink("next-archive", recentFeedUri)));
-        first.setAlternateLinks(Arrays.asList(new Link[]{getLink("next-archive",secondFeedUri)}));
+        last.setOtherLinks(Arrays.asList(new Link[]{getLink("prev-archive",secondFeedUri)}));
+        second.setOtherLinks(Arrays.asList(getLink("prev-archive",firstFeedUri),getLink("next-archive", recentFeedUri)));
+        first.setOtherLinks(Arrays.asList(new Link[]{getLink("next-archive",secondFeedUri)}));
 
         when(allFeedsMock.getFor(notificationsUri)).thenReturn(last);
         when(allFeedsMock.getFor(recentFeedUri)).thenReturn(last);
@@ -88,7 +88,7 @@ public class FeedEnumeratorTest {
     public void shouldWorkWhenAFeedReturnsNoEntries() {
         Marker marker = new Marker(notificationsUri, "3", firstFeedUri);
         Feed secondFeed = new Feed();
-        secondFeed.setAlternateLinks(Arrays.asList(new Link[]{getLink("next-archive", recentFeedUri)}));
+        secondFeed.setOtherLinks(Arrays.asList(new Link[]{getLink("next-archive", recentFeedUri)}));
         when(allFeedsMock.getFor(secondFeedUri)).thenReturn(secondFeed);
         FeedEnumerator feedEnumerator = new FeedEnumerator(allFeedsMock, marker);
         List<String> entryIds = getEntries(feedEnumerator);

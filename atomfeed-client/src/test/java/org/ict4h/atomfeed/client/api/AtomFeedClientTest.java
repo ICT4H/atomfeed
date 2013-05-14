@@ -141,18 +141,14 @@ public class AtomFeedClientTest {
     private Feed setupFeed() {
         entry1 = new Entry(); entry1.setId("id1");
         entry2 = new Entry(); entry2.setId("id2");
-
-        Feed feed = getFeed(entry1, entry2);
-        entry1.setSource(feed); entry2.setSource(feed);
-
-        return feed;
+        return getFeed(entry1, entry2);
     }
 
     private Feed getFeed(Entry... entries) {
         ArrayList mutableEntries = new ArrayList();
         mutableEntries.addAll(Arrays.asList(entries));
         Feed feed = new Feed();
-        feed.setAlternateLinks(Arrays.asList(new Link[]{getLink("self", feedLink)}));
+        feed.setOtherLinks(Arrays.asList(new Link[]{getLink("self", feedLink)}));
         feed.setEntries(mutableEntries);
         return feed;
     }

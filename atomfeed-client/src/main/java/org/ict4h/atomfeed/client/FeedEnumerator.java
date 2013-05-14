@@ -98,4 +98,8 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
     public Iterator<Entry> iterator() {
         return this;
     }
+
+    public Feed getCurrentFeed() {
+        return currentFeed;
+    }
 }
