@@ -45,7 +45,7 @@ public class AtomFeedClientTest {
     }
 
     @Test
-    public void shouldCreateNewMarkerAndProcessWhenNoMarkerExists() throws URISyntaxException {
+    public void shouldProcessEventsWithoutFailures() throws URISyntaxException {
         Feed feed = setupFeed();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
@@ -78,7 +78,7 @@ public class AtomFeedClientTest {
     }
 
     @Test
-    public void shouldHandleFailedEventInCaseProcessingFailsForAnEvent() {
+    public void shouldHandleFailedEventInCaseProcessingFailsForAnEvent() throws URISyntaxException {
         Feed feed = setupFeed();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
@@ -92,10 +92,13 @@ public class AtomFeedClientTest {
         List<FailedEvent> failedEventList = captor.getAllValues();
         assertEquals(entry1.getId(), failedEventList.get(0).getEvent().getId());
         assertEquals(entry2.getId(), failedEventList.get(1).getEvent().getId());
+
+        verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
+        verify(allMarkersMock).put(feedUri, entry2.getId(), new URI(feedLink));
     }
 
     @Test(expected = AtomFeedClientException.class)
-    public void shouldStopProcessingEventsInBetweenWhenThereAreTooManyFailedEvents() {
+    public void shouldStopProcessingEventsInBetweenWhenThereAreTooManyFailedEvents() throws URISyntaxException {
         Feed feed = setupFeed();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(9, 9, 10);
@@ -107,6 +110,7 @@ public class AtomFeedClientTest {
         ArgumentCaptor<FailedEvent> captor = ArgumentCaptor.forClass(FailedEvent.class);
         verify(allFailedEvents).put(captor.capture());
         assertEquals(entry1.getId(), captor.getValue().getEvent().getId());
+        verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
     }
 
     @Test
