@@ -1,3 +1,4 @@
+#! /bin/sh
 
 psql -c "drop database atomfeed" -U postgres
 

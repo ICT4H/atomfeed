@@ -8,7 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
 
-@ContextConfiguration("classpath:atomFeedContext.xml")
+@ContextConfiguration("classpath*:*Context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ContextTestIT {
 
