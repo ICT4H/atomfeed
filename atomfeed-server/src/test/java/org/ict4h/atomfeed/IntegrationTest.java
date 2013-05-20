@@ -1,7 +1,7 @@
 package org.ict4h.atomfeed;
 
 
-import org.ict4h.atomfeed.server.repository.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

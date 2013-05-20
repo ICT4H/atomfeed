@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 public class SpringJdbcConnectionProvider implements JdbcConnectionProvider {

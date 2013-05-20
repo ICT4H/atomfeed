@@ -1,20 +1,22 @@
 package org.ict4h.atomfeed.server.repository.jdbc;
 
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.jdbc.JdbcResultSetMapper;
+import org.ict4h.atomfeed.server.domain.chunking.ChunkingHistoryEntry;
+import org.ict4h.atomfeed.server.repository.ChunkingEntries;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.ict4h.atomfeed.server.domain.chunking.ChunkingHistoryEntry;
-import org.ict4h.atomfeed.server.repository.ChunkingEntries;
-
 public class ChunkingEntriesJdbcImpl implements ChunkingEntries {
 
 	
 	private String schema = "atomfeed";
 
-	private JdbcConnectionProvider provider;	
+	private JdbcConnectionProvider provider;
 	
 	public ChunkingEntriesJdbcImpl(JdbcConnectionProvider provider) {
 		this.provider = provider;

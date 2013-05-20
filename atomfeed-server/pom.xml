@@ -35,16 +35,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.5</version>
                 <configuration>
@@ -122,15 +112,15 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.ict4h</groupId>
+            <artifactId>atomfeed-commons</artifactId>
+            <version>0.9.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.1</version>
         </dependency>
-        <dependency>
-    		<groupId>javax.persistence</groupId>
-    		<artifactId>persistence-api</artifactId>
-    		<version>1.0.2</version>
-		</dependency>
         <dependency>
             <groupId>rome</groupId>
             <artifactId>rome</artifactId>
@@ -166,6 +156,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <profiles>
         <profile>
             <id>IT</id>

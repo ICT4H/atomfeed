@@ -1,11 +1,16 @@
 package org.ict4h.atomfeed.server.repository.jdbc;
 
-import java.sql.*;
-import java.util.List;
-
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.jdbc.JdbcResultSetMapper;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
