@@ -119,7 +119,7 @@ public class AtomFeedClientTest {
         Feed feed = setupFeed();
         failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry1), ""));
         failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry2), ""));
-        when(allFailedEvents.getLastNFailedEvents(feedUri.toString(), 5)).thenReturn(failedEvents);
+        when(allFailedEvents.getOldestNFailedEvents(feedUri.toString(), 5)).thenReturn(failedEvents);
 
         FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents);
         feedClient.processFailedEvents(feedUri, eventWorker);

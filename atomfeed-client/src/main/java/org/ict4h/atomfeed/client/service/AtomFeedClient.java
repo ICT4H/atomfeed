@@ -64,7 +64,7 @@ public class AtomFeedClient implements FeedClient {
     @Override
     public void processFailedEvents(URI feedUri, EventWorker eventWorker) {
         List<FailedEvent> failedEvents =
-                allFailedEvents.getLastNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE);
+                allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE);
 
         for (FailedEvent failedEvent : failedEvents) {
             try {

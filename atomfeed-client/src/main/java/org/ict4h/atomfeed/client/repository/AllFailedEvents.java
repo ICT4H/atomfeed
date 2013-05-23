@@ -6,13 +6,11 @@ import java.util.List;
 
 public interface AllFailedEvents {
 
-    public FailedEvent get(String id);
+    public FailedEvent get(String feedUri, String eventId);
 
     public void put(FailedEvent failedEvent);
 
-    public List<FailedEvent> getLastNFailedEvents(String feedUri, int numberOfFailedEvents);
-
-    public List<FailedEvent> getAllFailedEvents(String feedUri);
+    public List<FailedEvent> getOldestNFailedEvents(String feedUri, int numberOfFailedEvents);
 
     public int getNumberOfFailedEvents(String feedUri);
 

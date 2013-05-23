@@ -14,9 +14,10 @@ public class AllFailedEventsInMemoryImpl implements AllFailedEvents {
     }
 
     @Override
-    public FailedEvent get(String id) {
+    public FailedEvent get(String feedUri, String id) {
         for (FailedEvent failedEvent : failedEvents) {
-            if (failedEvent.getId().equals(id)) return failedEvent;
+            if (failedEvent.getFeedUri().equalsIgnoreCase(feedUri) &&
+                failedEvent.getEventId().equals(id)) return failedEvent;
         }
         return null;
     }
@@ -25,7 +26,7 @@ public class AllFailedEventsInMemoryImpl implements AllFailedEvents {
     public void put(FailedEvent failedEvent) {
         boolean modified = false;
         for (int i = 0; i < failedEvents.size(); i++) {
-            if (failedEvent.getId().equals(failedEvents.get(i).getId())) {
+            if (failedEvent.getEventId().equals(failedEvents.get(i).getEventId())) {
                 modified = true;
                 failedEvents.set(i, failedEvent);
                 break;
@@ -35,7 +36,7 @@ public class AllFailedEventsInMemoryImpl implements AllFailedEvents {
     }
 
     @Override
-    public List<FailedEvent> getLastNFailedEvents(String feedUri, int numberOfFailedEvents) {
+    public List<FailedEvent> getOldestNFailedEvents(String feedUri, int numberOfFailedEvents) {
         if (numberOfFailedEvents < 1) throw new IllegalArgumentException("Number of failed events should at least be one.");
 
         List<FailedEvent> lastNFailedEvents = new ArrayList<FailedEvent>();
@@ -51,7 +52,6 @@ public class AllFailedEventsInMemoryImpl implements AllFailedEvents {
         return lastNFailedEvents;
     }
 
-    @Override
     public List<FailedEvent> getAllFailedEvents(String feedUri) {
         List<FailedEvent> allFailedEvents = new ArrayList<FailedEvent>();
         for (int i = failedEvents.size() - 1; i >= 0 ; i--) {
@@ -77,7 +77,7 @@ public class AllFailedEventsInMemoryImpl implements AllFailedEvents {
     @Override
     public void remove(FailedEvent failedEvent) {
         for (int i = 0; i < failedEvents.size(); i++) {
-            if (failedEvent.getId().equals(failedEvents.get(i).getId())) {
+            if (failedEvent.getEventId().equals(failedEvents.get(i).getEventId())) {
                 failedEvents.remove(i);
                 break;
             }

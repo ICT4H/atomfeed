@@ -4,7 +4,10 @@ import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,7 +29,7 @@ public class AllEventRecordsIT extends IntegrationTest {
     private Connection connection;
 
     @Before
-    public void purgeEventRecords() throws SQLException {
+    public void before() throws SQLException {
         connection = getConnection();
         allEventRecords = new AllEventRecordsJdbcImpl(getProvider(connection));
         clearRecords();

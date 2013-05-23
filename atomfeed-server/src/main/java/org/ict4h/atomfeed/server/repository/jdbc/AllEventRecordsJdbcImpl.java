@@ -1,7 +1,9 @@
 package org.ict4h.atomfeed.server.repository.jdbc;
 
+import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.jdbc.JdbcResultSetMapper;
+import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
@@ -14,25 +16,20 @@ import java.util.List;
 
 public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
-	
-	private String schema = "atomfeed";
 	private JdbcConnectionProvider provider;
 
 	public AllEventRecordsJdbcImpl(JdbcConnectionProvider provider) {
 		this.provider = provider;
 	}
 	
-	public void setSchema(String dbSchema) {
-		this.schema = dbSchema;
-	}
-
 	@Override
 	public void add(EventRecord eventRecord) {
-		Connection connection = null;
+		Connection connection;
 		PreparedStatement stmt = null;
 		try {
 			connection = getDbConnection();
-			String insertSql = String.format("insert into %s (uuid, title, uri, object,category) values (?, ?, ?, ?,?)", getTableName("event_records"));
+			String insertSql = String.format("insert into %s (uuid, title, uri, object,category) values (?, ?, ?, ?,?)",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
 			stmt = connection.prepareStatement(insertSql);
 			stmt.setString(1, eventRecord.getUuid());
 			stmt.setString(2, eventRecord.getTitle());
@@ -53,12 +50,13 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
 	@Override
 	public EventRecord get(String uuid) {
-		Connection connection = null;
+		Connection connection;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			connection = getDbConnection();
-			String sql = String.format("select id, uuid, title, timestamp, uri, object, category from %s where uuid = ?", getTableName("event_records"));
+			String sql = String.format("select id, uuid, title, timestamp, uri, object, category from %s where uuid = ?",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
 			stmt = connection.prepareStatement(sql);
 			stmt.setString(1, uuid);
 			rs = stmt.executeQuery();
@@ -91,12 +89,13 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
 	@Override
 	public int getTotalCount() {
-		Connection connection = null;
+		Connection connection;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			connection = getDbConnection();
-			stmt = connection.prepareStatement(String.format("select count(*) from %s", getTableName("event_records")));
+			stmt = connection.prepareStatement(String.format("select count(*) from %s",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records")));
 			rs = stmt.executeQuery();
 			return rs.next() ? rs.getInt(1) : 0;
 		} catch (SQLException e) {
@@ -108,12 +107,13 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
 	@Override
 	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
-		Connection connection = null;
+		Connection connection;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			connection = getDbConnection();
-			String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where id >= ? and id <= ?", getTableName("event_records"));
+			String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where id >= ? and id <= ?",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
 			stmt = connection.prepareStatement(sql);
 			stmt.setInt(1, first); 
 			stmt.setInt(2, last);
@@ -128,13 +128,14 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
     @Override
     public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange) {
-        Connection connection = null;
+        Connection connection;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try
         {
             connection = getDbConnection();
-            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ?",getTableName("event_records"));
+            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ?",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
             statement = connection.prepareStatement(sql);
             statement.setTimestamp(1, timeRange.getStartTimestamp());
             statement.setTimestamp(2, timeRange.getEndTimestamp());
@@ -148,14 +149,6 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             closeAll(statement,resultSet);
         }
     }
-
-	private String getTableName(String table) {
-		if ((schema != null) && (!"".equals(schema))) {
-			return schema + "." + table;
-		} else {
-			return table;
-		}
-	}
 
 	private List<EventRecord> mapEventRecords(ResultSet results) {
         return new JdbcResultSetMapper<EventRecord>().mapResultSetToObject(results, EventRecord.class);

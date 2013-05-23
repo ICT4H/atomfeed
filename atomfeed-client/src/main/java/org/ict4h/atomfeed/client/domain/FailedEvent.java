@@ -1,5 +1,6 @@
 package org.ict4h.atomfeed.client.domain;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class FailedEvent {
@@ -19,6 +20,11 @@ public class FailedEvent {
         this.failedAt = new Date().getTime();
     }
 
+    public FailedEvent(String feedUri, Event event, String errorMessage, long failedAt) {
+        this(feedUri, event, errorMessage);
+        this.failedAt = failedAt;
+    }
+
     public long getFailedAt() {
         return failedAt;
     }
@@ -35,7 +41,7 @@ public class FailedEvent {
         return feedUri;
     }
 
-    public String getId() {
+    public String getEventId() {
         return event.getId();
     }
 }

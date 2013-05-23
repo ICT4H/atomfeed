@@ -13,6 +13,11 @@ public class Event {
 		this.content = extractContent(entry);
 	}
 
+    public Event(String id, String content) {
+        this.id = id;
+        this.content = content;
+    }
+
     /**
      * reads the list of contents of entry and returns the first content's value as string
      * for now as a contract we have only one content in the list.
