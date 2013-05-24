@@ -1,6 +1,7 @@
 package org.ict4h.atomfeed.client.service;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -73,6 +74,10 @@ public class AtomFeedClient implements FeedClient {
                 // be in an inconsistent state.
                 allFailedEvents.remove(failedEvent);
             } catch (Exception e) {
+                failedEvent.setFailedAt(new Date().getTime());
+                failedEvent.setErrorMessage(Util.getExceptionString(e));
+                allFailedEvents.put(failedEvent);
+
                 logger.info("Failed to process failed event. " + failedEvent);
             }
         }

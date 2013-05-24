@@ -44,4 +44,12 @@ public class FailedEvent {
     public String getEventId() {
         return event.getId();
     }
+
+    public void setFailedAt(long failedAt) {
+        this.failedAt = failedAt;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 }
