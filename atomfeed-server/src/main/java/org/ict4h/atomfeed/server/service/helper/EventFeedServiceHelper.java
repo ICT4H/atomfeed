@@ -23,14 +23,14 @@ public class EventFeedServiceHelper {
             logger.error("error occurred while getting recent feedgenerator", e);
             //TODO: should throw exception that should be either contextual error like bad request
             //to be resolved by an exception resolver to  return error code 400 or so
-            throw new RuntimeException("Unexpected error", e); //TODO
+            throw new RuntimeException("Unexpected error", e);
         }
     }
 
     public static String getEventFeed(EventFeedService eventFeedService,
                                       String requestURL, String category, int feedNumber, Logger logger){
         try {
-            Feed feed = eventFeedService.getEventFeed(new URI(requestURL), null, feedNumber);
+            Feed feed = eventFeedService.getEventFeed(new URI(requestURL), category, feedNumber);
             return new WireFeedOutput().outputString(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);
@@ -38,6 +38,5 @@ public class EventFeedServiceHelper {
             logger.error("error occurred while getting recent feedgenerator", e);
             throw new RuntimeException("Error serializing feed.", e);
         }
-        //TODO: check comments in getRecentFeed()
     }
 }

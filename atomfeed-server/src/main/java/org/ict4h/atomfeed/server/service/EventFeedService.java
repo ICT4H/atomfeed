@@ -22,7 +22,8 @@ public interface EventFeedService {
      *
      * @param requestUri a URI that is the request for the given feed
      * @param category
-     *@param feedId an integer that refers the the feed  @return The {@code Feed} identified by the feedId parameter
+     * @param feedId an integer that refers the the feed
+     * @return The {@code Feed} identified by the feedId parameter
      */
 	public Feed getEventFeed(URI requestUri, String category, Integer feedId);
 

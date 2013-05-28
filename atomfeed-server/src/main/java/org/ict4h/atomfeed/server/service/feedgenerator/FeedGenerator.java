@@ -5,6 +5,4 @@ import org.ict4h.atomfeed.server.domain.EventFeed;
 public interface FeedGenerator {
     EventFeed getFeedForId(Integer feedId, String category);
     EventFeed getRecentFeed();
-
-    void validateFeedId(Integer feedId, String category);
 }
