@@ -21,10 +21,6 @@ public class TimeChunkingHistoryEntry {
         return numberOfFeeds(startTime, endTime);
     }
 
-    public int numberOfFeedsUpTo(LocalDateTime cutoff) {
-        return numberOfFeeds(startTime, cutoff);
-    }
-
     private int numberOfFeeds(LocalDateTime start, LocalDateTime end) {
         int minutesElapsed = Minutes.minutesBetween(start, end).getMinutes();
         long minutesInTheDuration = duration.getStandardMinutes();
@@ -57,11 +53,10 @@ public class TimeChunkingHistoryEntry {
     }
 
     public long numberOfEncapsulatedFeeds() {
-        if(isUnbounded()){
-            return numberOfFeedsUpTo(LocalDateTime.now());
+        if(isUnbounded())
+        {
+            return numberOfFeeds(startTime, LocalDateTime.now());
         }
-        else{
-            return numberOfFeeds(startTime,endTime);
-        }
+        return numberOfFeeds(startTime,endTime);
     }
 }
