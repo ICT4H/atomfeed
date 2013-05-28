@@ -77,7 +77,7 @@ public class EventFeedServiceTest {
     @Test
     public void shouldGetEventFeed() throws URISyntaxException {
         String feedUrl = "http://hostname/feedgenerator/1";
-        Feed feed = eventFeedService.getEventFeed(new URI(feedUrl), 1);
+        Feed feed = eventFeedService.getEventFeed(new URI(feedUrl), "category", 1);
         HashMap<String, Link> links = getAllFeedLinks(feed);
         Assert.assertNotNull(links.get("next-archive"));
         Assert.assertNull(links.get("prev-archive"));
@@ -87,8 +87,8 @@ public class EventFeedServiceTest {
     @Test
     public void shouldGenerateTheSameUUIDForFeedsThatAreNotRecent() throws URISyntaxException {
         String feedUrl = "http://hostname/feedgenerator/1";
-        Feed feed = eventFeedService.getEventFeed(new URI(feedUrl), 2);
-        Feed theSameFeed = eventFeedService.getEventFeed(new URI(feedUrl),2);
+        Feed feed = eventFeedService.getEventFeed(new URI(feedUrl), "category", 2);
+        Feed theSameFeed = eventFeedService.getEventFeed(new URI(feedUrl), "category", 2);
         assertEquals(feed.getId(),theSameFeed.getId());
     }
 

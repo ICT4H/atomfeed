@@ -1,10 +1,13 @@
 package org.ict4h.atomfeed.server.repository;
 
-import java.util.*;
-
+import org.hamcrest.Matchers;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.EventRecordComparator;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.Matchers.*;
+
+import java.util.*;
 
 public class AllEventRecordsStub implements AllEventRecords {
     private Map<String, EventRecord> eventRecords = new HashMap<String, EventRecord>();
@@ -20,8 +23,13 @@ public class AllEventRecordsStub implements AllEventRecords {
     public int getTotalCount() {
         return eventRecords.size();
     }
-    
-	@Override
+
+    @Override
+    public int getTotalCountForCategory(String category) {
+        return filterEventsBasedOnCategory(category,eventRecords.values()).size();
+    }
+
+    @Override
 	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
           ArrayList<EventRecord> eventRecordList = new ArrayList<EventRecord>(eventRecords.values());
           Collections.sort(eventRecordList, new EventRecordComparator());
@@ -31,6 +39,17 @@ public class AllEventRecordsStub implements AllEventRecords {
           }
           return eventRecordList.subList(first - 1, effectiveLast);
 	}
+
+    @Override
+    public List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit) {
+        Collection<EventRecord> values = eventRecords.values();
+        return filterEventsBasedOnCategory(category, values)
+                .subList(offset - 1, Math.min(offset - 1 + limit, values.size()));
+    }
+
+    private List<EventRecord> filterEventsBasedOnCategory(String category, Collection<EventRecord> values) {
+        return filter(having(on(EventRecord.class).getCategory(), equalTo(category)), values);
+    }
 
     @Override
     public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange) {

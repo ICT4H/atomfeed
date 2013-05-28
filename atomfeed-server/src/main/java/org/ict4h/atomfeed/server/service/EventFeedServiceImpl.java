@@ -51,8 +51,8 @@ public class EventFeedServiceImpl implements EventFeedService {
     }
 
     @Override
-    public Feed getEventFeed(URI requestUri, Integer feedId) {
-        EventFeed feedForId = feedGenerator.getFeedForId(feedId);
+    public Feed getEventFeed(URI requestUri, String category, Integer feedId) {
+        EventFeed feedForId = feedGenerator.getFeedForId(feedId, category);
         return new FeedBuilder()
                 .type("atom_1.0")
                 .id(generateIdForEventFeed(feedId))

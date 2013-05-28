@@ -28,23 +28,23 @@ public class NumberFeedGeneratorTest {
 
     @Test(expected = Exception.class)
     public void shouldErrorOutForMissingId() {
-        feedGenerator.getFeedForId(null);
+        feedGenerator.getFeedForId(null, null);
     }
 
     @Test(expected = Exception.class)
     public void shouldErrorOutForInvalidId() {
-        feedGenerator.getFeedForId(0);
+        feedGenerator.getFeedForId(0, null);
     }
 
     @Test(expected = Exception.class)
     public void shouldErrorOutForFutureFeed() {
-        feedGenerator.getFeedForId(999);
+        feedGenerator.getFeedForId(999, null);
     }
 
     @Test
     public void shouldRetrieveGivenFeed() throws Exception {
         addEvents(11);
-        EventFeed feed = feedGenerator.getFeedForId(1);
+        EventFeed feed = feedGenerator.getFeedForId(1, "category");
         Assert.assertEquals(1, feed.getId().intValue());
         Assert.assertEquals(5, feed.getEvents().size());
     }

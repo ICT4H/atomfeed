@@ -77,7 +77,7 @@ public class AllEventRecordsIT extends IntegrationTest {
     //relies on the rdbms serial id
     public void shouldGetEventsFromStartNumber() throws URISyntaxException {
         System.out.println("executing shouldGetEventsFromStartNumber");
-        addEvents(6, "uuid");
+        addEvents(6, "uuid", "");
         EventRecord e2 = allEventRecords.get("uuid2");
         EventRecord e5 = allEventRecords.get("uuid5");
 
@@ -91,7 +91,7 @@ public class AllEventRecordsIT extends IntegrationTest {
     @Test
     public void shouldFindEventsInTimeRange() throws URISyntaxException, InterruptedException {
         Timestamp startTime = new Timestamp(new Date().getTime());
-        addEvents(6, "uuid");
+        addEvents(6, "uuid", "");
         // Adding an extra millisecond below to account for the discrepancy that system time is stored
         // in the DB in nanoseconds while new Date().getTime() only returns time till millisecond accuracy.
         Timestamp endTime = new Timestamp(new Date().getTime() + 1);
@@ -102,10 +102,23 @@ public class AllEventRecordsIT extends IntegrationTest {
         assertEquals("Event6",lastEvent.getTitle());
     }
 
-    private void addEvents(int eventNumber, String uuidStartsWith) throws URISyntaxException {
-        for (int i = 1; i <= eventNumber; i++) {
+    @Test
+    public void shouldFetchEventsFilteredByCategory() throws URISyntaxException {
+        String firstCategory = "oneCategory";
+        addEvents(2,"uuid1", firstCategory);
+        addEvents(3,"uuid2","another");
+        addEvents(5,"uuid3", firstCategory);
+        List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(firstCategory, 2, 3);
+        assertEquals(3,events.size());
+        assertEquals("uuid31",events.get(0).getUuid());
+        assertEquals("uuid32",events.get(1).getUuid());
+        assertEquals("uuid33",events.get(2).getUuid());
+    }
+
+    private void addEvents(int numberOfEvents, String uuidStartsWith, String category) throws URISyntaxException {
+        for (int i = 1; i <= numberOfEvents; i++) {
             String title = "Event" + i;
-            allEventRecords.add(new EventRecord(uuidStartsWith + i, title, new URI("http://uri/" + title), null, new Date(), ""));
+            allEventRecords.add(new EventRecord(uuidStartsWith + i, title, new URI("http://uri/" + title), null, new Date(), category));
         }
     }
 }

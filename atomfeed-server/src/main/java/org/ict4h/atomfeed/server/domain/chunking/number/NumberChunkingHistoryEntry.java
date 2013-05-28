@@ -25,9 +25,7 @@ public class NumberChunkingHistoryEntry {
 
     public NumberRange getRange(Integer relativeFeedId) {
         int start = leftBound + (relativeFeedId - 1) * chunkLength;
-        int naturalLimit = start + chunkLength - 1;
-        int end = isOpen() ? naturalLimit : Math.min(rightBound, naturalLimit);
-        return new NumberRange(start, end);
+        return new NumberRange(start, chunkLength);
     }
 
     public boolean isOpen() {

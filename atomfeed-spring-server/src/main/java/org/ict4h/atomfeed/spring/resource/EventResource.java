@@ -31,6 +31,17 @@ public class EventResource {
     @RequestMapping(method = RequestMethod.GET, value = "/feed/{n}")
     @ResponseBody
     public String getEventFeed(HttpServletRequest httpServletRequest, @PathVariable int n) {
-        return EventFeedServiceHelper.getEventFeed(eventFeedService,httpServletRequest.getRequestURL().toString(),n,logger);
+        return EventFeedServiceHelper.getEventFeed(
+                eventFeedService,httpServletRequest.getRequestURL().toString(),
+                null, n,logger);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/feed/{category}/{n}")
+    @ResponseBody
+    public String getEventFeedWithCategory(HttpServletRequest httpServletRequest,
+                                           @PathVariable String category,  @PathVariable int n) {
+        return EventFeedServiceHelper.getEventFeed(
+                eventFeedService,httpServletRequest.getRequestURL().toString(),
+                category, n,logger);
     }
 }

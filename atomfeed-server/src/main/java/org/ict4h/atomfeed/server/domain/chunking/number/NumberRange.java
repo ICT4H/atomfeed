@@ -1,19 +1,19 @@
 package org.ict4h.atomfeed.server.domain.chunking.number;
 
 public class NumberRange {
-    Integer first;
-    Integer last;
+    Integer offset;
+    Integer limit;
 
-    public NumberRange(Integer first, Integer last) {
-        this.first = first;
-        this.last = last;
+    public NumberRange(Integer offset, Integer limit) {
+        this.offset = offset;
+        this.limit = limit;
     }
 
-    public Integer getFirst() {
-        return first;
+    public Integer getOffset() {
+        return offset;
     }
 
-    public Integer getLast() {
-        return last;
+    public Integer getLimit() {
+        return limit;
     }
 }

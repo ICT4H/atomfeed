@@ -19,8 +19,8 @@ public class TimeFeedGenerator implements FeedGenerator {
     }
 
     @Override
-    public EventFeed getFeedForId(Integer feedId) {
-        validateFeedId(feedId);
+    public EventFeed getFeedForId(Integer feedId, String category) {
+        validateFeedId(feedId, category);
         return feedFor(feedId);
     }
 
@@ -30,7 +30,7 @@ public class TimeFeedGenerator implements FeedGenerator {
     }
 
     @Override
-    public void validateFeedId(Integer feedId) {
+    public void validateFeedId(Integer feedId, String category) {
         Integer upperLimit = timeChunkingHistory.getWorkingFeedId();
         if(feedId > upperLimit){
             throw new AtomFeedRuntimeException(String.format("The sequence number:%d lies in future", feedId));

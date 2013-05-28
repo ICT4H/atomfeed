@@ -27,9 +27,10 @@ public class EventFeedServiceHelper {
         }
     }
 
-    public static String getEventFeed(EventFeedService eventFeedService, String requestURL, int feedNumber, Logger logger){
+    public static String getEventFeed(EventFeedService eventFeedService,
+                                      String requestURL, String category, int feedNumber, Logger logger){
         try {
-            Feed feed = eventFeedService.getEventFeed(new URI(requestURL), feedNumber);
+            Feed feed = eventFeedService.getEventFeed(new URI(requestURL), null, feedNumber);
             return new WireFeedOutput().outputString(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);

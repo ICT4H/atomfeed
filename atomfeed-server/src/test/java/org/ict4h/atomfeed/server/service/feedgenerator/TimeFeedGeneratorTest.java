@@ -40,6 +40,6 @@ public class TimeFeedGeneratorTest {
         TimeChunkingHistoryStub history = new TimeChunkingHistoryStub();
         history.setCurrentSequenceNumber(42);
         FeedGenerator generator = new TimeFeedGenerator(history,null);
-        generator.getFeedForId(43);
+        generator.getFeedForId(43, null);
     }
 }

@@ -105,7 +105,25 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 		}
 	}
 
-	@Override
+    @Override
+    public int getTotalCountForCategory(String category) {
+        Connection connection;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            connection = getDbConnection();
+            stmt = connection.prepareStatement(String.format("select count(*) from %s where category = %s",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"), category));
+            rs = stmt.executeQuery();
+            return rs.next() ? rs.getInt(1) : 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(stmt, rs);
+        }
+    }
+
+    @Override
 	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
 		Connection connection;
 		PreparedStatement stmt = null;
@@ -125,6 +143,28 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 			closeAll(stmt, rs);
 		}
 	}
+
+    @Override
+    public List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit) {
+        Connection connection;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            connection = getDbConnection();
+            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where category = ? offset ? limit ?",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
+            stmt = connection.prepareStatement(sql);
+            stmt.setString(1,category);
+            stmt.setInt(2, offset);
+            stmt.setInt(3, limit);
+            ResultSet results = stmt.executeQuery();
+            return mapEventRecords(results);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(stmt, rs);
+        }
+    }
 
     @Override
     public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange) {

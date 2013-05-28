@@ -19,10 +19,11 @@ public interface EventFeedService {
 
     /**
      * Returns the {@code Feed} given a {@code URI} and {@code Integer} identifier for a feed
+     *
      * @param requestUri a URI that is the request for the given feed
-     * @param feedId an integer that refers the the feed
-     * @return The {@code Feed} identified by the feedId parameter
+     * @param category
+     *@param feedId an integer that refers the the feed  @return The {@code Feed} identified by the feedId parameter
      */
-	public Feed getEventFeed(URI requestUri, Integer feedId);
+	public Feed getEventFeed(URI requestUri, String category, Integer feedId);
 
 }

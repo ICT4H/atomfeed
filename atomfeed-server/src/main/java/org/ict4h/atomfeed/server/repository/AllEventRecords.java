@@ -32,6 +32,7 @@ public interface AllEventRecords {
      * @return An {@code Integer} count of the total number of {@code EventRecord} entities present.
      */
 	int getTotalCount();
+    int getTotalCountForCategory(String category);
 
     /**
      * Fetches a {@code List} of {@code EventRecord} from the underlying data store that lie between an {@code Integer} range (inclusive), ordered by Identity.
@@ -41,6 +42,7 @@ public interface AllEventRecords {
      * @throws RuntimeException
      */
 	List<EventRecord> getEventsFromRange(Integer first, Integer last);
+    List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit);
 
     /**
      * Fetches a {@code List} of {@code EventRecord} from the underlying data store that lie within a {@code TimeRange}.
