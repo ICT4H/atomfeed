@@ -3,7 +3,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet context="setup" author="ict4h" id="1">
+    <changeSet context="setup" author="ict4h" id="100">
         <createTable tableName="markers" schemaName="atomfeed">
             <column name="feed_uri" type="varchar(255)">
                 <constraints nullable="false" primaryKey="true"/>
