@@ -25,7 +25,7 @@ public class TimeFeedGenerator implements FeedGenerator {
     }
 
     @Override
-    public EventFeed getRecentFeed() {
+    public EventFeed getRecentFeed(String category) {
         return feedFor(timeChunkingHistory.getWorkingFeedId());
     }
 

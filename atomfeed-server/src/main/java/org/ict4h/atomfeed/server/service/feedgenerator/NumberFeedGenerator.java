@@ -24,29 +24,15 @@ public class NumberFeedGenerator implements FeedGenerator {
 	}
 	
 	@Override
-    public EventFeed getRecentFeed() {
-		int latestFeed = numberChunkingHistory.getNumberOfFeeds(allEventRecords.getTotalCount());
-		return findFeed(latestFeed);
+    public EventFeed getRecentFeed(String category) {
+		int latestFeed = numberChunkingHistory.getNumberOfFeeds(allEventRecords.getTotalCountForCategory(category));
+		return findFeed(latestFeed,category);
 	}
 
 	private EventFeed findFeed(int feedId, String category) {
-		NumberRange feedRange = getFeedRange(feedId, category);
+        NumberRange feedRange = numberChunkingHistory.findRange(feedId, allEventRecords.getTotalCountForCategory(category));
 		List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(category, feedRange.getOffset(), feedRange.getLimit());
 		return new EventFeed(feedId, events);
-	}
-
-    private EventFeed findFeed(int feedId) {
-        NumberRange feedRange = getFeedRange(feedId);
-        List<EventRecord> events = allEventRecords.getEventsFromRange(feedRange.getOffset(), feedRange.getOffset() + feedRange.getLimit());
-        return new EventFeed(feedId, events);
-    }
-
-    private NumberRange getFeedRange(Integer feedId) {
-        return numberChunkingHistory.findRange(feedId, allEventRecords.getTotalCount());
-    }
-
-    private NumberRange getFeedRange(Integer feedId, String category) {
-		return numberChunkingHistory.findRange(feedId, allEventRecords.getTotalCountForCategory(category));
 	}
 
     private void validateFeedId(Integer feedId, String category) {

@@ -52,7 +52,7 @@ public class NumberFeedGeneratorTest {
     @Test
     public void shouldRetrieveRecentFeed() throws Exception {
         addEvents(15);
-        EventFeed feed = feedGenerator.getRecentFeed();
+        EventFeed feed = feedGenerator.getRecentFeed(null);
         Assert.assertEquals(3, feed.getId().intValue());
         Assert.assertEquals(5, feed.getEvents().size());
     }

@@ -12,10 +12,12 @@ public interface EventFeedService {
 
     /**
      * Returns the most recent {@code Feed}
+     *
      * @param requestUri  a URI that identifies the recent {@code Feed}.
+     * @param category
      * @return The {@code Feed} identified by the requestUri
      */
-	public Feed getRecentFeed(URI requestUri);
+	public Feed getRecentFeed(URI requestUri, String category);
 
     /**
      * Returns the {@code Feed} given a {@code URI} and {@code Integer} identifier for a feed

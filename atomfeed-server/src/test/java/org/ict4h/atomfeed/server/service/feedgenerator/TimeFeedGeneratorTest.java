@@ -30,7 +30,7 @@ public class TimeFeedGeneratorTest {
 
         FeedGenerator generator = new TimeFeedGenerator(history,allEventRecordsStub);
 
-        EventFeed recentFeed = generator.getRecentFeed();
+        EventFeed recentFeed = generator.getRecentFeed(null);
         Assert.assertEquals(4, recentFeed.getId().intValue());
         Assert.assertSame(eventRecord, recentFeed.getEvents().get(0));
     }

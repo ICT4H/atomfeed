@@ -25,23 +25,28 @@ public class EventResource {
     @RequestMapping(method = RequestMethod.GET, value = "/feed/recent", produces = "application/atom+xml")
     @ResponseBody
     public String getRecentEventFeed(HttpServletRequest httpServletRequest) {
-        return EventFeedServiceHelper.getRecentFeed(eventFeedService,httpServletRequest.getRequestURL().toString(),logger);
+        return EventFeedServiceHelper.getRecentFeed(eventFeedService,httpServletRequest.getRequestURL().toString(), null, logger);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/feed/{category}/recent", produces = "application/atom+xml")
+    @ResponseBody
+    public String getRecentEventFeedForCategory(HttpServletRequest httpServletRequest,@PathVariable String category) {
+        return EventFeedServiceHelper.getRecentFeed(eventFeedService,httpServletRequest.getRequestURL().toString(),
+                                                    category, logger);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/feed/{n}")
     @ResponseBody
     public String getEventFeed(HttpServletRequest httpServletRequest, @PathVariable int n) {
         return EventFeedServiceHelper.getEventFeed(
-                eventFeedService,httpServletRequest.getRequestURL().toString(),
-                null, n,logger);
+                eventFeedService,httpServletRequest.getRequestURL().toString(),null, n,logger);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/feed/{category}/{n}")
     @ResponseBody
     public String getEventFeedWithCategory(HttpServletRequest httpServletRequest,
                                            @PathVariable String category,  @PathVariable int n) {
-        return EventFeedServiceHelper.getEventFeed(
-                eventFeedService,httpServletRequest.getRequestURL().toString(),
-                category, n,logger);
+        return EventFeedServiceHelper.getEventFeed(eventFeedService,httpServletRequest.getRequestURL().toString(),
+                                                   category, n,logger);
     }
 }

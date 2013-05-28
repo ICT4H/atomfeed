@@ -43,11 +43,17 @@ public class AllEventRecordsStub implements AllEventRecords {
     @Override
     public List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit) {
         Collection<EventRecord> values = eventRecords.values();
+        if(values.isEmpty()){
+            return new ArrayList<>();
+        }
         return filterEventsBasedOnCategory(category, values)
                 .subList(offset - 1, Math.min(offset - 1 + limit, values.size()));
     }
 
     private List<EventRecord> filterEventsBasedOnCategory(String category, Collection<EventRecord> values) {
+        if(category == null){
+            return new ArrayList<>(values);
+        }
         return filter(having(on(EventRecord.class).getCategory(), equalTo(category)), values);
     }
 

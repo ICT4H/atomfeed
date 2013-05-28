@@ -13,9 +13,9 @@ import java.net.URISyntaxException;
  * A Helper class that can be used to generate a {@code String} representation of a {@code Feed}.
  */
 public class EventFeedServiceHelper {
-    public static String getRecentFeed(EventFeedService eventFeedService, String requestURL, Logger logger ){
+    public static String getRecentFeed(EventFeedService eventFeedService, String requestURL, String category, Logger logger){
         try {
-            Feed feed = eventFeedService.getRecentFeed(new URI(requestURL));
+            Feed feed = eventFeedService.getRecentFeed(new URI(requestURL),category);
             return new WireFeedOutput().outputString(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);

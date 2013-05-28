@@ -33,8 +33,8 @@ public class EventFeedServiceImpl implements EventFeedService {
     }
 
     @Override
-	public Feed getRecentFeed(URI requestUri) {
-    	EventFeed recentFeed = feedGenerator.getRecentFeed();
+	public Feed getRecentFeed(URI requestUri, String category) {
+    	EventFeed recentFeed = feedGenerator.getRecentFeed(category);
 
         return new FeedBuilder()
                 .type("atom_1.0")
@@ -46,7 +46,7 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .updated(newestEventDate(recentFeed.getEvents()))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
                 .link(getLink(generateCanonicalUri(requestUri, recentFeed.getId()), LINK_TYPE_VIA, ATOM_MEDIA_TYPE))
-                .links(generatePagingLinks(requestUri, recentFeed))
+                .links(generatePagingLinks(requestUri, recentFeed,category))
                 .build();
     }
 
@@ -62,7 +62,7 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .entries(getEntries(feedForId.getEvents()))
                 .updated(newestEventDate(feedForId.getEvents()))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
-                .links(generatePagingLinks(requestUri, feedForId))
+                .links(generatePagingLinks(requestUri, feedForId, category))
                 .build();
     }
 
@@ -77,15 +77,15 @@ public class EventFeedServiceImpl implements EventFeedService {
         return getServiceUri(requestUri) + "/" + feedId;
     }
     
-    private List<Link> generatePagingLinks(URI requestUri, EventFeed feed) {
+    private List<Link> generatePagingLinks(URI requestUri, EventFeed feed, String category) {
         ArrayList<Link> links = new ArrayList<Link>();
-        int feedCount = feedGenerator.getRecentFeed().getId();
+        int feedCount = feedGenerator.getRecentFeed(category).getId();
 
         if (feed.getId() < feedCount) {
             Link next = new Link();
             next.setRel("next-archive");
             next.setType(ATOM_MEDIA_TYPE);
-            next.setHref(generateCanonicalUri(requestUri, feed.getId()+1));
+            next.setHref(generateCanonicalUri(requestUri, feed.getId() + 1));
             links.add(next);
         }
 
@@ -144,6 +144,7 @@ public class EventFeedServiceImpl implements EventFeedService {
         }
     }
 
+    //TODO: Shouldn't populate category when it is not present
     private List<Entry> getEntries(List<EventRecord> eventRecordList) {
         List<Entry> entryList = new ArrayList<Entry>();
 

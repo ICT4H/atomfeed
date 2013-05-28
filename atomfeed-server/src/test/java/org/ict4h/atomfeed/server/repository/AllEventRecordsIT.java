@@ -115,6 +115,16 @@ public class AllEventRecordsIT extends IntegrationTest {
         assertEquals("uuid33",events.get(2).getUuid());
     }
 
+    @Test
+    public void shouldFetchEventsAcrossCategoriesWhenCategoryIsNull() throws URISyntaxException {
+        String firstCategory = "oneCategory";
+        addEvents(5,"uuid1", firstCategory);
+        String anotherCategory = "another";
+        addEvents(7,"uuid2", anotherCategory);
+        List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(null, 0, 12);
+        assertEquals(12,events.size());
+    }
+
     private void addEvents(int numberOfEvents, String uuidStartsWith, String category) throws URISyntaxException {
         for (int i = 1; i <= numberOfEvents; i++) {
             String title = "Event" + i;

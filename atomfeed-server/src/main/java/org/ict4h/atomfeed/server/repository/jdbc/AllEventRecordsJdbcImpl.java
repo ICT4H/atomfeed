@@ -145,24 +145,42 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 	}
 
     @Override
+    //TODO: Offset - Cannot be negative for initial feed with no entries. Fix this
+    //TODO: Order By is required to ensure that the generated query plan is returns events in the same order all the time.
     public List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit) {
         Connection connection;
-        PreparedStatement stmt = null;
+        PreparedStatement statement = null;
         ResultSet rs = null;
         try {
             connection = getDbConnection();
-            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where category = ? offset ? limit ?",
-                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
-            stmt = connection.prepareStatement(sql);
-            stmt.setString(1,category);
-            stmt.setInt(2, offset);
-            stmt.setInt(3, limit);
-            ResultSet results = stmt.executeQuery();
+            statement = buildStatement(connection,category,offset,limit);
+            ResultSet results = statement.executeQuery();
             return mapEventRecords(results);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeAll(stmt, rs);
+            closeAll(statement, rs);
+        }
+    }
+
+    private PreparedStatement buildStatement(Connection connection,String category, Integer offset, Integer limit) throws SQLException {
+        if(category == null){
+            PreparedStatement statement = connection.prepareStatement(
+                    String.format("select id, uuid, title, timestamp, uri, object from %s offset ? limit ?",
+                            JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records")));
+            statement.setInt(1,offset);
+            statement.setInt(2,limit);
+            return statement;
+        }
+        else
+        {
+            PreparedStatement statement = connection.prepareStatement(
+                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where category = ? offset ? limit ?",
+                            JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records")));
+            statement.setString(1,category);
+            statement.setInt(2, offset);
+            statement.setInt(3, limit);
+            return statement;
         }
     }
 

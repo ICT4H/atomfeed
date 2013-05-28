@@ -37,7 +37,7 @@ public class EventFeedServiceTest {
     @Test
     public void shouldGetRecentFeed() throws URISyntaxException {
         String recentUrl = "http://hostname/feedgenerator/recent";
-        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl), null);
         HashMap<String, Link> links = getAllFeedLinks(feed);
         Assert.assertNull(links.get("next-archive"));
         Assert.assertNotNull(links.get("prev-archive"));
@@ -47,7 +47,7 @@ public class EventFeedServiceTest {
     @Test
     public void shouldGetAnAuthorForTheFeed() throws URISyntaxException {
         String recentUrl = "http://hostname/feedgenerator/recent";
-        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl), null);
         assertEquals("OpenMRS", ((Person) feed.getAuthors().get(0)).getName());
     }
 
@@ -61,7 +61,7 @@ public class EventFeedServiceTest {
         date.set(Calendar.SECOND, 0);
         date.set(Calendar.MILLISECOND, 0);
 
-        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl), null);
         assertEquals(date.getTime(), feed.getUpdated());
     }
 
@@ -95,7 +95,7 @@ public class EventFeedServiceTest {
     @Test
     public void shouldGetContentsFromFeedWrappedInCDATA() throws URISyntaxException {
         String recentUrl = "http://hostname/feedgenerator/1";
-        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl), null);
         Entry entry = (Entry) feed.getEntries().get(0);
         String contents = ((Content)(entry.getContents().get(0))).getValue();
         Assert.assertTrue(contents.startsWith("<![CDATA["));
@@ -107,7 +107,7 @@ public class EventFeedServiceTest {
         String recentUrl = "http://hostname/feedgenerator/1";
         allEventRecords.clear();
         recordCreator.create(new EventRecord("","", new URI(""),null,new Date(), ""));
-        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl), null);
         Entry entry = (Entry) feed.getEntries().get(0);
         Assert.assertNull(((Content)entry.getContents().get(0)).getValue());
     }
@@ -115,7 +115,7 @@ public class EventFeedServiceTest {
     @Test
     public void shouldReadCategoryFromFeed() throws URISyntaxException {
         String recentUrl = "http://hostname/feedgenerator/1";
-        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl));
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl), "category");
         Entry entry = (Entry) feed.getEntries().get(0);
         assertEquals("category", ((Category)entry.getCategories().get(0)).getTerm());
     }
