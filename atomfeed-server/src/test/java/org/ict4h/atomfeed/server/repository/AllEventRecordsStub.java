@@ -47,7 +47,7 @@ public class AllEventRecordsStub implements AllEventRecords {
             return new ArrayList<>();
         }
         return filterEventsBasedOnCategory(category, values)
-                .subList(offset - 1, Math.min(offset - 1 + limit, values.size()));
+                .subList(offset, Math.min(offset + limit, values.size()));
     }
 
     private List<EventRecord> filterEventsBasedOnCategory(String category, Collection<EventRecord> values) {

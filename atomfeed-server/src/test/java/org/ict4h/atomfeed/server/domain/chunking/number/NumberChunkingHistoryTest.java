@@ -24,23 +24,23 @@ public class NumberChunkingHistoryTest {
 	@Test
 	public void shouldFindRangeForAGivenFeedWithSingleHistory() {
 		NumberChunkingHistory historyNumberBased = getSingleEntryHistory();
-		assertRange(6, 5, historyNumberBased.findRange(2, 11));
-		assertRange(1, 5, historyNumberBased.findRange(1, 11));
+        assertRange(0, 5, historyNumberBased.findRange(1, 11));
+		assertRange(5, 5, historyNumberBased.findRange(2, 11));
 	}
 	
 	@Test
 	public void shouldFindRangeForAGivenFeedWithMultiHistory() {
 		NumberChunkingHistory historyNumberBased = getMultiEntryHistory();
-		assertRange(6, 5, historyNumberBased.findRange(2, 11));
-		assertRange(11, 5, historyNumberBased.findRange(3, 11));
-		assertRange(11, 5, historyNumberBased.findRange(3, 100));
-		assertRange(16, 7, historyNumberBased.findRange(4, 100));
-		assertRange(23, 7, historyNumberBased.findRange(5, 100));
+		assertRange(5, 5, historyNumberBased.findRange(2, 11));
+		assertRange(10, 5, historyNumberBased.findRange(3, 11));
+		assertRange(10, 5, historyNumberBased.findRange(3, 100));
+		assertRange(15, 7, historyNumberBased.findRange(4, 100));
+		assertRange(22, 7, historyNumberBased.findRange(5, 100));
 	}
 
-	private void assertRange(int first, int last, NumberRange range) {
-		Assert.assertEquals(first, range.offset.intValue());
-		Assert.assertEquals(last, range.limit.intValue());
+	private void assertRange(int offset, int limit, NumberRange range) {
+		Assert.assertEquals(offset, range.offset.intValue());
+		Assert.assertEquals(limit, range.limit.intValue());
 	}
 	
 	private NumberChunkingHistory getSingleEntryHistory() {
