@@ -40,4 +40,12 @@ public class Event {
     public String getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id='" + id + '\'' +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

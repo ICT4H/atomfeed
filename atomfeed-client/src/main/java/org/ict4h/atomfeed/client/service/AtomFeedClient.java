@@ -36,6 +36,8 @@ public class AtomFeedClient implements FeedClient {
 
     @Override
     public void processEvents(URI feedUri, EventWorker eventWorker) {
+        logger.info("Processing events for feed URI : " + feedUri + " using event worker : " + eventWorker.getClass());
+
         if (shouldNotProcessEvents(feedUri))
             throw new AtomFeedClientException("Cannot start process events. Too many failed events.");
 
@@ -51,6 +53,8 @@ public class AtomFeedClient implements FeedClient {
 
             try {
                 event = new Event(entry);
+                logger.debug("Processing event : " + event);
+
                 eventWorker.process(event);
             } catch (Exception e) {
                 handleFailedEvent(event, feedUri, e);
@@ -64,12 +68,17 @@ public class AtomFeedClient implements FeedClient {
 
     @Override
     public void processFailedEvents(URI feedUri, EventWorker eventWorker) {
+        logger.info("Processing failed events for feed URI : " + feedUri + " using event worker : " + eventWorker.getClass());
+
         List<FailedEvent> failedEvents =
                 allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE);
 
         for (FailedEvent failedEvent : failedEvents) {
             try {
+                logger.debug("Processing failed event : " + failedEvent);
+
                 eventWorker.process(failedEvent.getEvent());
+
                 // Existing bug: If the call below starts failing and the call above passes, we shall
                 // be in an inconsistent state.
                 allFailedEvents.remove(failedEvent);
