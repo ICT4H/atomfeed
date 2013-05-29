@@ -14,16 +14,19 @@ import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.UUID;
 
+import static org.mockito.Mockito.*;
+
 
 public class NumberFeedGeneratorTest {
     AllEventRecords eventsRecord = new AllEventRecordsStub();
     private NumberFeedGenerator feedGenerator;
+    private NumberChunkingHistory chunkingHistory;
 
     @Before
     public void setUp() {
-        NumberChunkingHistory config = new NumberChunkingHistory();
-        config.add(1, 5, 1);
-        feedGenerator = new NumberFeedGenerator(eventsRecord, config);
+        chunkingHistory = new NumberChunkingHistory();
+        chunkingHistory.add(1, 5, 1);
+        feedGenerator = new NumberFeedGenerator(eventsRecord, chunkingHistory);
     }
 
     @Test(expected = Exception.class)
@@ -57,12 +60,22 @@ public class NumberFeedGeneratorTest {
         Assert.assertEquals(5, feed.getEvents().size());
     }
 
+    @Test
+    public void shouldRetrieveEmptyFeedForWhenRecentFeedIsQueriedForWithNoEventsPresent(){
+        AllEventRecords eventRecords = mock(AllEventRecords.class);
+        feedGenerator = new NumberFeedGenerator(eventRecords, chunkingHistory);
+        stub(eventRecords.getTotalCountForCategory(anyString())).toReturn(0);
+        EventFeed feed = feedGenerator.getRecentFeed("");
+
+        Assert.assertEquals(new Integer(0),feed.getId());
+        Assert.assertTrue(feed.getEvents().isEmpty());
+        verify(eventRecords,never()).getEventsFromRangeForCategory(anyString(),anyInt(),anyInt());
+    }
+
     private void addEvents(int eventNumber) throws URISyntaxException {
         for (int i = 1; i <= eventNumber; i++) {
             String title = "Event" + i;
             eventsRecord.add(new EventRecord(UUID.randomUUID().toString(), title, new URI("http://uri/" + title), null,new Date(), "category"));
         }
     }
-
-
 }

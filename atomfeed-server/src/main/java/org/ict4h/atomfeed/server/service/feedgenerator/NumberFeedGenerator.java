@@ -1,5 +1,6 @@
 package org.ict4h.atomfeed.server.service.feedgenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.ict4h.atomfeed.server.domain.EventFeed;
@@ -26,10 +27,17 @@ public class NumberFeedGenerator implements FeedGenerator {
 	@Override
     public EventFeed getRecentFeed(String category) {
 		int latestFeed = numberChunkingHistory.getNumberOfFeeds(allEventRecords.getTotalCountForCategory(category));
+        if(isFeedZeroWithoutAnyEvents(latestFeed)){
+            return new EventFeed(0,new ArrayList<EventRecord>());
+        }
 		return findFeed(latestFeed,category);
 	}
 
-	private EventFeed findFeed(int feedId, String category) {
+    private boolean isFeedZeroWithoutAnyEvents(int latestFeed) {
+        return latestFeed == 0;
+    }
+
+    private EventFeed findFeed(int feedId, String category) {
         NumberRange feedRange = numberChunkingHistory.findRange(feedId, allEventRecords.getTotalCountForCategory(category));
 		List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(category, feedRange.getOffset(), feedRange.getLimit());
 		return new EventFeed(feedId, events);
