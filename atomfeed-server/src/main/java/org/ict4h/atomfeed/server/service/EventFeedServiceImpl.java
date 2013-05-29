@@ -144,7 +144,6 @@ public class EventFeedServiceImpl implements EventFeedService {
         }
     }
 
-    //TODO: Shouldn't populate category when it is not present
     private List<Entry> getEntries(List<EventRecord> eventRecordList) {
         List<Entry> entryList = new ArrayList<Entry>();
 
@@ -154,7 +153,10 @@ public class EventFeedServiceImpl implements EventFeedService {
             entry.setTitle(eventRecord.getTitle());
             entry.setUpdated(eventRecord.getTimeStamp());
             entry.setContents(generateContents(eventRecord));
-            entry.setCategories(getCategories(eventRecord.getCategory()));
+            String category = eventRecord.getCategory();
+            if(category != null){
+                entry.setCategories(getCategories(category));
+            }
             entryList.add(entry);
         }
 

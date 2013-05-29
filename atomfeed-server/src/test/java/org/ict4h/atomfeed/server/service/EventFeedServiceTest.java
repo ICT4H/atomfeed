@@ -16,17 +16,20 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public class EventFeedServiceTest {
     private EventFeedService eventFeedService;
     private AllEventRecordsStub allEventRecords;
     private InMemoryEventRecordCreator recordCreator;
+    private String category;
 
     @Before
     public void setupEventRecords() throws URISyntaxException {
         allEventRecords = new AllEventRecordsStub();
         recordCreator = new InMemoryEventRecordCreator(allEventRecords);
-        recordCreator.create(7);
+        category = "category";
+        recordCreator.create(7, category);
         
         NumberChunkingHistory config = new NumberChunkingHistory();
         config.add(1, 5, 1);
@@ -115,8 +118,18 @@ public class EventFeedServiceTest {
     @Test
     public void shouldReadCategoryFromFeed() throws URISyntaxException {
         String recentUrl = "http://hostname/feedgenerator/1";
-        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl), "category");
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl), category);
         Entry entry = (Entry) feed.getEntries().get(0);
         assertEquals("category", ((Category)entry.getCategories().get(0)).getTerm());
+    }
+
+    @Test
+    public void shouldNotPopulateCategoryWhenCategoryIsNotPresent() throws URISyntaxException {
+        allEventRecords.clear();
+        recordCreator.create(1,null);
+        String recentUrl = "http://hostname/feedgenerator/recent";
+        Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl), null);
+        Entry entry = (Entry) feed.getEntries().get(0);
+        assertTrue(entry.getCategories().isEmpty());
     }
 }

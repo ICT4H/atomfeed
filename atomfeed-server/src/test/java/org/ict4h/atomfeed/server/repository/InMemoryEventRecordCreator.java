@@ -12,11 +12,11 @@ public class InMemoryEventRecordCreator extends EventRecordCreator {
         super(allEventRecords);
     }
 
-    public void create(int numOfEvents) throws URISyntaxException {
-        addEvents(numOfEvents);
+    public void create(int numOfEvents, String category) throws URISyntaxException {
+        addEvents(numOfEvents, category);
     }
     
-    private void addEvents(int numOfEvents) throws URISyntaxException {
+    private void addEvents(int numOfEvents, String category) throws URISyntaxException {
     	Calendar cal = Calendar.getInstance();
         for (int index= 1; index <= numOfEvents; index++) {
         	cal.add(Calendar.SECOND, 1);
@@ -25,7 +25,7 @@ public class InMemoryEventRecordCreator extends EventRecordCreator {
                     "title" + index,
             		new URI("http://foo.bar/" + index),
             		"Event " + index + "'s contents.",
-                    cal.getTime(), "category"));
+                    cal.getTime(), category));
         }
     }
 
