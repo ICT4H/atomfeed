@@ -4,6 +4,7 @@ import junit.framework.Assert;
 import org.ict4h.atomfeed.server.domain.EventFeed;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
+import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsStub;
 import org.junit.Before;
@@ -29,12 +30,12 @@ public class NumberFeedGeneratorTest {
         feedGenerator = new NumberFeedGenerator(eventsRecord, chunkingHistory);
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = AtomFeedRuntimeException.class)
     public void shouldErrorOutForMissingId() {
         feedGenerator.getFeedForId(null, null);
     }
 
-    @Test(expected = Exception.class)
+    @Test(expected = AtomFeedRuntimeException.class)
     public void shouldErrorOutForInvalidId() {
         feedGenerator.getFeedForId(0, null);
     }

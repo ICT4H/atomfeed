@@ -7,6 +7,7 @@ import org.ict4h.atomfeed.server.domain.EventFeed;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
 import org.ict4h.atomfeed.server.domain.chunking.number.NumberRange;
+import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 
 public class NumberFeedGenerator implements FeedGenerator {
@@ -45,11 +46,11 @@ public class NumberFeedGenerator implements FeedGenerator {
 
     private void validateFeedId(Integer feedId, String category) {
 		if ( (feedId == null) || (feedId <= 0)  ) {
-			throw new RuntimeException("feedId must not be null and must be greater than 0");
+			throw new AtomFeedRuntimeException("feedId must not be null and must be greater than 0");
 		}
 		int numberOfFeeds = numberChunkingHistory.getNumberOfFeeds(allEventRecords.getTotalCountForCategory(category));
 		if (feedId > numberOfFeeds) {
-			throw new RuntimeException("feed does not exist");
+			throw new AtomFeedRuntimeException("feed does not exist");
 		}
 	}
 }
