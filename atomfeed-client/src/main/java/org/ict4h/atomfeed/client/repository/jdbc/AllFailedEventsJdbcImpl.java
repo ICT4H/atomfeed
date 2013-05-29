@@ -117,6 +117,10 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
                 "update %s set failed_at = ?, error_message = ?, event_content = ? where feed_uri = ? and event_id = ?",
                 JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
 
+        // DB limit is 4000. reduce to ensure it doesn't cross that.
+        String errorMessage = failedEvent.getErrorMessage().length() > 4000
+                ? failedEvent.getErrorMessage().substring(0, 3999) : failedEvent.getErrorMessage();
+
         Connection connection;
         PreparedStatement statement = null;
         try {
