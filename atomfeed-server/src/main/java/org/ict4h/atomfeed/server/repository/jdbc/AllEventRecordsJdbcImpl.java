@@ -124,27 +124,6 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
     }
 
     @Override
-	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
-		Connection connection;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
-			connection = getDbConnection();
-			String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where id >= ? and id <= ?",
-                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
-			stmt = connection.prepareStatement(sql);
-			stmt.setInt(1, first); 
-			stmt.setInt(2, last);
-			ResultSet results = stmt.executeQuery();
-			return mapEventRecords(results);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			closeAll(stmt, rs);
-		}
-	}
-
-    @Override
     //TODO: Offset - Cannot be negative for initial feed with no entries. Fix this
     //TODO: Order By is required to ensure that the generated query plan is returns events in the same order all the time.
     public List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit) {
@@ -197,8 +176,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             statement = connection.prepareStatement(sql);
             statement.setTimestamp(1, timeRange.getStartTimestamp());
             statement.setTimestamp(2, timeRange.getEndTimestamp());
-            ResultSet results = statement.executeQuery();
-            return mapEventRecords(results);
+            return mapEventRecords(statement.executeQuery());
         }
         catch (SQLException ex){
             throw new RuntimeException(ex);

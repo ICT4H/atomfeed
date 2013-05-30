@@ -77,11 +77,12 @@ public class AllEventRecordsIT extends IntegrationTest {
     //relies on the rdbms serial id
     public void shouldGetEventsFromStartNumber() throws URISyntaxException {
         System.out.println("executing shouldGetEventsFromStartNumber");
-        addEvents(6, "uuid", "");
+        String category = "category";
+        addEvents(6, "uuid", category);
         EventRecord e2 = allEventRecords.get("uuid2");
         EventRecord e5 = allEventRecords.get("uuid5");
 
-        List<EventRecord> events = allEventRecords.getEventsFromRange(e2.getId(), e5.getId());
+        List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(category, 1, 4);
 
         assertEquals(4, events.size());
         assertEquals(e2.getUuid(), events.get(0).getUuid());

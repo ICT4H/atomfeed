@@ -1,7 +1,6 @@
 package org.ict4h.atomfeed.server.repository;
 
 import org.ict4h.atomfeed.server.domain.EventRecord;
-import org.ict4h.atomfeed.server.domain.EventRecordComparator;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.*;
@@ -29,17 +28,6 @@ public class AllEventRecordsStub implements AllEventRecords {
     }
 
     @Override
-	public List<EventRecord> getEventsFromRange(Integer first, Integer last) {
-          ArrayList<EventRecord> eventRecordList = new ArrayList<EventRecord>(eventRecords.values());
-          Collections.sort(eventRecordList, new EventRecordComparator());
-          int effectiveLast = Math.min(last, eventRecordList.size());
-          if(eventRecordList.isEmpty()){
-              return eventRecordList;
-          }
-          return eventRecordList.subList(first - 1, effectiveLast);
-	}
-
-    @Override
     public List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit) {
         Collection<EventRecord> values = eventRecords.values();
         if(values.isEmpty()){
@@ -61,15 +49,15 @@ public class AllEventRecordsStub implements AllEventRecords {
         return  filterEventsThatFallInsideTimeRange(timeRange,filterEventsBasedOnCategory(category,eventRecords.values()));
     }
 
-    private List<EventRecord> filterEventsThatFallInsideTimeRange(TimeRange timeRange, Collection<EventRecord> allRecords) {
-        List<EventRecord> records = new ArrayList<EventRecord>();
-        for (EventRecord record : allRecords) {
+    private List<EventRecord> filterEventsThatFallInsideTimeRange(TimeRange timeRange, Collection<EventRecord> records) {
+        List<EventRecord> filteredRecords = new ArrayList<EventRecord>();
+        for (EventRecord record : records) {
             if (timeRange.getStartTimestamp().before(record.getTimeStamp())
                 && timeRange.getEndTimestamp().after(record.getTimeStamp())) {
-                records.add(record);
+                filteredRecords.add(record);
             }
         }
-        return records;
+        return filteredRecords;
     }
 
     public void clear() {

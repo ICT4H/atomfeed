@@ -36,12 +36,12 @@ public interface AllEventRecords {
 
     /**
      * Fetches a {@code List} of {@code EventRecord} from the underlying data store that lie between an {@code Integer} range (inclusive), ordered by Identity.
-     * @param first an {@code Integer} that refers to the Identity of an {@code EventRecord}, which denotes to the first {@code EventRecord} to retrieve.
-     * @param last an {@code Integer} that refers to the Identity of an {@code EventRecord}, which denotes to the last {@code EventRecord} to retrieve.
+     * @param category an {@code String} that refers to the category that an {@code EventRecord} is associated with.
+     * @param offset an {@code Integer} that refers to the starting offset, exclusive, that refers to a starting point from where a {@code List} of {@code EventRecord} are retrieved.
+     * @param limit an {@code Integer} that refers to the size of the {@code List} of {@code EventRecord} to be retrieved.
      * @return {@code List} of {@code EventRecord}
      * @throws RuntimeException
      */
-	List<EventRecord> getEventsFromRange(Integer first, Integer last);
     List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit);
 
     /**
