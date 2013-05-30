@@ -1,6 +1,6 @@
 package org.ict4h.atomfeed.client;
 
-import org.ict4h.atomfeed.client.service.AtomFeedClient;
+import org.ict4h.atomfeed.client.service.FeedClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,10 @@ import org.springframework.util.Assert;
 public class ContextTestIT {
 
     @Autowired
-    private AtomFeedClient atomFeedClient;
+    private FeedClient feedClient;
 
     @Test
     public void shouldTestFeedGeneratorCreation(){
-        Assert.notNull(atomFeedClient);
+        Assert.notNull(feedClient);
     }
 }
