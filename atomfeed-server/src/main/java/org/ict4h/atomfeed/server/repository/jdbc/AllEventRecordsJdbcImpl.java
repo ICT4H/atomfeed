@@ -94,14 +94,25 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         ResultSet rs = null;
         try {
             connection = getDbConnection();
-            stmt = connection.prepareStatement(String.format("select count(*) from %s where category = %s",
-                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"), category));
+            stmt = buildCountStatement(category, connection);
             rs = stmt.executeQuery();
             return rs.next() ? rs.getInt(1) : 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
             closeAll(stmt, rs);
+        }
+    }
+
+    private PreparedStatement buildCountStatement(String category, Connection connection) throws SQLException {
+        String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
+        if(category == null){
+            return connection.prepareStatement(String.format("select count(*) from %s",tableName));
+        }
+        else{
+            PreparedStatement statement = connection.prepareStatement(String.format("select count(*) from %s where category = ?", tableName));
+            statement.setString(1,category);
+            return statement;
         }
     }
 

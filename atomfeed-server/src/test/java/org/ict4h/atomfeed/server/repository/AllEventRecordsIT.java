@@ -61,16 +61,29 @@ public class AllEventRecordsIT extends IntegrationTest {
     }
 
     @Test
-    public void shouldGetTotalCountOfEventRecords() throws URISyntaxException {
+    public void shouldGetTotalCountOfEventRecordsWithCategory() throws URISyntaxException {
         System.out.println("executing shouldGetTotalCountOfEventRecords");
         String category = "category";
         EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null, new Date(), category);
-        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null, new Date(), category);
+        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null, new Date(), "anotherCategory");
 
         allEventRecords.add(eventRecordAdded1);
         allEventRecords.add(eventRecordAdded2);
 
         int totalCount = allEventRecords.getTotalCountForCategory(category);
+        Assert.assertEquals(1, totalCount);
+    }
+
+    @Test
+    public void shouldGetTotalCountOfEventRecordsWithoutCategory() throws URISyntaxException {
+        System.out.println("executing shouldGetTotalCountOfEventRecords");
+        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null, new Date(), "someCategory");
+        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null, new Date(), "someOtherCategory");
+
+        allEventRecords.add(eventRecordAdded1);
+        allEventRecords.add(eventRecordAdded2);
+
+        int totalCount = allEventRecords.getTotalCountForCategory(null);
         Assert.assertEquals(2, totalCount);
     }
 
