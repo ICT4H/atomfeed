@@ -6,6 +6,7 @@ import org.ict4h.atomfeed.jdbc.JdbcResultSetMapper;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
+import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 
 import java.sql.Connection;
@@ -38,7 +39,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             stmt.setString(5, eventRecord.getCategory());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw new AtomFeedRuntimeException(e);
 		} finally {
 			closeAll(stmt, null);
 		}
@@ -65,7 +66,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 				return events.get(0);
 			}
 		} catch (SQLException e) {
-			throw new RuntimeException(e);
+			throw new AtomFeedRuntimeException(e);
 		} finally {
 			closeAll(stmt, rs);
 		}
@@ -98,7 +99,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             rs = stmt.executeQuery();
             return rs.next() ? rs.getInt(1) : 0;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AtomFeedRuntimeException(e);
         } finally {
             closeAll(stmt, rs);
         }
@@ -117,7 +118,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             ResultSet results = statement.executeQuery();
             return mapEventRecords(results);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AtomFeedRuntimeException(e);
         } finally {
             closeAll(statement, rs);
         }
@@ -135,7 +136,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             return mapEventRecords(statement.executeQuery());
         }
         catch (SQLException ex){
-            throw new RuntimeException(ex);
+            throw new AtomFeedRuntimeException(ex);
         }
         finally {
             closeAll(statement,resultSet);
