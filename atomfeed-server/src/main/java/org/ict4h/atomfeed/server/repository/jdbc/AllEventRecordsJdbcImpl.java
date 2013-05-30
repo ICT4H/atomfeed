@@ -104,18 +104,6 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         }
     }
 
-    private PreparedStatement buildCountStatement(String category, Connection connection) throws SQLException {
-        String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
-        if(category == null){
-            return connection.prepareStatement(String.format("select count(*) from %s",tableName));
-        }
-        else{
-            PreparedStatement statement = connection.prepareStatement(String.format("select count(*) from %s where category = ?", tableName));
-            statement.setString(1,category);
-            return statement;
-        }
-    }
-
     @Override
     //TODO: Offset - Cannot be negative for initial feed with no entries. Fix this
     //TODO: Order By is required to ensure that the generated query plan is returns events in the same order all the time.
@@ -135,27 +123,6 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         }
     }
 
-    private PreparedStatement buildSelectStatement(Connection connection, String category, Integer offset, Integer limit) throws SQLException {
-        if(category == null){
-            PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object from %s offset ? limit ?",
-                            JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records")));
-            statement.setInt(1,offset);
-            statement.setInt(2,limit);
-            return statement;
-        }
-        else
-        {
-            PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where category = ? offset ? limit ?",
-                            JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records")));
-            statement.setString(1,category);
-            statement.setInt(2, offset);
-            statement.setInt(3, limit);
-            return statement;
-        }
-    }
-
     @Override
     public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange, String category) {
         Connection connection;
@@ -164,11 +131,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         try
         {
             connection = getDbConnection();
-            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ?",
-                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
-            statement = connection.prepareStatement(sql);
-            statement.setTimestamp(1, timeRange.getStartTimestamp());
-            statement.setTimestamp(2, timeRange.getEndTimestamp());
+            statement = buildSelectStatement(connection,timeRange,category);
             return mapEventRecords(statement.executeQuery());
         }
         catch (SQLException ex){
@@ -179,7 +142,61 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         }
     }
 
-	private List<EventRecord> mapEventRecords(ResultSet results) {
+    private PreparedStatement buildSelectStatement(Connection connection, TimeRange timeRange, String category) throws SQLException {
+        String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
+        if(category == null){
+            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ?",
+                    tableName);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setTimestamp(1, timeRange.getStartTimestamp());
+            statement.setTimestamp(2, timeRange.getEndTimestamp());
+            return statement;
+        }
+        else{
+            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where category = ? AND timestamp BETWEEN ? AND ?",
+                    tableName);
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, category);
+            statement.setTimestamp(2, timeRange.getStartTimestamp());
+            statement.setTimestamp(3, timeRange.getEndTimestamp());
+            return statement;
+        }
+    }
+
+    private PreparedStatement buildCountStatement(String category, Connection connection) throws SQLException {
+        String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
+        if(category == null){
+            return connection.prepareStatement(String.format("select count(*) from %s",tableName));
+        }
+        else{
+            PreparedStatement statement = connection.prepareStatement(String.format("select count(*) from %s where category = ?", tableName));
+            statement.setString(1,category);
+            return statement;
+        }
+    }
+
+    private PreparedStatement buildSelectStatement(Connection connection, String category, Integer offset, Integer limit) throws SQLException {
+        String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
+        if(category == null){
+            PreparedStatement statement = connection.prepareStatement(
+                    String.format("select id, uuid, title, timestamp, uri, object from %s offset ? limit ?",tableName));
+            statement.setInt(1,offset);
+            statement.setInt(2,limit);
+            return statement;
+        }
+        else
+        {
+            PreparedStatement statement = connection.prepareStatement(
+                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where category = ? offset ? limit ?",
+                            tableName));
+            statement.setString(1,category);
+            statement.setInt(2, offset);
+            statement.setInt(3, limit);
+            return statement;
+        }
+    }
+
+    private List<EventRecord> mapEventRecords(ResultSet results) {
         return new JdbcResultSetMapper<EventRecord>().mapResultSetToObject(results, EventRecord.class);
 	}
 }

@@ -1,5 +1,8 @@
 package org.ict4h.atomfeed.server.repository;
 
+import ch.lambdaj.Lambda;
+import org.hamcrest.Matchers;
+import org.hamcrest.core.Is;
 import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
@@ -19,8 +22,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.Matchers.startsWith;
 
 
 public class AllEventRecordsIT extends IntegrationTest {
@@ -115,6 +122,21 @@ public class AllEventRecordsIT extends IntegrationTest {
         EventRecord lastEvent = events.get(5);
         assertEquals("Event1",firstEvent.getTitle());
         assertEquals("Event6",lastEvent.getTitle());
+    }
+
+    @Test
+    public void shouldFindEventsInTimeRangeThatBelongToACategory() throws URISyntaxException, InterruptedException {
+        Timestamp startTime = new Timestamp(new Date().getTime());
+        String firstCategory = "oneCategory";
+        addEvents(2,"uuid1", firstCategory);
+        addEvents(3,"uuid2","anotherCategory");
+        addEvents(5,"uuid3", firstCategory);
+        // Adding an extra millisecond below to account for the discrepancy that system time is stored
+        // in the DB in nanoseconds while new Date().getTime() only returns time till millisecond accuracy.
+        Timestamp endTime = new Timestamp(new Date().getTime() + 1);
+        List<EventRecord> events = allEventRecords.getEventsFromTimeRange(new TimeRange(startTime, endTime), firstCategory);
+        assertEquals(7,events.size());
+        Assert.assertTrue(filter(having(on(EventRecord.class).getUuid(), startsWith("uuid2")), events).isEmpty());
     }
 
     @Test
