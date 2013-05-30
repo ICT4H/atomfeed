@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class AllFailedEventsJdbcImplIT extends IntegrationTest{
 
@@ -66,6 +64,30 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
         failedEventDb = allFailedEvents.get(feedUri, event.getId());
 
         assertNull(failedEventDb);
+    }
+
+    @Test
+    public void shouldTrimErrorMessagesLongerThan4k() {
+        String feedUri = "http://feedUri";
+        StringBuffer sb = new StringBuffer();
+        for(int i = 0; i < 4500; i++) sb.append("*");
+        String errorMessage = sb.toString();
+        long failedAt = new Date().getTime();
+        Event event = new Event("eventId", "eventContent");
+        FailedEvent failedEvent = new FailedEvent(feedUri, event, errorMessage, failedAt);
+
+        allFailedEvents.put(failedEvent);
+        FailedEvent failedEventDb = allFailedEvents.get(feedUri, event.getId());
+
+        assertNotSame(errorMessage, failedEventDb.getErrorMessage());
+        assertEquals(4000, failedEventDb.getErrorMessage().length());
+
+        failedEvent.setErrorMessage(errorMessage);
+        allFailedEvents.put(failedEvent);
+        failedEventDb = allFailedEvents.get(feedUri, event.getId());
+
+        assertNotSame(errorMessage, failedEventDb.getErrorMessage());
+        assertEquals(4000, failedEventDb.getErrorMessage().length());
     }
 
     private void assertFailedEvent(FailedEvent expectedFailedEvent, FailedEvent actualFailedEvent) {

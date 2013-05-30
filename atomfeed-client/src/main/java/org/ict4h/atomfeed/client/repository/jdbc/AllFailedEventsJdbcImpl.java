@@ -15,7 +15,8 @@ import java.util.List;
 public class AllFailedEventsJdbcImpl implements AllFailedEvents {
 
     public static final String FAILED_EVENTS_TABLE = "failed_events";
-    
+    public static final int ERROR_MSG_MAX_LEN = 4000;
+
     private JdbcConnectionProvider connectionProvider;
 
     public AllFailedEventsJdbcImpl(JdbcConnectionProvider connectionProvider) {
@@ -94,6 +95,10 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
                 "insert into %s (feed_uri, failed_at, error_message, event_id, event_content) values (?, ?, ?, ?, ?)",
                 JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
 
+        // DB limit is 4000. reduce to ensure it doesn't cross that.
+        String errorMessage = failedEvent.getErrorMessage().length() > ERROR_MSG_MAX_LEN
+                ? failedEvent.getErrorMessage().substring(0, ERROR_MSG_MAX_LEN) : failedEvent.getErrorMessage();
+
         Connection connection;
         PreparedStatement statement = null;
         try {
@@ -101,7 +106,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement = connection.prepareStatement(sql);
             statement.setString(1, failedEvent.getFeedUri());
             statement.setTimestamp(2, new Timestamp(failedEvent.getFailedAt()));
-            statement.setString(3, failedEvent.getErrorMessage());
+            statement.setString(3, errorMessage);
             statement.setString(4, failedEvent.getEventId());
             statement.setString(5, failedEvent.getEvent().getContent());
             statement.executeUpdate();
@@ -118,8 +123,8 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
                 JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
 
         // DB limit is 4000. reduce to ensure it doesn't cross that.
-        String errorMessage = failedEvent.getErrorMessage().length() > 4000
-                ? failedEvent.getErrorMessage().substring(0, 3999) : failedEvent.getErrorMessage();
+        String errorMessage = failedEvent.getErrorMessage().length() > ERROR_MSG_MAX_LEN
+                ? failedEvent.getErrorMessage().substring(0, ERROR_MSG_MAX_LEN) : failedEvent.getErrorMessage();
 
         Connection connection;
         PreparedStatement statement = null;
@@ -127,7 +132,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             connection = connectionProvider.getConnection();
             statement = connection.prepareStatement(sql);
             statement.setTimestamp(1, new Timestamp(failedEvent.getFailedAt()));
-            statement.setString(2, failedEvent.getErrorMessage());
+            statement.setString(2, errorMessage);
             statement.setString(3, failedEvent.getEvent().getContent());
             statement.setString(4, failedEvent.getFeedUri());
             statement.setString(5, failedEvent.getEventId());
