@@ -185,7 +185,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
     }
 
     @Override
-    public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange) {
+    public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange, String category) {
         Connection connection;
         PreparedStatement statement = null;
         ResultSet resultSet = null;

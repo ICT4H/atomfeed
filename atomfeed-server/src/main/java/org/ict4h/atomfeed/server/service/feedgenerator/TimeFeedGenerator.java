@@ -21,12 +21,12 @@ public class TimeFeedGenerator implements FeedGenerator {
     @Override
     public EventFeed getFeedForId(Integer feedId, String category) {
         validateFeedId(feedId);
-        return feedFor(feedId);
+        return feedFor(feedId, category);
     }
 
     @Override
     public EventFeed getRecentFeed(String category) {
-        return feedFor(timeChunkingHistory.getWorkingFeedId());
+        return feedFor(timeChunkingHistory.getWorkingFeedId(),category);
     }
 
     private void validateFeedId(Integer feedId) {
@@ -36,9 +36,9 @@ public class TimeFeedGenerator implements FeedGenerator {
         }
     }
 
-    private EventFeed feedFor(Integer feedId) {
+    private EventFeed feedFor(Integer feedId, String category) {
         TimeRange timeRange = timeChunkingHistory.timeRangeFor(feedId);
-        List<EventRecord> eventRecords = allEventRecords.getEventsFromTimeRange(timeRange);
+        List<EventRecord> eventRecords = allEventRecords.getEventsFromTimeRange(timeRange,category);
         return new EventFeed(feedId,eventRecords);
     }
 

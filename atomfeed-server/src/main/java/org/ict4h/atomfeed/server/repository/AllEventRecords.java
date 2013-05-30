@@ -46,9 +46,11 @@ public interface AllEventRecords {
 
     /**
      * Fetches a {@code List} of {@code EventRecord} from the underlying data store that lie within a {@code TimeRange}.
+     *
      * @param timeRange a {@code TimeRange} that specifies the time range.
+     * @param category
      * @return {@code List} of {@code EventRecord}
      * @throws RuntimeException
      */
-    List<EventRecord> getEventsFromTimeRange(TimeRange timeRange);
+    List<EventRecord> getEventsFromTimeRange(TimeRange timeRange, String category);
 }

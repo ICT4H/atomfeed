@@ -1,6 +1,5 @@
 package org.ict4h.atomfeed.server.repository;
 
-import org.hamcrest.Matchers;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.EventRecordComparator;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
@@ -58,15 +57,19 @@ public class AllEventRecordsStub implements AllEventRecords {
     }
 
     @Override
-    public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange) {
-        ArrayList<EventRecord> recordsWithinTimeRange = new ArrayList<EventRecord>();
-        for (EventRecord record : eventRecords.values()) {
+    public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange, String category) {
+        return  filterEventsThatFallInsideTimeRange(timeRange,filterEventsBasedOnCategory(category,eventRecords.values()));
+    }
+
+    private List<EventRecord> filterEventsThatFallInsideTimeRange(TimeRange timeRange, Collection<EventRecord> allRecords) {
+        List<EventRecord> records = new ArrayList<EventRecord>();
+        for (EventRecord record : allRecords) {
             if (timeRange.getStartTimestamp().before(record.getTimeStamp())
-                    && timeRange.getEndTimestamp().after(record.getTimeStamp())) {
-                recordsWithinTimeRange.add(record);
+                && timeRange.getEndTimestamp().after(record.getTimeStamp())) {
+                records.add(record);
             }
         }
-        return recordsWithinTimeRange;
+        return records;
     }
 
     public void clear() {

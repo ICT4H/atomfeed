@@ -95,7 +95,7 @@ public class AllEventRecordsIT extends IntegrationTest {
         // Adding an extra millisecond below to account for the discrepancy that system time is stored
         // in the DB in nanoseconds while new Date().getTime() only returns time till millisecond accuracy.
         Timestamp endTime = new Timestamp(new Date().getTime() + 1);
-        List<EventRecord> events = allEventRecords.getEventsFromTimeRange(new TimeRange(startTime, endTime));
+        List<EventRecord> events = allEventRecords.getEventsFromTimeRange(new TimeRange(startTime, endTime), null);
         EventRecord firstEvent = events.get(0);
         EventRecord lastEvent = events.get(5);
         assertEquals("Event1",firstEvent.getTitle());
