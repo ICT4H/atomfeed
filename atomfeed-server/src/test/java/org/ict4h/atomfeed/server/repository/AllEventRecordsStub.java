@@ -18,10 +18,6 @@ public class AllEventRecordsStub implements AllEventRecords {
         return eventRecords.get(uuid);
     }
 
-    public int getTotalCount() {
-        return eventRecords.size();
-    }
-
     @Override
     public int getTotalCountForCategory(String category) {
         return filterEventsBasedOnCategory(category,eventRecords.values()).size();

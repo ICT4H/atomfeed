@@ -85,25 +85,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 			e.printStackTrace();
 		}
 	}
-	
 
-	@Override
-	public int getTotalCount() {
-		Connection connection;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
-			connection = getDbConnection();
-			stmt = connection.prepareStatement(String.format("select count(*) from %s",
-                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records")));
-			rs = stmt.executeQuery();
-			return rs.next() ? rs.getInt(1) : 0;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			closeAll(stmt, rs);
-		}
-	}
 
     @Override
     public int getTotalCountForCategory(String category) {
@@ -132,7 +114,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         ResultSet rs = null;
         try {
             connection = getDbConnection();
-            statement = buildStatement(connection,category,offset,limit);
+            statement = buildSelectStatement(connection, category, offset, limit);
             ResultSet results = statement.executeQuery();
             return mapEventRecords(results);
         } catch (SQLException e) {
@@ -142,7 +124,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         }
     }
 
-    private PreparedStatement buildStatement(Connection connection,String category, Integer offset, Integer limit) throws SQLException {
+    private PreparedStatement buildSelectStatement(Connection connection, String category, Integer offset, Integer limit) throws SQLException {
         if(category == null){
             PreparedStatement statement = connection.prepareStatement(
                     String.format("select id, uuid, title, timestamp, uri, object from %s offset ? limit ?",

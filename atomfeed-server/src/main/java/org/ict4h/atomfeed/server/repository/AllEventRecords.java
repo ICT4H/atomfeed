@@ -28,16 +28,16 @@ public interface AllEventRecords {
 	EventRecord get(String uuid);
 
     /**
-     * Retrieves the total count of {@code EventRecord} entities present in the underlying data store.
+     * Retrieves the total count of {@code EventRecord} entities present in the underlying data store that are associated with {@code String} category.
+     * @param category an {@code String} that refers to the category that a {@code EventRecord} is associated with.
      * @return An {@code Integer} count of the total number of {@code EventRecord} entities present.
      */
-	int getTotalCount();
     int getTotalCountForCategory(String category);
 
     /**
-     * Fetches a {@code List} of {@code EventRecord} from the underlying data store that lie between an {@code Integer} range (inclusive), ordered by Identity.
+     * Fetches a {@code List} of {@code EventRecord} from the underlying data store with size specified by {@code Integer} limit and starting point specified by {@code Integer} offset (exclusive), ordered by Identity.
      * @param category an {@code String} that refers to the category that an {@code EventRecord} is associated with.
-     * @param offset an {@code Integer} that refers to the starting offset, exclusive, that refers to a starting point from where a {@code List} of {@code EventRecord} are retrieved.
+     * @param offset an {@code Integer} that refers to the starting offset, exclusive.
      * @param limit an {@code Integer} that refers to the size of the {@code List} of {@code EventRecord} to be retrieved.
      * @return {@code List} of {@code EventRecord}
      * @throws RuntimeException

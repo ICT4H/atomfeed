@@ -63,13 +63,14 @@ public class AllEventRecordsIT extends IntegrationTest {
     @Test
     public void shouldGetTotalCountOfEventRecords() throws URISyntaxException {
         System.out.println("executing shouldGetTotalCountOfEventRecords");
-        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null, new Date(), "");
-        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null, new Date(), "");
+        String category = "category";
+        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null, new Date(), category);
+        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null, new Date(), category);
 
         allEventRecords.add(eventRecordAdded1);
         allEventRecords.add(eventRecordAdded2);
 
-        int totalCount = allEventRecords.getTotalCount();
+        int totalCount = allEventRecords.getTotalCountForCategory(category);
         Assert.assertEquals(2, totalCount);
     }
 
