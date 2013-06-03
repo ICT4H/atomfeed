@@ -146,7 +146,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
     private PreparedStatement buildSelectStatement(Connection connection, TimeRange timeRange, String category) throws SQLException {
         String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
         if(category == null){
-            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ?",
+            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ? order by timestamp asc",
                     tableName);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setTimestamp(1, timeRange.getStartTimestamp());
@@ -154,7 +154,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             return statement;
         }
         else{
-            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where category = ? AND timestamp BETWEEN ? AND ?",
+            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where category = ? AND timestamp BETWEEN ? AND ? order by timestamp asc",
                     tableName);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, category);
@@ -180,7 +180,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
         if(category == null){
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object from %s offset ? limit ?",tableName));
+                    String.format("select id, uuid, title, timestamp, uri, object from %s order by id asc offset ? limit ? ",tableName));
             statement.setInt(1,offset);
             statement.setInt(2,limit);
             return statement;
@@ -188,7 +188,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         else
         {
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where category = ? offset ? limit ?",
+                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where category = ? order by id asc offset ? limit ? ",
                             tableName));
             statement.setString(1,category);
             statement.setInt(2, offset);
