@@ -1,9 +1,6 @@
 package org.ict4h.atomfeed.client.service;
 
-import java.net.URI;
-import java.util.Date;
-import java.util.List;
-
+import com.sun.syndication.feed.atom.Entry;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
@@ -12,9 +9,11 @@ import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.AllMarkers;
-
-import com.sun.syndication.feed.atom.Entry;
 import org.ict4h.atomfeed.client.util.Util;
+
+import java.net.URI;
+import java.util.Date;
+import java.util.List;
 
 public class AtomFeedClient implements FeedClient {
     private static final String ATOM_MEDIA_TYPE = "application/atom+xml";
@@ -27,12 +26,19 @@ public class AtomFeedClient implements FeedClient {
     private AllFeeds allFeeds;
     private AllMarkers allMarkers;
     private AllFailedEvents allFailedEvents;
+    private boolean updateMarker;
 
     public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents) {
+        this(allFeeds,allMarkers,allFailedEvents,true);
+    }
+
+    public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents, boolean updateAtomFeedMarkerFlag) {
         this.allFeeds = allFeeds;
         this.allMarkers = allMarkers;
         this.allFailedEvents = allFailedEvents;
+        this.updateMarker = updateAtomFeedMarkerFlag;
     }
+
 
     @Override
     public void processEvents(URI feedUri, EventWorker eventWorker) {
@@ -52,7 +58,7 @@ public class AtomFeedClient implements FeedClient {
                 throw new AtomFeedClientException("Too many failed events have failed while processing. Cannot continue.");
 
             try {
-                event = new Event(entry);
+                event = new Event(entry, getEntryFeedUri(feedEnumerator));
                 logger.debug("Processing event : " + event);
 
                 eventWorker.process(event);
@@ -62,8 +68,13 @@ public class AtomFeedClient implements FeedClient {
 
             // Existing bug: If the call below starts failing and the call above passes, we shall
             // be in an inconsistent state.
-            allMarkers.put(feedUri, entry.getId(), Util.getSelfLink(feedEnumerator.getCurrentFeed()));
+            if(updateMarker)
+                allMarkers.put(feedUri, entry.getId(), Util.getSelfLink(feedEnumerator.getCurrentFeed()));
         }
+    }
+
+    private String getEntryFeedUri(FeedEnumerator feedEnumerator) {
+        return Util.getSelfLink(feedEnumerator.getCurrentFeed()).toString();
     }
 
     @Override

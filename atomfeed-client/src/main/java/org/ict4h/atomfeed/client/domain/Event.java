@@ -7,8 +7,9 @@ public class Event {
 
     private String id;
     private String content;
+    private String feedUri;
 
-	public Event(Entry entry) {
+    public Event(Entry entry) {
         this.id = entry.getId();
 		this.content = extractContent(entry);
 	}
@@ -16,6 +17,11 @@ public class Event {
     public Event(String id, String content) {
         this.id = id;
         this.content = content;
+    }
+
+    public Event(Entry entry ,String feedUri) {
+        this(entry);
+        this.feedUri = feedUri;
     }
 
     /**
@@ -47,5 +53,9 @@ public class Event {
                 "id='" + id + '\'' +
                 ", content='" + content + '\'' +
                 '}';
+    }
+
+    public String getFeedUri() {
+        return feedUri;
     }
 }

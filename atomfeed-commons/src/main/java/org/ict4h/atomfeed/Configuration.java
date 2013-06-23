@@ -1,5 +1,8 @@
 package org.ict4h.atomfeed;
 
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ResourceBundle;
 
 public class Configuration {
@@ -41,5 +44,11 @@ public class Configuration {
 
     public String getSchema() {
         return resourceBundle.getString("atomdb.default_schema");
+    }
+
+    public boolean getUpdateAtomFeedMarkerFlag() {
+        if(StringUtils.isBlank(resourceBundle.getString("update.atomfeed.marker")))
+            return true;
+        return Boolean.parseBoolean(resourceBundle.getString("update.atomfeed.marker"));
     }
 }

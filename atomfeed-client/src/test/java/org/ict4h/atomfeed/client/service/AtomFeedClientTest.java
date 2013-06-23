@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
+import org.mockito.Mockito;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 public class AtomFeedClientTest {
@@ -56,7 +56,7 @@ public class AtomFeedClientTest {
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
             @Override
             public boolean matches(Object o) {
-                return ((Event) o).getId().equals(entry1.getId());
+                return ((Event) o).getId().equals(entry1.getId()) && ((Event) o).getFeedUri().equals(feedLink);
             }
         }));
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
@@ -68,6 +68,32 @@ public class AtomFeedClientTest {
         }));
         verify(allMarkersMock).put(feedUri, entry2.getId(), new URI(feedLink));
     }
+
+    @Test
+    public void shouldProcessEventsAndNotUpdateMarkerIfFlagIsFalse() throws URISyntaxException {
+        Feed feed = setupFeed();
+        when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
+        when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
+
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents,false);
+        feedClient.processEvents(feedUri, eventWorker);
+
+        verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((Event) o).getId().equals(entry1.getId());
+            }
+        }));
+        verify(allMarkersMock,Mockito.never()).put(feedUri, entry1.getId(), new URI(feedLink));
+        verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
+            @Override
+            public boolean matches(Object o) {
+                return ((Event) o).getId().equals(entry2.getId());
+            }
+        }));
+        verify(allMarkersMock, Mockito.never()).put(feedUri, entry2.getId(), new URI(feedLink));
+    }
+
 
     @Test(expected = AtomFeedClientException.class)
     public void shouldNotProcessEventsIfThereAreTooManyFailedEvents() {
