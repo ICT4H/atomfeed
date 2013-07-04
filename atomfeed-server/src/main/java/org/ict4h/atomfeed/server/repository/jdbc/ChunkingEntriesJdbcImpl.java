@@ -5,6 +5,7 @@ import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.jdbc.JdbcResultSetMapper;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.ict4h.atomfeed.server.domain.chunking.ChunkingHistoryEntry;
+import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
 
 import java.sql.Connection;
@@ -49,8 +50,7 @@ public class ChunkingEntriesJdbcImpl implements ChunkingEntries {
 				stmt.close();
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new AtomFeedRuntimeException(e);
 		}
 	}
 

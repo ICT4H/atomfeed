@@ -1,5 +1,7 @@
 package org.ict4h.atomfeed.client.repository.datasource;
 
+import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -22,7 +24,7 @@ public class WebClient {
                 stringBuilder.append(line + '\n');
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new AtomFeedClientException(e);
         } finally {
             if (connection != null) {
                 connection.disconnect();

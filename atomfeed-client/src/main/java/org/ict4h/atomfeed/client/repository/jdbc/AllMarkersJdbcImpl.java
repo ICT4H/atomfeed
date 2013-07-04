@@ -2,17 +2,16 @@ package org.ict4h.atomfeed.client.repository.jdbc;
 
 import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.client.domain.Marker;
+import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllMarkers;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
-import org.ict4h.atomfeed.jdbc.JdbcResultSetMapper;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.persistence.Column;
-import java.lang.reflect.Field;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,8 +123,7 @@ public class AllMarkersJdbcImpl implements AllMarkers {
                 stmt.close();
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new AtomFeedClientException(e);
         }
     }
 

@@ -17,75 +17,74 @@ import java.util.List;
 
 public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
-	private JdbcConnectionProvider provider;
+    private JdbcConnectionProvider provider;
 
-	public AllEventRecordsJdbcImpl(JdbcConnectionProvider provider) {
-		this.provider = provider;
-	}
-	
-	@Override
-	public void add(EventRecord eventRecord) {
-		Connection connection;
-		PreparedStatement stmt = null;
-		try {
-			connection = getDbConnection();
-			String insertSql = String.format("insert into %s (uuid, title, uri, object,category) values (?, ?, ?, ?,?)",
+    public AllEventRecordsJdbcImpl(JdbcConnectionProvider provider) {
+        this.provider = provider;
+    }
+
+    @Override
+    public void add(EventRecord eventRecord) {
+        Connection connection;
+        PreparedStatement stmt = null;
+        try {
+            connection = getDbConnection();
+            String insertSql = String.format("insert into %s (uuid, title, uri, object,category) values (?, ?, ?, ?,?)",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
-			stmt = connection.prepareStatement(insertSql);
-			stmt.setString(1, eventRecord.getUuid());
-			stmt.setString(2, eventRecord.getTitle());
-			stmt.setString(3, eventRecord.getUri());
-			stmt.setString(4, eventRecord.getContents());
+            stmt = connection.prepareStatement(insertSql);
+            stmt.setString(1, eventRecord.getUuid());
+            stmt.setString(2, eventRecord.getTitle());
+            stmt.setString(3, eventRecord.getUri());
+            stmt.setString(4, eventRecord.getContents());
             stmt.setString(5, eventRecord.getCategory());
-			stmt.executeUpdate();
-		} catch (SQLException e) {
-			throw new AtomFeedRuntimeException(e);
-		} finally {
-			closeAll(stmt, null);
-		}
-	}
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new AtomFeedRuntimeException(e);
+        } finally {
+            closeAll(stmt, null);
+        }
+    }
 
-	private Connection getDbConnection() throws SQLException {
+    private Connection getDbConnection() throws SQLException {
         return provider.getConnection();
-	}
+    }
 
-	@Override
-	public EventRecord get(String uuid) {
-		Connection connection;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
-			connection = getDbConnection();
-			String sql = String.format("select id, uuid, title, timestamp, uri, object, category from %s where uuid = ?",
+    @Override
+    public EventRecord get(String uuid) {
+        Connection connection;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            connection = getDbConnection();
+            String sql = String.format("select id, uuid, title, timestamp, uri, object, category from %s where uuid = ?",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
-			stmt = connection.prepareStatement(sql);
-			stmt.setString(1, uuid);
-			rs = stmt.executeQuery();
-			List<EventRecord> events = mapEventRecords(rs);
-			if ((events != null) && !events.isEmpty()) {
-				return events.get(0);
-			}
-		} catch (SQLException e) {
-			throw new AtomFeedRuntimeException(e);
-		} finally {
-			closeAll(stmt, rs);
-		}
-		return null;
-	}
-	
-	private void closeAll(PreparedStatement stmt, ResultSet rs) {
-		try {
-			if (rs != null) {
-					rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+            stmt = connection.prepareStatement(sql);
+            stmt.setString(1, uuid);
+            rs = stmt.executeQuery();
+            List<EventRecord> events = mapEventRecords(rs);
+            if ((events != null) && !events.isEmpty()) {
+                return events.get(0);
+            }
+        } catch (SQLException e) {
+            throw new AtomFeedRuntimeException(e);
+        } finally {
+            closeAll(stmt, rs);
+        }
+        return null;
+    }
+
+    private void closeAll(PreparedStatement stmt, ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (SQLException e) {
+            throw new AtomFeedRuntimeException(e);
+        }
+    }
 
 
     @Override
@@ -129,31 +128,27 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         Connection connection;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try
-        {
+        try {
             connection = getDbConnection();
-            statement = buildSelectStatement(connection,timeRange,category);
+            statement = buildSelectStatement(connection, timeRange, category);
             return mapEventRecords(statement.executeQuery());
-        }
-        catch (SQLException ex){
+        } catch (SQLException ex) {
             throw new AtomFeedRuntimeException(ex);
-        }
-        finally {
-            closeAll(statement,resultSet);
+        } finally {
+            closeAll(statement, resultSet);
         }
     }
 
     private PreparedStatement buildSelectStatement(Connection connection, TimeRange timeRange, String category) throws SQLException {
         String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
-        if(category == null){
+        if (category == null) {
             String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ? order by timestamp asc",
                     tableName);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setTimestamp(1, timeRange.getStartTimestamp());
             statement.setTimestamp(2, timeRange.getEndTimestamp());
             return statement;
-        }
-        else{
+        } else {
             String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where category = ? AND timestamp BETWEEN ? AND ? order by timestamp asc",
                     tableName);
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -166,38 +161,36 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
     private PreparedStatement buildCountStatement(String category, Connection connection) throws SQLException {
         String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
-        if(category == null){
-            return connection.prepareStatement(String.format("select count(*) from %s",tableName));
-        }
-        else{
+        if (category == null) {
+            return connection.prepareStatement(String.format("select count(*) from %s", tableName));
+        } else {
             PreparedStatement statement = connection.prepareStatement(String.format("select count(*) from %s where category = ?", tableName));
-            statement.setString(1,category);
+            statement.setString(1, category);
             return statement;
         }
     }
 
     private PreparedStatement buildSelectStatement(Connection connection, String category, Integer offset, Integer limit) throws SQLException {
-        String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
-        if(category == null){
+        String schema = Configuration.getInstance().getSchema();
+        String tableName = JdbcUtils.getTableName(schema, "event_records");
+        if (category == null) {
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object from %s order by id asc offset ? limit ? ",tableName));
-            statement.setInt(1,offset);
-            statement.setInt(2,limit);
-            return statement;
-        }
-        else
-        {
-            PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where category = ? order by id asc offset ? limit ? ",
-                            tableName));
-            statement.setString(1,category);
+                    String.format("select id, uuid, title, timestamp, uri, object from %s order by id asc limit ? offset ?", tableName));
+            statement.setInt(1, limit);
             statement.setInt(2, offset);
-            statement.setInt(3, limit);
+            return statement;
+        } else {
+            PreparedStatement statement = connection.prepareStatement(
+                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where category = ? order by id asc limit ? offset ?",
+                            tableName));
+            statement.setString(1, category);
+            statement.setInt(2, limit);
+            statement.setInt(3, offset);
             return statement;
         }
     }
 
     private List<EventRecord> mapEventRecords(ResultSet results) {
         return new JdbcResultSetMapper<EventRecord>().mapResultSetToObject(results, EventRecord.class);
-	}
+    }
 }

@@ -3,6 +3,7 @@ package org.ict4h.atomfeed.client.repository.jdbc;
 import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
+import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
@@ -59,7 +60,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new AtomFeedClientException(e);
         }
     }
 

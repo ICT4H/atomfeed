@@ -3,6 +3,7 @@ package org.ict4h.atomfeed.client.util;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
+import org.ict4h.atomfeed.jdbc.JdbcUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -39,7 +40,7 @@ public class Util {
 
 
     public static String getExceptionString(Exception e) {
-        StringBuffer sb = null;
+        StringBuffer sb;
         try {
             sb = new StringBuffer();
             if (e.getMessage() != null) sb.append(e.getMessage());
@@ -51,14 +52,16 @@ public class Util {
                 ps = new PrintStream(stream);
                 e.printStackTrace(ps);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                throw new AtomFeedClientException(ex);
             } finally {
-                try { ps.close(); } catch(Exception e1) {}
+                try {
+                    ps.close();
+                } catch(Exception e1) {}
             }
 
             sb.append(stream.toString());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new AtomFeedClientException(ex);
         }
         return sb.toString();
     }

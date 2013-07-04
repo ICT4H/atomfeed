@@ -59,7 +59,7 @@ public class EventRecord {
         this.uuid = uuid;
         this.title = title;
         this.category = category;
-        this.uri = uri.toString();
+        this.uri = uri == null ? null : uri.toString();
         this.serializedContents = serializedContents;
         //note: this is not the date used. the date will be assigned by database
         this.timeStamp = timeStamp;
