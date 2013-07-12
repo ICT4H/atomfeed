@@ -8,7 +8,7 @@ import org.ict4h.atomfeed.client.repository.datasource.WebClient;
 import org.ict4h.atomfeed.client.service.AtomFeedClient;
 
 public class AtomClientFactory {
-    public AtomFeedClient create(AllMarkers allMarkers, AllFailedEvents allFailedEvents){
-        return new AtomFeedClient(new AllFeeds(new WebClient()), allMarkers, allFailedEvents,Configuration.getInstance().getUpdateAtomFeedMarkerFlag());
+    public AtomFeedClient create(AllMarkers allMarkers, AllFailedEvents allFailedEvents) {
+        return new AtomFeedClient(new AllFeeds(new WebClient()), allMarkers, allFailedEvents, Configuration.getInstance().getUpdateAtomFeedMarkerFlag());
     }
 }

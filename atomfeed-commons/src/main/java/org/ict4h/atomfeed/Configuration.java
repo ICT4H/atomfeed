@@ -1,28 +1,43 @@
 package org.ict4h.atomfeed;
 
-
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ResourceBundle;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class Configuration {
+    private static final String DEFAULT_PROPERTY_FILENAME = "atomfeed.properties";
 
-    public static final String DEFAULT_PROPERTY_FILENAME = "atomfeed";
-
-    private static Object lockObject = new Object();
+    private static final Object lockObject = new Object();
 
     private static Configuration instance;
+    private Properties properties;
 
-    private ResourceBundle resourceBundle;
-
-    private Configuration(String propertyFilename) {
-        this.resourceBundle = ResourceBundle.getBundle(propertyFilename);
+    private void init(String propertyFilename) throws IOException {
+        InputStream propertiesFileStream = null;
+        try {
+            propertiesFileStream = getClass().getClassLoader().getResourceAsStream(propertyFilename);
+            this.properties = new Properties();
+            properties.load(propertiesFileStream);
+        } finally {
+            if (propertiesFileStream != null) propertiesFileStream.close();
+        }
     }
 
     public static Configuration getInstance(String propertyFilename) {
-        synchronized (lockObject) {
-            if (instance == null) instance = new Configuration(propertyFilename);
+        try {
+            if (instance == null) {
+                synchronized (lockObject) {
+                    if (instance == null) {
+                        instance = new Configuration();
+                        instance.init(propertyFilename);
+                    }
+                }
+            }
             return instance;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -31,24 +46,24 @@ public class Configuration {
     }
 
     public String getJdbcUrl() {
-        return resourceBundle.getString("jdbc.url");
+        return properties.getProperty("jdbc.url");
     }
 
     public String getJdbcUsername() {
-        return resourceBundle.getString("jdbc.username");
+        return properties.getProperty("jdbc.username");
     }
 
     public String getJdbcPassword() {
-        return resourceBundle.getString("jdbc.password");
+        return properties.getProperty("jdbc.password");
     }
 
     public String getSchema() {
-        return resourceBundle.getString("atomdb.default_schema");
+        return properties.getProperty("atomdb.default_schema");
     }
 
     public boolean getUpdateAtomFeedMarkerFlag() {
-        if(StringUtils.isBlank(resourceBundle.getString("update.atomfeed.marker")))
+        if (StringUtils.isBlank(properties.getProperty("update.atomfeed.marker")))
             return true;
-        return Boolean.parseBoolean(resourceBundle.getString("update.atomfeed.marker"));
+        return Boolean.parseBoolean(properties.getProperty("update.atomfeed.marker"));
     }
 }

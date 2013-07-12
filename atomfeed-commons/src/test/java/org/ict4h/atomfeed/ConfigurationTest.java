@@ -5,7 +5,6 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class ConfigurationTest {
-
     @Test
     public void testGetInstance() throws Exception {
         Configuration configuration1 = Configuration.getInstance();
@@ -23,5 +22,4 @@ public class ConfigurationTest {
         assertEquals("admin", configuration.getJdbcPassword());
         assertEquals("atomfeed", configuration.getSchema());
     }
-
 }

@@ -16,8 +16,6 @@ import java.util.Date;
 import java.util.List;
 
 public class AtomFeedClient implements FeedClient {
-    private static final String ATOM_MEDIA_TYPE = "application/atom+xml";
-
     private static final int MAX_FAILED_EVENTS = 10;
     private static final int FAILED_EVENTS_PROCESS_BATCH_SIZE = 5;
 
@@ -38,7 +36,6 @@ public class AtomFeedClient implements FeedClient {
         this.allFailedEvents = allFailedEvents;
         this.updateMarker = updateAtomFeedMarkerFlag;
     }
-
 
     @Override
     public void processEvents(URI feedUri, EventWorker eventWorker) {
