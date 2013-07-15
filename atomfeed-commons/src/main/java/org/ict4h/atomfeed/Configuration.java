@@ -62,8 +62,7 @@ public class Configuration {
     }
 
     public boolean getUpdateAtomFeedMarkerFlag() {
-        if (StringUtils.isBlank(properties.getProperty("update.atomfeed.marker")))
-            return true;
-        return Boolean.parseBoolean(properties.getProperty("update.atomfeed.marker"));
+        String configuredUpdateMarkerValue = properties.getProperty("update.atomfeed.marker");
+        return StringUtils.isBlank(configuredUpdateMarkerValue) || Boolean.parseBoolean(configuredUpdateMarkerValue);
     }
 }

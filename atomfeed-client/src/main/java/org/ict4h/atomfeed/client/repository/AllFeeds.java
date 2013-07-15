@@ -13,8 +13,8 @@ public class AllFeeds {
     private WebClient webClient;
     private static Logger logger = Logger.getLogger(AllFeeds.class);
 
-    public AllFeeds(WebClient webClient) {
-        this.webClient = webClient;
+    public AllFeeds() {
+        this.webClient = new WebClient();
     }
 
     public Feed getFor(URI uri) {
