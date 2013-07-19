@@ -62,6 +62,7 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .entries(getEntries(feedForId.getEvents()))
                 .updated(newestEventDate(feedForId.getEvents()))
                 .link(getLink(requestUri.toString(), LINK_TYPE_SELF, ATOM_MEDIA_TYPE))
+                .link(getLink(requestUri.toString(), LINK_TYPE_VIA, ATOM_MEDIA_TYPE))
                 .links(generatePagingLinks(requestUri, feedForId, category))
                 .build();
     }

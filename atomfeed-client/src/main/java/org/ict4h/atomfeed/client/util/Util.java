@@ -3,7 +3,6 @@ package org.ict4h.atomfeed.client.util;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
-import org.ict4h.atomfeed.jdbc.JdbcUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -13,7 +12,7 @@ import java.net.URISyntaxException;
 public class Util {
 
     public static URI getSelfLink(Feed feed) {
-        return getArchiveLink(feed,"self");
+        return getArchiveLink(feed,"via");
     }
 
     public static URI getPreviousLink(Feed feed) {
