@@ -174,7 +174,7 @@ public class AtomFeedClientTest {
         ArrayList mutableEntries = new ArrayList();
         mutableEntries.addAll(Arrays.asList(entries));
         Feed feed = new Feed();
-        feed.setOtherLinks(Arrays.asList(new Link[]{getLink("self", feedLink)}));
+        feed.setOtherLinks(Arrays.asList(new Link[]{getLink("self", feedLink),getLink("via", feedLink)}));
         feed.setEntries(mutableEntries);
         return feed;
     }

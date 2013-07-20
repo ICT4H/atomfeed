@@ -12,6 +12,10 @@ import java.net.URISyntaxException;
 public class Util {
 
     public static URI getSelfLink(Feed feed) {
+        return getArchiveLink(feed,"self");
+    }
+
+    public static URI getViaLink(Feed feed) {
         return getArchiveLink(feed,"via");
     }
 

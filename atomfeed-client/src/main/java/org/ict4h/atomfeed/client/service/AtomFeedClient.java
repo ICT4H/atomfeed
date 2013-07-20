@@ -66,7 +66,7 @@ public class AtomFeedClient implements FeedClient {
             // Existing bug: If the call below starts failing and the call above passes, we shall
             // be in an inconsistent state.
             if(updateMarker)
-                allMarkers.put(feedUri, entry.getId(), Util.getSelfLink(feedEnumerator.getCurrentFeed()));
+                allMarkers.put(feedUri, entry.getId(), Util.getViaLink(feedEnumerator.getCurrentFeed()));
         }
     }
 
