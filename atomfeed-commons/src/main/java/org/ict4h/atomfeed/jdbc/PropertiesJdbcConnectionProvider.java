@@ -5,7 +5,6 @@ import org.ict4h.atomfeed.Configuration;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
 
 
 public class PropertiesJdbcConnectionProvider implements JdbcConnectionProvider {

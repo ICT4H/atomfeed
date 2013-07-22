@@ -13,6 +13,8 @@ import org.ict4h.atomfeed.client.util.Util;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class AtomFeedClient implements FeedClient {
     private boolean updateMarker;
 
     public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents, URI feedUri, EventWorker eventWorker) {
-        this(allFeeds,allMarkers,allFailedEvents, true, null, feedUri, eventWorker);
+        this(allFeeds, allMarkers, allFailedEvents, true, null, feedUri, eventWorker);
     }
 
     public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents,
@@ -51,32 +53,50 @@ public class AtomFeedClient implements FeedClient {
     public void processEvents() {
         logger.info("Processing events for feed URI : " + feedUri + " using event worker : " + eventWorker.getClass());
 
-        if (shouldNotProcessEvents(feedUri))
-            throw new AtomFeedClientException("Cannot start process events. Too many failed events.");
+        Connection connection = null;
+        try {
+            connection = jdbcConnectionProvider.getConnection();
+            connection.setAutoCommit(false);
 
-        Marker marker = allMarkers.get(feedUri);
-        if(marker == null) marker = new Marker(feedUri, null, null);
-
-        FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, marker);
-
-        Event event = null;
-        for (Entry entry : feedEnumerator) {
             if (shouldNotProcessEvents(feedUri))
-                throw new AtomFeedClientException("Too many failed events have failed while processing. Cannot continue.");
+                throw new AtomFeedClientException("Cannot start process events. Too many failed events.");
 
-            try {
-                event = new Event(entry, getEntryFeedUri(feedEnumerator));
-                logger.debug("Processing event : " + event);
+            Marker marker = allMarkers.get(feedUri);
+            if (marker == null) marker = new Marker(feedUri, null, null);
 
-                eventWorker.process(event);
-            } catch (Exception e) {
-                handleFailedEvent(event, feedUri, e);
+            FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, marker);
+
+            Event event = null;
+            for (Entry entry : feedEnumerator) {
+                try {
+                    if (shouldNotProcessEvents(feedUri))
+                        throw new AtomFeedClientException("Too many failed events have failed while processing. Cannot continue.");
+
+                    try {
+                        event = new Event(entry, getEntryFeedUri(feedEnumerator));
+                        logger.debug("Processing event : " + event);
+
+                        eventWorker.process(event);
+                    } catch (Exception e) {
+                        handleFailedEvent(event, feedUri, e);
+                    }
+
+                    // Existing bug: If the call below starts failing and the call above passes, we shall
+                    // be in an inconsistent state.
+                    if (updateMarker)
+                        allMarkers.put(feedUri, entry.getId(), Util.getViaLink(feedEnumerator.getCurrentFeed()));
+                } finally {
+                    connection.commit();
+                }
             }
-
-            // Existing bug: If the call below starts failing and the call above passes, we shall
-            // be in an inconsistent state.
-            if(updateMarker)
-                allMarkers.put(feedUri, entry.getId(), Util.getViaLink(feedEnumerator.getCurrentFeed()));
+        } catch(Exception e) {
+            throw new AtomFeedClientException(e);
+        } finally {
+            try {
+                if (connection != null && !connection.isClosed()) connection.close();
+            } catch (SQLException e1) {
+                throw new AtomFeedClientException(e1);
+            }
         }
     }
 

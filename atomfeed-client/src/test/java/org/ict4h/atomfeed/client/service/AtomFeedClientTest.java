@@ -9,6 +9,7 @@ import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.AllMarkers;
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -17,6 +18,8 @@ import org.mockito.Mockito;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,12 +48,16 @@ public class AtomFeedClientTest {
     }
 
     @Test
-    public void shouldProcessEventsWithoutFailures() throws URISyntaxException {
-        Feed feed = setupFeed();
+    public void shouldProcessEventsWithoutFailures() throws URISyntaxException, SQLException {
+        Feed feed = setupFeedWithTwoEvents();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
+        JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
+        Connection mockConnection = mock(Connection.class);
+        when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
+
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
@@ -70,12 +77,33 @@ public class AtomFeedClientTest {
     }
 
     @Test
-    public void shouldProcessEventsAndNotUpdateMarkerIfFlagIsFalse() throws URISyntaxException {
-        Feed feed = setupFeed();
+    public void setAutoCommitToFalseBeforeProcessingTheFeedAndCommitOnCompletion() throws SQLException {
+        Feed feed = setupFeedWithTwoEvents();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, false, null, feedUri, eventWorker);
+        JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
+        Connection mockConnection = mock(Connection.class);
+        when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
+
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
+        feedClient.processEvents();
+
+        verify(mockConnection).setAutoCommit(false);
+        verify(mockConnection, times(2)).commit();
+    }
+
+    @Test
+    public void shouldProcessEventsAndNotUpdateMarkerIfFlagIsFalse() throws URISyntaxException, SQLException {
+        Feed feed = setupFeedWithTwoEvents();
+        when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
+        when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
+
+        JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
+        Connection mockConnection = mock(Connection.class);
+        when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
+
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, false, mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
@@ -104,13 +132,17 @@ public class AtomFeedClientTest {
     }
 
     @Test
-    public void shouldHandleFailedEventInCaseProcessingFailsForAnEvent() throws URISyntaxException {
-        Feed feed = setupFeed();
+    public void shouldHandleFailedEventInCaseProcessingFailsForAnEvent() throws URISyntaxException, SQLException {
+        Feed feed = setupFeedWithTwoEvents();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
         doThrow(Exception.class).when(eventWorker).process(any(Event.class));
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
+        JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
+        Connection mockConnection = mock(Connection.class);
+        when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
+
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         ArgumentCaptor<FailedEvent> captor = ArgumentCaptor.forClass(FailedEvent.class);
@@ -121,14 +153,21 @@ public class AtomFeedClientTest {
 
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
         verify(allMarkersMock).put(feedUri, entry2.getId(), new URI(feedLink));
+
+        verify(mockConnection, times(2)).commit();
+        verify(mockConnection).close();
     }
 
     @Test(expected = AtomFeedClientException.class)
-    public void shouldStopProcessingEventsInBetweenWhenThereAreTooManyFailedEvents() throws URISyntaxException {
-        Feed feed = setupFeed();
+    public void shouldStopProcessingEventsInBetweenWhenThereAreTooManyFailedEvents() throws URISyntaxException, SQLException {
+        Feed feed = setupFeedWithTwoEvents();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(9, 9, 10);
         doThrow(Exception.class).when(eventWorker).process(any(Event.class));
+
+        JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
+        Connection mockConnection = mock(Connection.class);
+        when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
 
         FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
         feedClient.processEvents();
@@ -137,12 +176,15 @@ public class AtomFeedClientTest {
         verify(allFailedEvents).put(captor.capture());
         assertEquals(entry1.getId(), captor.getValue().getEvent().getId());
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
+
+        verify(mockConnection, times(2)).commit();
+        verify(mockConnection).close();
     }
 
     @Test
     public void shouldProcessFailedEvents() {
         List<FailedEvent> failedEvents = new ArrayList<FailedEvent>();
-        Feed feed = setupFeed();
+        Feed feed = setupFeedWithTwoEvents();
         failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry1), ""));
         failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry2), ""));
         when(allFailedEvents.getOldestNFailedEvents(feedUri.toString(), 5)).thenReturn(failedEvents);
@@ -164,7 +206,7 @@ public class AtomFeedClientTest {
         assertEquals(entry2.getId(), failedEventsCaptured.get(1).getEvent().getId());
     }
 
-    private Feed setupFeed() {
+    private Feed setupFeedWithTwoEvents() {
         entry1 = new Entry(); entry1.setId("id1");
         entry2 = new Entry(); entry2.setId("id2");
         return getFeed(entry1, entry2);
