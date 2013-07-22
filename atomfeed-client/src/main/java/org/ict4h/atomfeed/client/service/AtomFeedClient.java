@@ -10,10 +10,12 @@ import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.AllMarkers;
 import org.ict4h.atomfeed.client.util.Util;
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
+
 
 public class AtomFeedClient implements FeedClient {
     private static final int MAX_FAILED_EVENTS = 10;
@@ -22,23 +24,31 @@ public class AtomFeedClient implements FeedClient {
     private static Logger logger = Logger.getLogger(AtomFeedClient.class);
 
     private AllFeeds allFeeds;
+    private JdbcConnectionProvider jdbcConnectionProvider;
+    private URI feedUri;
+    private EventWorker eventWorker;
     private AllMarkers allMarkers;
     private AllFailedEvents allFailedEvents;
     private boolean updateMarker;
 
-    public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents) {
-        this(allFeeds,allMarkers,allFailedEvents,true);
+    public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents, URI feedUri, EventWorker eventWorker) {
+        this(allFeeds,allMarkers,allFailedEvents, true, null, feedUri, eventWorker);
     }
 
-    public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents, boolean updateAtomFeedMarkerFlag) {
+    public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents,
+                          boolean updateAtomFeedMarkerFlag, JdbcConnectionProvider jdbcConnectionProvider,
+                          URI feedUri, EventWorker eventWorker) {
         this.allFeeds = allFeeds;
         this.allMarkers = allMarkers;
         this.allFailedEvents = allFailedEvents;
         this.updateMarker = updateAtomFeedMarkerFlag;
+        this.jdbcConnectionProvider = jdbcConnectionProvider;
+        this.feedUri = feedUri;
+        this.eventWorker = eventWorker;
     }
 
     @Override
-    public void processEvents(URI feedUri, EventWorker eventWorker) {
+    public void processEvents() {
         logger.info("Processing events for feed URI : " + feedUri + " using event worker : " + eventWorker.getClass());
 
         if (shouldNotProcessEvents(feedUri))
@@ -70,12 +80,8 @@ public class AtomFeedClient implements FeedClient {
         }
     }
 
-    private String getEntryFeedUri(FeedEnumerator feedEnumerator) {
-        return Util.getSelfLink(feedEnumerator.getCurrentFeed()).toString();
-    }
-
     @Override
-    public void processFailedEvents(URI feedUri, EventWorker eventWorker) {
+    public void processFailedEvents() {
         logger.info("Processing failed events for feed URI : " + feedUri + " using event worker : " + eventWorker.getClass());
 
         List<FailedEvent> failedEvents =
@@ -100,13 +106,16 @@ public class AtomFeedClient implements FeedClient {
         }
     }
 
+    private String getEntryFeedUri(FeedEnumerator feedEnumerator) {
+        return Util.getSelfLink(feedEnumerator.getCurrentFeed()).toString();
+    }
+
     private boolean shouldNotProcessEvents(URI feedUri) {
         return (allFailedEvents.getNumberOfFailedEvents(feedUri.toString()) >= MAX_FAILED_EVENTS);
     }
 
     private void handleFailedEvent(Event event, URI feedUri, Exception e) {
         logger.info("Processing of event failed." + event, e);
-
         allFailedEvents.put(new FailedEvent(feedUri.toString(), event, Util.getExceptionString(e)));
     }
 }

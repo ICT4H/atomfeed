@@ -50,8 +50,8 @@ public class AtomFeedClientTest {
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents);
-        feedClient.processEvents(feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
+        feedClient.processEvents();
 
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
             @Override
@@ -75,8 +75,8 @@ public class AtomFeedClientTest {
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents,false);
-        feedClient.processEvents(feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, false, null, feedUri, eventWorker);
+        feedClient.processEvents();
 
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
             @Override
@@ -99,8 +99,8 @@ public class AtomFeedClientTest {
     public void shouldNotProcessEventsIfThereAreTooManyFailedEvents() {
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(50);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents);
-        feedClient.processEvents(feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
+        feedClient.processEvents();
     }
 
     @Test
@@ -110,8 +110,8 @@ public class AtomFeedClientTest {
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
         doThrow(Exception.class).when(eventWorker).process(any(Event.class));
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents);
-        feedClient.processEvents(feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
+        feedClient.processEvents();
 
         ArgumentCaptor<FailedEvent> captor = ArgumentCaptor.forClass(FailedEvent.class);
         verify(allFailedEvents, times(2)).put(captor.capture());
@@ -130,8 +130,8 @@ public class AtomFeedClientTest {
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(9, 9, 10);
         doThrow(Exception.class).when(eventWorker).process(any(Event.class));
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents);
-        feedClient.processEvents(feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
+        feedClient.processEvents();
 
         ArgumentCaptor<FailedEvent> captor = ArgumentCaptor.forClass(FailedEvent.class);
         verify(allFailedEvents).put(captor.capture());
@@ -147,8 +147,8 @@ public class AtomFeedClientTest {
         failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry2), ""));
         when(allFailedEvents.getOldestNFailedEvents(feedUri.toString(), 5)).thenReturn(failedEvents);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents);
-        feedClient.processFailedEvents(feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
+        feedClient.processFailedEvents();
 
         ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(Event.class);
         ArgumentCaptor<FailedEvent> failedEventArgumentCaptor = ArgumentCaptor.forClass(FailedEvent.class);
