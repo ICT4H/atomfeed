@@ -78,13 +78,19 @@ public class AtomFeedClient implements FeedClient {
 
                         eventWorker.process(event);
                     } catch (Exception e) {
+                        connection.rollback();
                         handleFailedEvent(event, feedUri, e);
                     }
 
+                    // TODO : Mujir - this should be fixed now.
                     // Existing bug: If the call below starts failing and the call above passes, we shall
                     // be in an inconsistent state.
                     if (updateMarker)
                         allMarkers.put(feedUri, entry.getId(), Util.getViaLink(feedEnumerator.getCurrentFeed()));
+
+                } catch(Exception e) {
+                    connection.rollback();
+                    // TODO : Mujir - is the atom feed processing sequential? Is it ok to rollback and continue processing others? Or should we altogether stop processing?
                 } finally {
                     connection.commit();
                 }

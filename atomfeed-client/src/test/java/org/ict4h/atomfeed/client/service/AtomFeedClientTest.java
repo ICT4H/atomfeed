@@ -112,7 +112,7 @@ public class AtomFeedClientTest {
                 return ((Event) o).getId().equals(entry1.getId());
             }
         }));
-        verify(allMarkersMock,Mockito.never()).put(feedUri, entry1.getId(), new URI(feedLink));
+        verify(allMarkersMock, Mockito.never()).put(feedUri, entry1.getId(), new URI(feedLink));
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
             @Override
             public boolean matches(Object o) {
@@ -154,6 +154,25 @@ public class AtomFeedClientTest {
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
         verify(allMarkersMock).put(feedUri, entry2.getId(), new URI(feedLink));
 
+        verify(mockConnection, times(2)).commit();
+        verify(mockConnection).close();
+    }
+
+    @Test
+    public void rollbackWorkerTransactionButCommitMarkerChangesOnProcessingFailingForAnEvent() throws URISyntaxException, SQLException {
+        Feed feed = setupFeedWithTwoEvents();
+        when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
+        when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
+        doThrow(Exception.class).when(eventWorker).process(any(Event.class));
+
+        JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
+        Connection mockConnection = mock(Connection.class);
+        when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
+
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
+        feedClient.processEvents();
+
+        verify(mockConnection, times(2)).rollback();
         verify(mockConnection, times(2)).commit();
         verify(mockConnection).close();
     }
@@ -207,8 +226,10 @@ public class AtomFeedClientTest {
     }
 
     private Feed setupFeedWithTwoEvents() {
-        entry1 = new Entry(); entry1.setId("id1");
-        entry2 = new Entry(); entry2.setId("id2");
+        entry1 = new Entry();
+        entry1.setId("id1");
+        entry2 = new Entry();
+        entry2.setId("id2");
         return getFeed(entry1, entry2);
     }
 
@@ -216,7 +237,7 @@ public class AtomFeedClientTest {
         ArrayList mutableEntries = new ArrayList();
         mutableEntries.addAll(Arrays.asList(entries));
         Feed feed = new Feed();
-        feed.setOtherLinks(Arrays.asList(new Link[]{getLink("self", feedLink),getLink("via", feedLink)}));
+        feed.setOtherLinks(Arrays.asList(new Link[]{getLink("self", feedLink), getLink("via", feedLink)}));
         feed.setEntries(mutableEntries);
         return feed;
     }
