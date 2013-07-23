@@ -14,6 +14,7 @@ public class AtomFeedClientBuilder {
     private URI feedURI;
     private EventWorker eventWorker;
     private JdbcConnectionProvider jdbcConnectionProvider;
+    private AtomFeedProperties atomFeedProperties = new AtomFeedProperties();
 
     public AtomFeedClientBuilder forFeedAt(URI feedURI) {
         this.feedURI = feedURI;
@@ -30,12 +31,18 @@ public class AtomFeedClientBuilder {
         return this;
     }
 
-    // TODO :Mujir - add properties for webclient timeout etc..
-    // public AtomFeedClientBuilder with(AtomFeedProperties properties) {}
+    public AtomFeedClientBuilder with(AtomFeedProperties atomFeedProperties) {
+        this.atomFeedProperties = atomFeedProperties;
+        return this;
+    }
 
     public AtomFeedClient build () {
-        return new AtomFeedClient(new AllFeeds(), new AllMarkersJdbcImpl(jdbcConnectionProvider), new AllFailedEventsJdbcImpl(jdbcConnectionProvider),
+        AllFeeds allFeeds = new AllFeeds(atomFeedProperties);
+
+        return new AtomFeedClient(allFeeds, new AllMarkersJdbcImpl(jdbcConnectionProvider), new AllFailedEventsJdbcImpl(jdbcConnectionProvider),
                 Configuration.getInstance().getUpdateAtomFeedMarkerFlag(), jdbcConnectionProvider, feedURI, eventWorker);
     }
 
 }
+
+

@@ -1,7 +1,7 @@
 package org.ict4h.atomfeed.client.repository.datasource;
 
+import org.ict4h.atomfeed.client.factory.AtomFeedProperties;
 import org.ict4h.atomfeed.spring.resource.EventResource;
-import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -19,7 +19,7 @@ public class WebClientStub extends WebClient {
     }
 
     @Override
-    public String fetch(URI uri) {
+    public String fetch(URI uri, AtomFeedProperties atomFeedProperties) {
     	when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer(uri.toString()));
         String feedId = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
         try {

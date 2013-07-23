@@ -124,11 +124,18 @@ public class AtomFeedClientTest {
 
 
     @Test(expected = AtomFeedClientException.class)
-    public void shouldNotProcessEventsIfThereAreTooManyFailedEvents() {
+    public void shouldNotProcessEventsIfThereAreTooManyFailedEvents() throws SQLException {
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(50);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
+        JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
+        Connection mockConnection = mock(Connection.class);
+        when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
+
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
+
+        verify(mockConnection, never()).rollback();
+        verify(mockConnection, times(1)).close();
     }
 
     @Test
@@ -154,6 +161,7 @@ public class AtomFeedClientTest {
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
         verify(allMarkersMock).put(feedUri, entry2.getId(), new URI(feedLink));
 
+        verify(mockConnection, times(2)).rollback();
         verify(mockConnection, times(2)).commit();
         verify(mockConnection).close();
     }
@@ -196,6 +204,7 @@ public class AtomFeedClientTest {
         assertEquals(entry1.getId(), captor.getValue().getEvent().getId());
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
 
+        verify(mockConnection, never()).rollback();
         verify(mockConnection, times(2)).commit();
         verify(mockConnection).close();
     }
