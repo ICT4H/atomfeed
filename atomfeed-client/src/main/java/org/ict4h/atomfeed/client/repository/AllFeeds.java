@@ -21,6 +21,7 @@ public class AllFeeds {
     }
 
     public AllFeeds(AtomFeedProperties atomFeedProperties) {
+        this();
         this.atomFeedProperties = atomFeedProperties;
     }
 
