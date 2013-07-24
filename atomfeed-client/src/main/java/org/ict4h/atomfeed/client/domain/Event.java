@@ -39,6 +39,10 @@ public class Event {
         return value.replaceFirst("^<!\\[CDATA\\[","").replaceFirst("\\]\\]>$","");
     }
 
+    /**
+     * It does remove the CDATA part of XML
+     * @return
+     */
     public String getContent(){
         return this.content;
     }

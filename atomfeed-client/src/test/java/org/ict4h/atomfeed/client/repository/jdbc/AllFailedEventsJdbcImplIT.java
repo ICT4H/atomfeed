@@ -47,7 +47,7 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
         Event event = new Event("eventId", "eventContent");
         FailedEvent failedEvent = new FailedEvent(feedUri, event, errorMessage, failedAt);
 
-        allFailedEvents.put(failedEvent);
+        allFailedEvents.add(failedEvent);
         FailedEvent failedEventDb = allFailedEvents.get(feedUri, event.getId());
         assertFailedEvent(failedEvent, failedEventDb);
 
@@ -55,7 +55,7 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
         long newFailedAt = new Date().getTime();
         FailedEvent modifiedFailedEvent = new FailedEvent(failedEvent.getFeedUri(), failedEvent.getEvent(), newErrorMessage, newFailedAt);
 
-        allFailedEvents.put(modifiedFailedEvent);
+        allFailedEvents.add(modifiedFailedEvent);
         failedEventDb = allFailedEvents.get(feedUri, event.getId());
 
         assertFailedEvent(modifiedFailedEvent, failedEventDb);
@@ -76,14 +76,14 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
         Event event = new Event("eventId", "eventContent");
         FailedEvent failedEvent = new FailedEvent(feedUri, event, errorMessage, failedAt);
 
-        allFailedEvents.put(failedEvent);
+        allFailedEvents.add(failedEvent);
         FailedEvent failedEventDb = allFailedEvents.get(feedUri, event.getId());
 
         assertNotSame(errorMessage, failedEventDb.getErrorMessage());
         assertEquals(4000, failedEventDb.getErrorMessage().length());
 
         failedEvent.setErrorMessage(errorMessage);
-        allFailedEvents.put(failedEvent);
+        allFailedEvents.add(failedEvent);
         failedEventDb = allFailedEvents.get(feedUri, event.getId());
 
         assertNotSame(errorMessage, failedEventDb.getErrorMessage());
@@ -107,7 +107,7 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
         for (int i = 1; i <= 5; i ++) {
             FailedEvent failedEvent = new FailedEvent(feedUri, new Event("eventId" + i, "eventContent1" + i), errorMessage);
             failedEvents.add(failedEvent);
-            allFailedEvents.put(failedEvent);
+            allFailedEvents.add(failedEvent);
         }
 
         return failedEvents;

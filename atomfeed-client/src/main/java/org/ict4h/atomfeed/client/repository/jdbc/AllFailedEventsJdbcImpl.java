@@ -80,7 +80,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
     }
 
     @Override
-    public void put(FailedEvent failedEvent) {
+    public void add(FailedEvent failedEvent) {
         FailedEvent existingFailedEvent = get(failedEvent.getFeedUri(), failedEvent.getEventId());
 
         if (existingFailedEvent != null){

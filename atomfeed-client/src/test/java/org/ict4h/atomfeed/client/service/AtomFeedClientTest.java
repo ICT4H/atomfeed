@@ -85,11 +85,13 @@ public class AtomFeedClientTest {
         JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
         Connection mockConnection = mock(Connection.class);
         when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
+        when(mockConnection.getAutoCommit()).thenReturn(true);
 
         FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         verify(mockConnection).setAutoCommit(false);
+        verify(mockConnection).setAutoCommit(true);
         verify(mockConnection, times(2)).commit();
     }
 
@@ -122,22 +124,6 @@ public class AtomFeedClientTest {
         verify(allMarkersMock, Mockito.never()).put(feedUri, entry2.getId(), new URI(feedLink));
     }
 
-
-    @Test(expected = AtomFeedClientException.class)
-    public void shouldNotProcessEventsIfThereAreTooManyFailedEvents() throws SQLException {
-        when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(50);
-
-        JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
-        Connection mockConnection = mock(Connection.class);
-        when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
-
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
-        feedClient.processEvents();
-
-        verify(mockConnection, never()).rollback();
-        verify(mockConnection, times(1)).close();
-    }
-
     @Test
     public void shouldHandleFailedEventInCaseProcessingFailsForAnEvent() throws URISyntaxException, SQLException {
         Feed feed = setupFeedWithTwoEvents();
@@ -153,7 +139,7 @@ public class AtomFeedClientTest {
         feedClient.processEvents();
 
         ArgumentCaptor<FailedEvent> captor = ArgumentCaptor.forClass(FailedEvent.class);
-        verify(allFailedEvents, times(2)).put(captor.capture());
+        verify(allFailedEvents, times(2)).add(captor.capture());
         List<FailedEvent> failedEventList = captor.getAllValues();
         assertEquals(entry1.getId(), failedEventList.get(0).getEvent().getId());
         assertEquals(entry2.getId(), failedEventList.get(1).getEvent().getId());
@@ -185,27 +171,27 @@ public class AtomFeedClientTest {
         verify(mockConnection).close();
     }
 
-    @Test(expected = AtomFeedClientException.class)
+    @Test
     public void shouldStopProcessingEventsInBetweenWhenThereAreTooManyFailedEvents() throws URISyntaxException, SQLException {
         Feed feed = setupFeedWithTwoEvents();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
-        when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(9, 9, 10);
+        when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(9, AtomFeedClient.MAX_FAILED_EVENTS);
         doThrow(Exception.class).when(eventWorker).process(any(Event.class));
 
         JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
         Connection mockConnection = mock(Connection.class);
         when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         ArgumentCaptor<FailedEvent> captor = ArgumentCaptor.forClass(FailedEvent.class);
-        verify(allFailedEvents).put(captor.capture());
+        verify(allFailedEvents).add(captor.capture());
         assertEquals(entry1.getId(), captor.getValue().getEvent().getId());
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
 
-        verify(mockConnection, never()).rollback();
-        verify(mockConnection, times(2)).commit();
+        verify(mockConnection, times(1)).rollback();
+        verify(mockConnection, times(1)).commit();
         verify(mockConnection).close();
     }
 

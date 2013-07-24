@@ -23,7 +23,7 @@ public class AllFailedEventsInMemoryImpl implements AllFailedEvents {
     }
 
     @Override
-    public void put(FailedEvent failedEvent) {
+    public void add(FailedEvent failedEvent) {
         boolean modified = false;
         for (int i = 0; i < failedEvents.size(); i++) {
             if (failedEvent.getEventId().equals(failedEvents.get(i).getEventId())) {

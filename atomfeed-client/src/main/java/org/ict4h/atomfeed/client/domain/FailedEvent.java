@@ -1,6 +1,5 @@
 package org.ict4h.atomfeed.client.domain;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 public class FailedEvent {
@@ -13,7 +12,6 @@ public class FailedEvent {
     public FailedEvent(String feedUri, Event event, String errorMessage) {
         if (feedUri == null || feedUri.trim().equals("") || event == null)
             throw new IllegalArgumentException("Arguments provided should not be null.");
-
         this.event = event;
         this.errorMessage = errorMessage;
         this.feedUri = feedUri;
