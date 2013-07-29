@@ -5,7 +5,7 @@ import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.feed.atom.Link;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
-import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
+import org.ict4h.atomfeed.client.factory.AtomFeedProperties;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.AllMarkers;
@@ -57,7 +57,7 @@ public class AtomFeedClientTest {
         Connection mockConnection = mock(Connection.class);
         when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
@@ -87,7 +87,7 @@ public class AtomFeedClientTest {
         when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
         when(mockConnection.getAutoCommit()).thenReturn(true);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         verify(mockConnection).setAutoCommit(false);
@@ -105,7 +105,9 @@ public class AtomFeedClientTest {
         Connection mockConnection = mock(Connection.class);
         when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, false, mockConnectionProvider, feedUri, eventWorker);
+        AtomFeedProperties atomFeedProperties = new AtomFeedProperties();
+        atomFeedProperties.setControlsEventProcessing(false);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, atomFeedProperties, mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
@@ -135,11 +137,11 @@ public class AtomFeedClientTest {
         Connection mockConnection = mock(Connection.class);
         when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         ArgumentCaptor<FailedEvent> captor = ArgumentCaptor.forClass(FailedEvent.class);
-        verify(allFailedEvents, times(2)).add(captor.capture());
+        verify(allFailedEvents, times(2)).addOrUpdate(captor.capture());
         List<FailedEvent> failedEventList = captor.getAllValues();
         assertEquals(entry1.getId(), failedEventList.get(0).getEvent().getId());
         assertEquals(entry2.getId(), failedEventList.get(1).getEvent().getId());
@@ -163,7 +165,7 @@ public class AtomFeedClientTest {
         Connection mockConnection = mock(Connection.class);
         when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         verify(mockConnection, times(2)).rollback();
@@ -182,11 +184,11 @@ public class AtomFeedClientTest {
         Connection mockConnection = mock(Connection.class);
         when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, true, mockConnectionProvider, feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         ArgumentCaptor<FailedEvent> captor = ArgumentCaptor.forClass(FailedEvent.class);
-        verify(allFailedEvents).add(captor.capture());
+        verify(allFailedEvents).addOrUpdate(captor.capture());
         assertEquals(entry1.getId(), captor.getValue().getEvent().getId());
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
 
@@ -196,14 +198,18 @@ public class AtomFeedClientTest {
     }
 
     @Test
-    public void shouldProcessFailedEvents() {
+    public void shouldProcessFailedEvents() throws SQLException {
         List<FailedEvent> failedEvents = new ArrayList<FailedEvent>();
-        Feed feed = setupFeedWithTwoEvents();
+        setupFeedWithTwoEvents();
         failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry1), ""));
         failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry2), ""));
         when(allFailedEvents.getOldestNFailedEvents(feedUri.toString(), 5)).thenReturn(failedEvents);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, feedUri, eventWorker);
+        JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
+        Connection mockConnection = mock(Connection.class);
+        when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
+
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), mockConnectionProvider, feedUri, eventWorker);
         feedClient.processFailedEvents();
 
         ArgumentCaptor<Event> eventArgumentCaptor = ArgumentCaptor.forClass(Event.class);

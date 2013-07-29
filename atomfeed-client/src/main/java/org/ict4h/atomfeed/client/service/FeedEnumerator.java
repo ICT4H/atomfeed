@@ -29,7 +29,7 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
 
     private void initializeEnumeration() {
         // No entry from feed has been processed yet.
-        if (marker.getLastReadEntryId() == null) {
+        if (marker.getLastReadEntryId() == null && marker.getFeedURIForLastReadEntry() == null) {
             Feed feed = seekFirstFeed(marker.getFeedUri());
             this.currentFeed = feed;
             this.entries = feed.getEntries();
@@ -58,7 +58,7 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
                 break;
             }
         }
-        if (lastReadEntryIndex == -1) throw new AtomFeedClientException("Last Read entry not found in feed.");
+        if (lastReadEntryIndex == -1 && marker.getLastReadEntryId() != null) throw new AtomFeedClientException("Last Read entry not found in feed.");
 
         initialEntries.removeAll(initialEntries.subList(0, lastReadEntryIndex + 1));
 

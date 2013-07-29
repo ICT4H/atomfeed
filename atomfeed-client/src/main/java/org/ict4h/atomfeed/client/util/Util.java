@@ -41,7 +41,6 @@ public class Util {
         }
     }
 
-
     public static String getExceptionString(Exception e) {
         StringBuffer sb;
         try {

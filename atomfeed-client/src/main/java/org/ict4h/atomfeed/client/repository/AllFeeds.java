@@ -27,6 +27,8 @@ public class AllFeeds {
 
     public Feed getFor(URI uri) {
     	if (uri == null) return null;
+
+        logger.info(String.format("Reading URI - %s", uri));
         String responseString = webClient.fetch(uri, atomFeedProperties);
         logger.debug(responseString);
         responseString.trim().replaceFirst("^([\\W]+)<", "<");

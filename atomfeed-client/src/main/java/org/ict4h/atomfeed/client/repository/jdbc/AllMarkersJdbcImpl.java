@@ -1,5 +1,6 @@
 package org.ict4h.atomfeed.client.repository.jdbc;
 
+import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AllMarkersJdbcImpl implements AllMarkers {
-
+    private static Logger logger = Logger.getLogger(AllMarkersJdbcImpl.class);
     private JdbcConnectionProvider connectionProvider;
 
     public AllMarkersJdbcImpl(JdbcConnectionProvider connectionProvider) {
@@ -37,7 +38,9 @@ public class AllMarkersJdbcImpl implements AllMarkers {
             resultSet = stmt.executeQuery();
             List<Marker> markers = mapMarkersFromResultSet(resultSet);
             if ((markers != null) && !markers.isEmpty()) {
-                return markers.get(0);
+                Marker marker = markers.get(0);
+                logger.info(String.format("Found marker: %s", marker.toString()));
+                return marker;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -69,7 +72,7 @@ public class AllMarkersJdbcImpl implements AllMarkers {
             return;
         }
 
-        insertMaker(feedUri, entryId, entryFeedUri);
+        insertMarker(feedUri, entryId, entryFeedUri);
     }
 
     private void updateMarker(URI feedUri, String entryId, URI entryFeedUri) {
@@ -86,6 +89,7 @@ public class AllMarkersJdbcImpl implements AllMarkers {
             statement.setString(2, entryFeedUri.toString());
             statement.setString(3, feedUri.toString());
             statement.executeUpdate();
+            logger.info(String.format("Updated marker: %s", new Marker(feedUri, entryId, entryFeedUri).toString()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -93,7 +97,7 @@ public class AllMarkersJdbcImpl implements AllMarkers {
         }
     }
 
-    private void insertMaker(URI feedUri, String entryId, URI entryFeedUri) {
+    private void insertMarker(URI feedUri, String entryId, URI entryFeedUri) {
         String sql = String.format(
                 "insert into %s (feed_uri, last_read_entry_id, feed_uri_for_last_read_entry) values (?, ?, ?)",
                 JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "markers"));
@@ -107,6 +111,7 @@ public class AllMarkersJdbcImpl implements AllMarkers {
             statement.setString(2, entryId);
             statement.setString(3, entryFeedUri.toString());
             statement.executeUpdate();
+            logger.info(String.format("Created marker: %s", new Marker(feedUri, entryId, entryFeedUri).toString()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

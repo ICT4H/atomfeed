@@ -50,4 +50,9 @@ public class FailedEvent {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
+
+    @Override
+    public String toString() {
+        return String.format("FailedEvent{failedAt=%d, event=%s, errorMessage='%s', feedUri='%s'}", failedAt, event, errorMessage, feedUri);
+    }
 }

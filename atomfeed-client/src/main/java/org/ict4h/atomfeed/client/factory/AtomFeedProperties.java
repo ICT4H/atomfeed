@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 public class AtomFeedProperties {
     private int readTimeout = 20000;
     private int connectTimeout = 10000;
+    private boolean controlsEventProcessing = true;
 
     private static Logger logger = Logger.getLogger(AtomFeedProperties.class);
 
@@ -26,5 +27,13 @@ public class AtomFeedProperties {
         if (connectTimeout == 0)
             logger.warn("Setting connectTimeout to zero. WebClient would wait infinitely to connect.");
         this.connectTimeout = connectTimeout;
+    }
+
+    public void setControlsEventProcessing(boolean value) {
+        this.controlsEventProcessing = value;
+    }
+
+    public boolean controlsEventProcessing() {
+        return controlsEventProcessing;
     }
 }

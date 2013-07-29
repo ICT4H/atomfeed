@@ -60,9 +60,4 @@ public class Configuration {
     public String getSchema() {
         return properties.getProperty("atomdb.default_schema");
     }
-
-    public boolean getUpdateAtomFeedMarkerFlag() {
-        String configuredUpdateMarkerValue = properties.getProperty("update.atomfeed.marker");
-        return StringUtils.isBlank(configuredUpdateMarkerValue) || Boolean.parseBoolean(configuredUpdateMarkerValue);
-    }
 }

@@ -25,4 +25,9 @@ public class Marker {
 	public URI getFeedUri() {
 		return feedUri;
 	}
+
+    @Override
+    public String toString() {
+        return String.format("Marker{feedUri=%s, lastReadEntryId='%s', feedURIForLastReadEntry=%s}", feedUri, lastReadEntryId, feedURIForLastReadEntry);
+    }
 }

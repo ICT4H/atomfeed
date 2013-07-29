@@ -7,6 +7,7 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
 import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
+import org.ict4h.atomfeed.client.factory.AtomFeedProperties;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.AllMarkers;
@@ -26,24 +27,24 @@ public class AtomFeedClient implements FeedClient {
     private static Logger logger = Logger.getLogger(AtomFeedClient.class);
 
     private AllFeeds allFeeds;
+    private AtomFeedProperties atomFeedProperties;
     private JdbcConnectionProvider jdbcConnectionProvider;
     private URI feedUri;
     private EventWorker eventWorker;
     private AllMarkers allMarkers;
     private AllFailedEvents allFailedEvents;
-    private boolean updateMarker;
 
-    public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents, URI feedUri, EventWorker eventWorker) {
-        this(allFeeds, allMarkers, allFailedEvents, true, null, feedUri, eventWorker);
+    AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents, URI feedUri, EventWorker eventWorker) {
+        this(allFeeds, allMarkers, allFailedEvents, new AtomFeedProperties(), null, feedUri, eventWorker);
     }
 
-    public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents,
-                          boolean updateAtomFeedMarkerFlag, JdbcConnectionProvider jdbcConnectionProvider,
+    public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents, AtomFeedProperties atomFeedProperties,
+                          JdbcConnectionProvider jdbcConnectionProvider,
                           URI feedUri, EventWorker eventWorker) {
         this.allFeeds = allFeeds;
         this.allMarkers = allMarkers;
         this.allFailedEvents = allFailedEvents;
-        this.updateMarker = updateAtomFeedMarkerFlag;
+        this.atomFeedProperties = atomFeedProperties;
         this.jdbcConnectionProvider = jdbcConnectionProvider;
         this.feedUri = feedUri;
         this.eventWorker = eventWorker;
@@ -58,7 +59,9 @@ public class AtomFeedClient implements FeedClient {
         try {
             connection = jdbcConnectionProvider.getConnection();
             autoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(false);
+            if (atomFeedProperties.controlsEventProcessing()) {
+                connection.setAutoCommit(false);
+            }
 
             Marker marker = allMarkers.get(feedUri);
             if (marker == null) marker = new Marker(feedUri, null, null);
@@ -74,12 +77,18 @@ public class AtomFeedClient implements FeedClient {
                     event = new Event(entry, getEntryFeedUri(feedEnumerator));
                     logger.debug("Processing event : " + event);
                     eventWorker.process(event);
-                    updateMarker(entry, feedEnumerator.getCurrentFeed());
-                    connection.commit();
+                    if (atomFeedProperties.controlsEventProcessing()) {
+                        allMarkers.put(feedUri, entry.getId(), Util.getViaLink(feedEnumerator.getCurrentFeed()));
+                        connection.commit();
+                    }
                 } catch (Exception e) {
-                    connection.rollback();
+                    if (atomFeedProperties.controlsEventProcessing()) {
+                        connection.rollback();
+                    }
                     handleFailedEvent(entry, feedUri, e, feedEnumerator.getCurrentFeed(), event);
-                    connection.commit();
+                    if (atomFeedProperties.controlsEventProcessing()) {
+                        connection.commit();
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -87,7 +96,9 @@ public class AtomFeedClient implements FeedClient {
         } finally {
             if (connection != null) {
                 try {
-                    connection.setAutoCommit(autoCommit);
+                    if (atomFeedProperties.controlsEventProcessing()) {
+                        connection.setAutoCommit(autoCommit);
+                    }
                     connection.close();
                 } catch (SQLException e) {
                     throw new AtomFeedClientException(e);
@@ -96,28 +107,53 @@ public class AtomFeedClient implements FeedClient {
         }
     }
 
-    private void updateMarker(Entry entry, Feed currentFeed) {
-        if (updateMarker)
-            allMarkers.put(feedUri, entry.getId(), Util.getViaLink(currentFeed));
-    }
-
 
     @Override
     public void processFailedEvents() {
         logger.info(String.format("Processing failed events for feed URI : %s using event worker : %s", feedUri, eventWorker.getClass()));
-        List<FailedEvent> failedEvents =
-                allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE);
 
-        for (FailedEvent failedEvent : failedEvents) {
-            try {
-                logger.debug(String.format("Processing failed event : %s", failedEvent));
-                eventWorker.process(failedEvent.getEvent());
-                allFailedEvents.remove(failedEvent);
-            } catch (Exception e) {
-                failedEvent.setFailedAt(new Date().getTime());
-                failedEvent.setErrorMessage(Util.getExceptionString(e));
-                allFailedEvents.add(failedEvent);
-                logger.info(String.format("Failed to process failed event. %s", failedEvent));
+        Connection connection = null;
+        boolean autoCommit = false;
+        try {
+            connection = jdbcConnectionProvider.getConnection();
+            autoCommit = connection.getAutoCommit();
+            if (atomFeedProperties.controlsEventProcessing()) {
+                connection.setAutoCommit(false);
+            }
+
+            List<FailedEvent> failedEvents =
+                    allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE);
+
+            for (FailedEvent failedEvent : failedEvents) {
+                try {
+                    logger.debug(String.format("Processing failed event : %s", failedEvent));
+                    eventWorker.process(failedEvent.getEvent());
+                    if (atomFeedProperties.controlsEventProcessing()) {
+                        allFailedEvents.remove(failedEvent);
+                        connection.commit();
+                    }
+                } catch (Exception e) {
+                    if (atomFeedProperties.controlsEventProcessing()) {
+                        connection.rollback();
+                        failedEvent.setFailedAt(new Date().getTime());
+                        failedEvent.setErrorMessage(Util.getExceptionString(e));
+                        allFailedEvents.addOrUpdate(failedEvent);
+                    }
+                    logger.info(String.format("Failed to process failed event. %s", failedEvent));
+                }
+            }
+        } catch (SQLException e) {
+            throw new AtomFeedClientException(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    if (atomFeedProperties.controlsEventProcessing()) {
+                        connection.setAutoCommit(autoCommit);
+                    }
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new AtomFeedClientException(e);
+                }
             }
         }
     }
@@ -131,7 +167,8 @@ public class AtomFeedClient implements FeedClient {
     }
 
     private void handleFailedEvent(Entry entry, URI feedUri, Exception e, Feed feed, Event event) {
-        allFailedEvents.add(new FailedEvent(feedUri.toString(), event, Util.getExceptionString(e)));
-        updateMarker(entry, feed);
+        allFailedEvents.addOrUpdate(new FailedEvent(feedUri.toString(), event, Util.getExceptionString(e)));
+        if (atomFeedProperties.controlsEventProcessing())
+            allMarkers.put(this.feedUri, entry.getId(), Util.getViaLink(feed));
     }
 }

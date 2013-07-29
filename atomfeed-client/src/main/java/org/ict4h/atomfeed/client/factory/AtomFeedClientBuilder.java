@@ -1,6 +1,5 @@
 package org.ict4h.atomfeed.client.factory;
 
-import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.jdbc.AllFailedEventsJdbcImpl;
 import org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl;
@@ -36,13 +35,12 @@ public class AtomFeedClientBuilder {
         return this;
     }
 
-    public AtomFeedClient build () {
+    public AtomFeedClient build() {
         AllFeeds allFeeds = new AllFeeds(atomFeedProperties);
 
         return new AtomFeedClient(allFeeds, new AllMarkersJdbcImpl(jdbcConnectionProvider), new AllFailedEventsJdbcImpl(jdbcConnectionProvider),
-                Configuration.getInstance().getUpdateAtomFeedMarkerFlag(), jdbcConnectionProvider, feedURI, eventWorker);
+                atomFeedProperties, jdbcConnectionProvider, feedURI, eventWorker);
     }
-
 }
 
 

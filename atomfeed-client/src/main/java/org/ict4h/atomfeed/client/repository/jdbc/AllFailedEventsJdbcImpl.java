@@ -1,5 +1,6 @@
 package org.ict4h.atomfeed.client.repository.jdbc;
 
+import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
@@ -7,14 +8,13 @@ import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AllFailedEventsJdbcImpl implements AllFailedEvents {
-
+    private static Logger logger = Logger.getLogger(AllFailedEventsJdbcImpl.class);
     public static final String FAILED_EVENTS_TABLE = "failed_events";
     public static final int ERROR_MSG_MAX_LEN = 4000;
 
@@ -42,6 +42,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             if ((failedEvents != null) && !failedEvents.isEmpty()) {
                 return failedEvents.get(0);
             }
+            logger.info(String.format("Reading failed event - feedUri=%s, eventId=%s", feedUri, eventId));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -70,7 +71,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             while (resultSet.next()) {
                 Event event = new Event(resultSet.getString(5), resultSet.getString(6));
                 FailedEvent failedEvent = new FailedEvent(resultSet.getString(2), event,
-                        resultSet.getString(4),resultSet.getTimestamp(3).getTime());
+                        resultSet.getString(4), resultSet.getTimestamp(3).getTime());
                 failedEvents.add(failedEvent);
             }
         } catch (Exception e) {
@@ -80,10 +81,10 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
     }
 
     @Override
-    public void add(FailedEvent failedEvent) {
+    public void addOrUpdate(FailedEvent failedEvent) {
         FailedEvent existingFailedEvent = get(failedEvent.getFeedUri(), failedEvent.getEventId());
 
-        if (existingFailedEvent != null){
+        if (existingFailedEvent != null) {
             updateFailedEvent(failedEvent);
             return;
         }
@@ -111,6 +112,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setString(4, failedEvent.getEventId());
             statement.setString(5, failedEvent.getEvent().getContent());
             statement.executeUpdate();
+            logger.info(String.format("Created a new %s", failedEvent.toString()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -138,6 +140,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setString(4, failedEvent.getFeedUri());
             statement.setString(5, failedEvent.getEventId());
             statement.executeUpdate();
+            logger.info(String.format("Updated %s", failedEvent.toString()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -160,7 +163,9 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setMaxRows(numberOfFailedEvents);
             resultSet = statement.executeQuery();
 
-            return mapFailedEventsFromResultSet(resultSet);
+            List<FailedEvent> failedEvents = mapFailedEventsFromResultSet(resultSet);
+            logger.info(String.format("Loaded %d failed events", failedEvents.size()));
+            return failedEvents;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -179,7 +184,9 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE)));
             resultSet = statement.executeQuery();
 
-            return resultSet.next() ? resultSet.getInt(1) : 0;
+            int numberOfFailedEvents = resultSet.next() ? resultSet.getInt(1) : 0;
+            logger.info(String.format("There are %d failed events", numberOfFailedEvents));
+            return numberOfFailedEvents;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -199,6 +206,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setString(1, failedEvent.getFeedUri());
             statement.setString(2, failedEvent.getEventId());
             statement.executeUpdate();
+            logger.info(String.format("Deleted %s", failedEvent.toString()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {

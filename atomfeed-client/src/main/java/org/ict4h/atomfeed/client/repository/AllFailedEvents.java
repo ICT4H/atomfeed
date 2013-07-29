@@ -8,7 +8,7 @@ public interface AllFailedEvents {
 
     public FailedEvent get(String feedUri, String eventId);
 
-    public void add(FailedEvent failedEvent);
+    public void addOrUpdate(FailedEvent failedEvent);
 
     public List<FailedEvent> getOldestNFailedEvents(String feedUri, int numberOfFailedEvents);
 

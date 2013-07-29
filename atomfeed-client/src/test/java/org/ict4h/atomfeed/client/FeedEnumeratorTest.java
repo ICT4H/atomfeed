@@ -78,11 +78,19 @@ public class FeedEnumeratorTest {
     }
 
     @Test
-    public void shouldCrawlBackToFirstFeedWhenNoMarkerPresent() throws URISyntaxException {
+    public void shouldCrawlBackToFirstFeedWhenNoMarkerPresentAndNoLastReadFeed() throws URISyntaxException {
         Marker marker = new Marker(notificationsUri, null, null);
         FeedEnumerator feedEnumerator = new FeedEnumerator(allFeedsMock, marker);
         List<String> entryIds = getEntries(feedEnumerator);
         assertEquals(Arrays.asList("1,2,3,4,5,6,7,8,9,10,11,12,13".split(",")), entryIds);
+    }
+
+    @Test
+    public void shouldStartFromLastReadFeedWhenNoMarkerIsPresent() throws URISyntaxException {
+        Marker marker = new Marker(notificationsUri, null, secondFeedUri);
+        FeedEnumerator feedEnumerator = new FeedEnumerator(allFeedsMock, marker);
+        List<String> entryIds = getEntries(feedEnumerator);
+        assertEquals(Arrays.asList("6,7,8,9,10,11,12,13".split(",")), entryIds);
     }
 
     @Test
