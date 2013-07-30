@@ -35,7 +35,9 @@ public class AllFeeds {
 
         try {
             WireFeedInput input = new WireFeedInput();
-            return (Feed) input.build(new StringReader(responseString));
+            Feed feed = (Feed) input.build(new StringReader(responseString));
+            logger.info(String.format("Found %d entries", feed.getEntries().size()));
+            return feed;
         } catch (Exception e) {
             throw new AtomFeedClientException(responseString, e);
         }

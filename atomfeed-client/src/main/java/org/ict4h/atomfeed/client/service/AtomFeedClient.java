@@ -52,7 +52,7 @@ public class AtomFeedClient implements FeedClient {
 
     @Override
     public void processEvents() {
-        logger.info(String.format("Processing events for feed URI : %s using event worker : %s", feedUri, eventWorker.getClass()));
+        logger.info(String.format("Processing events for feed URI : %s using event worker : %s", feedUri, eventWorker.getClass().getSimpleName()));
 
         Connection connection = null;
         boolean autoCommit = false;
@@ -110,7 +110,7 @@ public class AtomFeedClient implements FeedClient {
 
     @Override
     public void processFailedEvents() {
-        logger.info(String.format("Processing failed events for feed URI : %s using event worker : %s", feedUri, eventWorker.getClass()));
+        logger.info(String.format("Processing failed events for feed URI : %s using event worker : %s", feedUri, eventWorker.getClass().getSimpleName()));
 
         Connection connection = null;
         boolean autoCommit = false;

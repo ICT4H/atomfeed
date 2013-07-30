@@ -80,7 +80,8 @@ public class FeedEnumerator implements Iterable<Entry>, Iterator<Entry> {
 
         if (Util.getNextLink(this.currentFeed) == null) return false;
 
-        fetchEntries(); return hasNext();
+        fetchEntries();
+        return hasNext();
     }
 
     @Override
