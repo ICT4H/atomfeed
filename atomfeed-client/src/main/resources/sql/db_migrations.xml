@@ -23,6 +23,7 @@
             <column name="event_id" type="varchar(255)"/>
             <!-- TODO: change to CLOB -->
             <column name="event_content" type="varchar(4000)"/>
+            <column name="error_hash_code" type="int"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

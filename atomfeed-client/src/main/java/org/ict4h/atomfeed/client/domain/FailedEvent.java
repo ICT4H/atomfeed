@@ -3,7 +3,6 @@ package org.ict4h.atomfeed.client.domain;
 import java.util.Date;
 
 public class FailedEvent {
-
     private long failedAt;
     private Event event;
     private String errorMessage;

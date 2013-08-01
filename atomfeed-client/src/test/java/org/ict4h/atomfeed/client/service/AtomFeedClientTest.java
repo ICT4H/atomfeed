@@ -175,16 +175,20 @@ public class AtomFeedClientTest {
 
     @Test
     public void shouldStopProcessingEventsInBetweenWhenThereAreTooManyFailedEvents() throws URISyntaxException, SQLException {
+        AtomFeedProperties atomFeedProperties = new AtomFeedProperties();
+        int maxFailedEvents = 10;
+        atomFeedProperties.setMaxFailedEvents(maxFailedEvents);
+
         Feed feed = setupFeedWithTwoEvents();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
-        when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(9, AtomFeedClient.MAX_FAILED_EVENTS);
+        when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(maxFailedEvents - 1, maxFailedEvents);
         doThrow(Exception.class).when(eventWorker).process(any(Event.class));
 
         JdbcConnectionProvider mockConnectionProvider = mock(JdbcConnectionProvider.class);
         Connection mockConnection = mock(Connection.class);
         when(mockConnectionProvider.getConnection()).thenReturn(mockConnection);
 
-        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), mockConnectionProvider, feedUri, eventWorker);
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, atomFeedProperties, mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
         ArgumentCaptor<FailedEvent> captor = ArgumentCaptor.forClass(FailedEvent.class);

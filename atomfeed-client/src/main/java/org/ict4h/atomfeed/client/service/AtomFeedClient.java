@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 
 public class AtomFeedClient implements FeedClient {
-    public static final int MAX_FAILED_EVENTS = 10;
     private static final int FAILED_EVENTS_PROCESS_BATCH_SIZE = 5;
 
     private static Logger logger = Logger.getLogger(AtomFeedClient.class);
@@ -82,6 +81,7 @@ public class AtomFeedClient implements FeedClient {
                         connection.commit();
                     }
                 } catch (Exception e) {
+                    logger.error("", e);
                     if (atomFeedProperties.controlsEventProcessing()) {
                         connection.rollback();
                     }
@@ -89,6 +89,8 @@ public class AtomFeedClient implements FeedClient {
                     if (atomFeedProperties.controlsEventProcessing()) {
                         connection.commit();
                     }
+                } finally {
+                    eventWorker.cleanUp(event);
                 }
             }
         } catch (SQLException e) {
@@ -133,11 +135,13 @@ public class AtomFeedClient implements FeedClient {
                         connection.commit();
                     }
                 } catch (Exception e) {
+                    logger.error("", e);
                     if (atomFeedProperties.controlsEventProcessing()) {
                         connection.rollback();
                         failedEvent.setFailedAt(new Date().getTime());
                         failedEvent.setErrorMessage(Util.getExceptionString(e));
                         allFailedEvents.addOrUpdate(failedEvent);
+                        connection.commit();
                     }
                     logger.info(String.format("Failed to process failed event. %s", failedEvent));
                 }
@@ -163,7 +167,7 @@ public class AtomFeedClient implements FeedClient {
     }
 
     private boolean shouldNotProcessEvents(URI feedUri) {
-        return (allFailedEvents.getNumberOfFailedEvents(feedUri.toString()) >= MAX_FAILED_EVENTS);
+        return (allFailedEvents.getNumberOfFailedEvents(feedUri.toString()) >= atomFeedProperties.getMaxFailedEvents());
     }
 
     private void handleFailedEvent(Entry entry, URI feedUri, Exception e, Feed feed, Event event) {

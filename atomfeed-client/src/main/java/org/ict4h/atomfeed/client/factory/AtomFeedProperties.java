@@ -6,6 +6,7 @@ public class AtomFeedProperties {
     private int readTimeout = 20000;
     private int connectTimeout = 10000;
     private boolean controlsEventProcessing = true;
+    private int maxFailedEvents = 5;
 
     private static Logger logger = Logger.getLogger(AtomFeedProperties.class);
 
@@ -35,5 +36,13 @@ public class AtomFeedProperties {
 
     public boolean controlsEventProcessing() {
         return controlsEventProcessing;
+    }
+
+    public int getMaxFailedEvents() {
+        return maxFailedEvents;
+    }
+
+    public void setMaxFailedEvents(int maxFailedEvents) {
+        this.maxFailedEvents = maxFailedEvents;
     }
 }

@@ -94,7 +94,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
 
     private void insertFailedEvent(FailedEvent failedEvent) {
         String sql = String.format(
-                "insert into %s (feed_uri, failed_at, error_message, event_id, event_content) values (?, ?, ?, ?, ?)",
+                "insert into %s (feed_uri, failed_at, error_message, event_id, event_content, error_hash_code) values (?, ?, ?, ?, ?, ?)",
                 JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
 
         // DB limit is 4000. reduce to ensure it doesn't cross that.
@@ -111,6 +111,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setString(3, errorMessage);
             statement.setString(4, failedEvent.getEventId());
             statement.setString(5, failedEvent.getEvent().getContent());
+            statement.setInt(6, errorMessage.hashCode());
             statement.executeUpdate();
             logger.info(String.format("Created a new %s", failedEvent.toString()));
         } catch (SQLException e) {
@@ -122,7 +123,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
 
     private void updateFailedEvent(FailedEvent failedEvent) {
         String sql = String.format(
-                "update %s set failed_at = ?, error_message = ?, event_content = ? where feed_uri = ? and event_id = ?",
+                "update %s set failed_at = ?, error_message = ?, event_content = ?, error_hash_code = ? where feed_uri = ? and event_id = ?",
                 JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
 
         // DB limit is 4000. reduce to ensure it doesn't cross that.
@@ -137,8 +138,9 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setTimestamp(1, new Timestamp(failedEvent.getFailedAt()));
             statement.setString(2, errorMessage);
             statement.setString(3, failedEvent.getEvent().getContent());
-            statement.setString(4, failedEvent.getFeedUri());
-            statement.setString(5, failedEvent.getEventId());
+            statement.setLong(4, errorMessage.hashCode());
+            statement.setString(5, failedEvent.getFeedUri());
+            statement.setString(6, failedEvent.getEventId());
             statement.executeUpdate();
             logger.info(String.format("Updated %s", failedEvent.toString()));
         } catch (SQLException e) {
@@ -164,7 +166,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             resultSet = statement.executeQuery();
 
             List<FailedEvent> failedEvents = mapFailedEventsFromResultSet(resultSet);
-            logger.info(String.format("Loaded %d failed events", failedEvents.size()));
+            logger.info(String.format("Loaded %d failed events for %s", failedEvents.size(), feedUri));
             return failedEvents;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -185,7 +187,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             resultSet = statement.executeQuery();
 
             int numberOfFailedEvents = resultSet.next() ? resultSet.getInt(1) : 0;
-            logger.info(String.format("There are %d failed events", numberOfFailedEvents));
+            logger.info(String.format("There are %d failed events for %s", numberOfFailedEvents, feedUri));
             return numberOfFailedEvents;
         } catch (SQLException e) {
             throw new RuntimeException(e);
