@@ -5,6 +5,8 @@ import org.ict4h.atomfeed.spring.resource.EventResource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -19,7 +21,7 @@ public class WebClientStub extends WebClient {
     }
 
     @Override
-    public String fetch(URI uri, AtomFeedProperties atomFeedProperties) {
+    public String fetch(URI uri, AtomFeedProperties atomFeedProperties, Map<String, String> clientCookies) {
     	when(httpServletRequest.getRequestURL()).thenReturn(new StringBuffer(uri.toString()));
         String feedId = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
         try {

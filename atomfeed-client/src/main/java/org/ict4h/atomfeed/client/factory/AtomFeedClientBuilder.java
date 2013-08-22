@@ -8,12 +8,15 @@ import org.ict4h.atomfeed.client.service.EventWorker;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AtomFeedClientBuilder {
     private URI feedURI;
     private EventWorker eventWorker;
     private JdbcConnectionProvider jdbcConnectionProvider;
     private AtomFeedProperties atomFeedProperties = new AtomFeedProperties();
+    private Map<String, String> clientCookies = new HashMap<>();
 
     public AtomFeedClientBuilder forFeedAt(URI feedURI) {
         this.feedURI = feedURI;
@@ -35,12 +38,16 @@ public class AtomFeedClientBuilder {
         return this;
     }
 
+    public AtomFeedClientBuilder with(AtomFeedProperties atomFeedProperties, Map<String, String> clientCookies) {
+        with(atomFeedProperties);
+        this.clientCookies = clientCookies;
+        return this;
+    }
+
     public AtomFeedClient build() {
-        AllFeeds allFeeds = new AllFeeds(atomFeedProperties);
+        AllFeeds allFeeds = new AllFeeds(atomFeedProperties, clientCookies);
 
         return new AtomFeedClient(allFeeds, new AllMarkersJdbcImpl(jdbcConnectionProvider), new AllFailedEventsJdbcImpl(jdbcConnectionProvider),
                 atomFeedProperties, jdbcConnectionProvider, feedURI, eventWorker);
     }
 }
-
-

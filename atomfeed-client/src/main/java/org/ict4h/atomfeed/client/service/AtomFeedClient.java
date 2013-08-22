@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class AtomFeedClient implements FeedClient {
     private static final int FAILED_EVENTS_PROCESS_BATCH_SIZE = 5;
@@ -30,6 +31,7 @@ public class AtomFeedClient implements FeedClient {
     private JdbcConnectionProvider jdbcConnectionProvider;
     private URI feedUri;
     private EventWorker eventWorker;
+    private Map<String, String> cookies;
     private AllMarkers allMarkers;
     private AllFailedEvents allFailedEvents;
 
@@ -47,6 +49,7 @@ public class AtomFeedClient implements FeedClient {
         this.jdbcConnectionProvider = jdbcConnectionProvider;
         this.feedUri = feedUri;
         this.eventWorker = eventWorker;
+        this.cookies = cookies;
     }
 
     @Override

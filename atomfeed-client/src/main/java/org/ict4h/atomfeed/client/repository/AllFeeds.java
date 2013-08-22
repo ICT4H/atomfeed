@@ -9,27 +9,31 @@ import org.ict4h.atomfeed.client.repository.datasource.WebClient;
 
 import java.io.StringReader;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AllFeeds {
     private WebClient webClient;
     private AtomFeedProperties atomFeedProperties = new AtomFeedProperties();
+    private Map<String, String> clientCookies;
 
     private static Logger logger = Logger.getLogger(AllFeeds.class);
 
-    public AllFeeds() {
+    protected AllFeeds() {
         this.webClient = new WebClient();
     }
 
-    public AllFeeds(AtomFeedProperties atomFeedProperties) {
+    public AllFeeds(AtomFeedProperties atomFeedProperties, Map<String, String> clientCookies) {
         this();
         this.atomFeedProperties = atomFeedProperties;
+        this.clientCookies = clientCookies;
     }
 
     public Feed getFor(URI uri) {
     	if (uri == null) return null;
 
         logger.info(String.format("Reading URI - %s", uri));
-        String responseString = webClient.fetch(uri, atomFeedProperties);
+        String responseString = webClient.fetch(uri, atomFeedProperties, clientCookies);
         logger.debug(responseString);
         responseString.trim().replaceFirst("^([\\W]+)<", "<");
 

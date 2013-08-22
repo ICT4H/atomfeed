@@ -7,15 +7,21 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WebClient {
-    public String fetch(URI uri, AtomFeedProperties atomFeedProperties) {
+    public String fetch(URI uri, AtomFeedProperties atomFeedProperties, Map<String, String> clientCookies) {
         HttpURLConnection connection = null;
         StringBuilder stringBuilder = new StringBuilder();
         try {
             connection = (HttpURLConnection) uri.toURL().openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/atom+xml");
+            ClientCookies cookies = new ClientCookies(clientCookies);
+            String httpRequestPropertyValue = cookies.getHttpRequestPropertyValue();
+            if (httpRequestPropertyValue != null)
+                connection.setRequestProperty("Cookie", httpRequestPropertyValue);
             connection.setDoOutput(true);
             connection.setConnectTimeout(atomFeedProperties.getConnectTimeout());
             connection.setReadTimeout(atomFeedProperties.getReadTimeout());
