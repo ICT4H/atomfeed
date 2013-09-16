@@ -151,7 +151,7 @@ public class AtomFeedClientTest {
 
         verify(mockConnection, times(2)).rollback();
         verify(mockConnection, times(2)).commit();
-        verify(mockConnection).close();
+        verify(mockConnectionProvider).closeConnection(mockConnection);
     }
 
     @Test
@@ -170,7 +170,7 @@ public class AtomFeedClientTest {
 
         verify(mockConnection, times(2)).rollback();
         verify(mockConnection, times(2)).commit();
-        verify(mockConnection).close();
+        verify(mockConnectionProvider).closeConnection(mockConnection);
     }
 
     @Test
@@ -198,7 +198,7 @@ public class AtomFeedClientTest {
 
         verify(mockConnection, times(1)).rollback();
         verify(mockConnection, times(1)).commit();
-        verify(mockConnection).close();
+        verify(mockConnectionProvider).closeConnection(mockConnection);
     }
 
     @Test

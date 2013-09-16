@@ -22,6 +22,11 @@ public abstract class IntegrationTest {
             public Connection getConnection() throws SQLException {
                 return connection;
             }
+
+            @Override
+            public void closeConnection(Connection connection) throws SQLException {
+                connection.close();
+            }
         };
     }
 }

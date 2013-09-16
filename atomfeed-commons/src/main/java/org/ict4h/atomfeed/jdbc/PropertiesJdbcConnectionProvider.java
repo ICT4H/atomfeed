@@ -17,4 +17,9 @@ public class PropertiesJdbcConnectionProvider implements JdbcConnectionProvider 
                 configuration.getJdbcPassword()
         );
 	}
+
+    @Override
+    public void closeConnection(Connection connection) throws SQLException {
+        connection.close();
+    }
 }

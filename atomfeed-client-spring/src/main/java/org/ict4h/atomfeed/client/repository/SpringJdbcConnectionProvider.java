@@ -20,4 +20,9 @@ public class SpringJdbcConnectionProvider implements JdbcConnectionProvider {
         return DataSourceUtils.doGetConnection(dataSource);
     }
 
+    @Override
+    public void closeConnection(Connection connection) throws SQLException {
+        connection.close();
+    }
+
 }
