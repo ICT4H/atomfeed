@@ -29,8 +29,11 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
 
     @Override
     public void closeConnection(Connection connection) throws SQLException {
-        connection.close();
-        threadConnection.remove();
+        try {
+            connection.close();
+        } finally {
+            threadConnection.remove();
+        }
     }
 
 }
