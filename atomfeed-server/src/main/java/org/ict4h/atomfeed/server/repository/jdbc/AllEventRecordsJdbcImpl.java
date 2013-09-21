@@ -176,13 +176,13 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         String tableName = JdbcUtils.getTableName(schema, "event_records");
         if (category == null) {
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object from %s order by id asc limit ? offset ?", tableName));
+                    String.format("select * from %s order by id asc limit ? offset ?", tableName));
             statement.setInt(1, limit);
             statement.setInt(2, offset);
             return statement;
         } else {
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where category = ? order by id asc limit ? offset ?",
+                    String.format("select * from %s where category = ? order by id asc limit ? offset ?",
                             tableName));
             statement.setString(1, category);
             statement.setInt(2, limit);
