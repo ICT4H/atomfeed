@@ -20,4 +20,11 @@ public class CategoryCriteria implements Criterion{
         statement.setString(1, category);
         return statement;
     }
+
+    @Override
+    public PreparedStatement prepareStatement(PreparedStatement statement, Integer limit, Integer offset) throws SQLException {
+        statement.setInt(2, limit);
+        statement.setInt(3, offset);
+        return  statement;
+    }
 }

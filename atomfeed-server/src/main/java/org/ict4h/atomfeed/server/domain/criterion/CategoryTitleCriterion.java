@@ -23,4 +23,11 @@ public class CategoryTitleCriterion implements Criterion {
         statement.setString(2, title);
         return statement;
     }
+
+    @Override
+    public PreparedStatement prepareStatement(PreparedStatement statement, Integer limit, Integer offset) throws SQLException {
+        statement.setInt(3, limit);
+        statement.setInt(4, offset);
+        return  statement;
+    }
 }

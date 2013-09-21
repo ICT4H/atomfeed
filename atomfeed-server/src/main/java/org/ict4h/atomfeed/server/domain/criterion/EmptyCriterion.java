@@ -13,5 +13,12 @@ public class EmptyCriterion implements Criterion{
     public PreparedStatement prepareStatement(PreparedStatement statement) throws SQLException{
         return statement;
     }
+
+    @Override
+    public PreparedStatement prepareStatement(PreparedStatement statement, Integer limit, Integer offset) throws SQLException {
+        statement.setInt(1, limit);
+        statement.setInt(2, offset);
+        return statement;
+    }
 }
 

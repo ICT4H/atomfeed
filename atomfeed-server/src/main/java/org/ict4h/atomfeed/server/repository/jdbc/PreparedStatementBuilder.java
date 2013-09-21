@@ -17,6 +17,8 @@ public class PreparedStatementBuilder {
     private String rawSql;
     private Integer limit;
     private Integer offset;
+    //TODO - should set an enum instead of a flag
+    private boolean shouldEnforceLimit;
 
     public PreparedStatementBuilder() {
         rawSql = "";
@@ -35,6 +37,7 @@ public class PreparedStatementBuilder {
     }
 
     public PreparedStatementBuilder withLimitAndOffset(Integer limit, Integer offset){
+        this.shouldEnforceLimit = true;
         this.limit = limit;
         this.offset = offset;
         this.rawSql = new StringBuilder(this.rawSql).append(' ').append("limit ? offset ?").toString();
@@ -53,6 +56,9 @@ public class PreparedStatementBuilder {
     }
 
     public PreparedStatement build(Connection connection) throws SQLException {
+        if(shouldEnforceLimit){
+            return criterion.prepareStatement(connection.prepareStatement(this.rawSql), limit, offset);
+        }
         return criterion.prepareStatement(connection.prepareStatement(this.rawSql));
     }
 
