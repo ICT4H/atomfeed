@@ -10,10 +10,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 //usage - new PreparedStatementBuilder().count().withCriteria(criterion).build(connection);
+//usage - new PreparedStatementBuilder().select().withCriteria(criterion).orderById().withLimitAndOffset(l,o).build(connection);
 public class PreparedStatementBuilder {
     private final String tableName;
     private Criterion criterion;
     private String rawSql;
+    private Integer limit;
+    private Integer offset;
 
     public PreparedStatementBuilder() {
         rawSql = "";
@@ -23,6 +26,23 @@ public class PreparedStatementBuilder {
 
     public PreparedStatementBuilder count() {
         this.rawSql = String.format("select count(*) from %s", tableName);
+        return this;
+    }
+
+    public PreparedStatementBuilder select() {
+        this.rawSql = String.format("select * from %s", tableName);
+        return this;
+    }
+
+    public PreparedStatementBuilder withLimitAndOffset(Integer limit, Integer offset){
+        this.limit = limit;
+        this.offset = offset;
+        this.rawSql = new StringBuilder(this.rawSql).append(' ').append("limit ? offset ?").toString();
+        return this;
+    }
+
+    public PreparedStatementBuilder orderById(){
+        this.rawSql = new StringBuilder(this.rawSql).append(' ').append("order by id asc").toString();
         return this;
     }
 

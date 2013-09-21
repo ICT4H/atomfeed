@@ -58,6 +58,25 @@ public class PreparedStatementBuilderTest {
         builder.count().withCriteria(new TitleCriteria("title")).build(connection);
         verify(statement).setString(1,"title");
     }
+
+    @Test
+    public void shouldBuildSelectQueryWithNoCriterion() throws Exception {
+        final String rawSql = builder.select().withCriteria(new EmptyCriterion()).getRawSql();
+        assertEquals(String.format("select * from %s", fQTN), rawSql);
+    }
+
+    @Test
+    public void shouldBuildSelectQueryWithOrderAndNoCriterion() throws Exception {
+        final String rawSql = builder.select().withCriteria(new EmptyCriterion()).orderById().getRawSql();
+        assertEquals(String.format("select * from %s order by id asc", fQTN), rawSql);
+    }
+
+    @Test
+    public void shouldBuildSelectQueryWithLimitAndOffsetAndNoCriterion() throws Exception {
+        final String rawSql = builder.select().withCriteria(new EmptyCriterion()).withLimitAndOffset(1,1).getRawSql();
+        assertEquals(String.format("select * from %s limit ? offset ?", fQTN), rawSql);
+    }
+
 }
 
 
