@@ -1,6 +1,7 @@
 package org.ict4h.atomfeed.spring.resource;
 
 import org.apache.log4j.Logger;
+import org.ict4h.atomfeed.server.domain.criterion.CategoryTitleCriterion;
 import org.ict4h.atomfeed.server.service.EventFeedService;
 import org.ict4h.atomfeed.server.service.helper.EventFeedServiceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class EventResource {
     private EventFeedService eventFeedService;
+
     private static Logger logger = Logger.getLogger(EventResource.class);
 
     @Autowired
@@ -48,5 +50,12 @@ public class EventResource {
                                            @PathVariable String category,  @PathVariable int n) {
         return EventFeedServiceHelper.getEventFeed(eventFeedService,httpServletRequest.getRequestURL().toString(),
                                                    category, n,logger);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/feed/{category}/{title}/recent")
+    @ResponseBody
+    public String getRecentEventFeedWithCategoryAndTitle(HttpServletRequest httpServletRequest,
+                                           @PathVariable String category,  @PathVariable String title) {
+        return EventFeedServiceHelper.getRecentFeed(new CategoryTitleCriterion(category,title),eventFeedService, httpServletRequest.getRequestURL().toString(), logger);
     }
 }

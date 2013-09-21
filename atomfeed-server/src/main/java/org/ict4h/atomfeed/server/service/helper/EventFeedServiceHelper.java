@@ -4,6 +4,7 @@ import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedOutput;
 import org.apache.log4j.Logger;
+import org.ict4h.atomfeed.server.domain.criterion.Criterion;
 import org.ict4h.atomfeed.server.service.EventFeedService;
 
 import java.net.URI;
@@ -38,5 +39,9 @@ public class EventFeedServiceHelper {
             logger.error("error occurred while getting recent feedgenerator", e);
             throw new RuntimeException("Error serializing feed.", e);
         }
+    }
+
+    public static String getRecentFeed(Criterion criterion, EventFeedService eventFeedService,String requestURL, Logger logger) {
+        return null;
     }
 }
