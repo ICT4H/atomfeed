@@ -69,6 +69,31 @@ public class PreparedStatementBuilderTest {
         final String rawSql = PreparedStatementBuilder.select().withCriteria(new EmptyCriterion()).withLimitAndOffset(1,1).getRawSql();
         assertEquals(String.format("select * from %s limit ? offset ?", fQTN), rawSql);
     }
+
+    @Test
+    public void shouldBuildSelectPreparedStatementWithNoCriterion() throws Exception {
+        String expectedRawSql = String.format("select * from %s limit ? offset ?", fQTN);
+        Connection connection = mock(Connection.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(connection.prepareStatement(expectedRawSql)).thenReturn(statement);
+        PreparedStatementBuilder.select().withCriteria(new EmptyCriterion()).withLimitAndOffset(5,20).build(connection);
+        verify(statement).setInt(1, 5);
+        verify(statement).setInt(2,20);
+    }
+
+    @Test
+    public void shouldBuildSelectPreparedStatementWithCategoryTitleCriterion() throws Exception {
+        String expectedRawSql = String.format("select * from %s where category = ? and title = ? limit ? offset ?", fQTN);
+        Connection connection = mock(Connection.class);
+        PreparedStatement statement = mock(PreparedStatement.class);
+        when(connection.prepareStatement(expectedRawSql)).thenReturn(statement);
+        PreparedStatementBuilder.select().withCriteria(new CategoryTitleCriterion("category","title")).
+                withLimitAndOffset(5,20).build(connection);
+        verify(statement).setString(1,"category");
+        verify(statement).setString(2,"title");
+        verify(statement).setInt(3,5);
+        verify(statement).setInt(4,20);
+    }
 }
 
 

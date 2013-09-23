@@ -9,8 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-//usage - PreparedStatementBuilder().count.withCriteria(criterion).build(connection);
-//usage - PreparedStatementBuilder().select.withCriteria(criterion).orderById().withLimitAndOffset(l,o).build(connection);
+//usage - PreparedStatementBuilder.count().withCriteria(criterion).build(connection);
+//usage - PreparedStatementBuilder.select().withCriteria(criterion).orderById().withLimitAndOffset(l,o).build(connection);
 public class PreparedStatementBuilder {
     private enum QueryType{
         SELECT,COUNT
