@@ -9,35 +9,35 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-//usage - new PreparedStatementBuilder().count().withCriteria(criterion).build(connection);
-//usage - new PreparedStatementBuilder().select().withCriteria(criterion).orderById().withLimitAndOffset(l,o).build(connection);
+//usage - PreparedStatementBuilder().count.withCriteria(criterion).build(connection);
+//usage - PreparedStatementBuilder().select.withCriteria(criterion).orderById().withLimitAndOffset(l,o).build(connection);
 public class PreparedStatementBuilder {
-    private final String tableName;
+    private enum QueryType{
+        SELECT,COUNT
+    }
+
+    private static String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
     private Criterion criterion;
     private String rawSql;
     private Integer limit;
     private Integer offset;
-    //TODO - should set an enum instead of a flag
-    private boolean shouldEnforceLimit;
+    private QueryType queryType;
 
-    public PreparedStatementBuilder() {
-        rawSql = "";
-        tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
+    private PreparedStatementBuilder(QueryType queryType, String rawSql) {
+        this.rawSql = rawSql;
+        this.queryType = queryType;
         criterion = new EmptyCriterion();
     }
 
-    public PreparedStatementBuilder count() {
-        this.rawSql = String.format("select count(*) from %s", tableName);
-        return this;
+    public static PreparedStatementBuilder count() {
+        return new PreparedStatementBuilder(QueryType.COUNT,String.format("select count(*) from %s", tableName));
     }
 
-    public PreparedStatementBuilder select() {
-        this.rawSql = String.format("select * from %s", tableName);
-        return this;
+    public static PreparedStatementBuilder select() {
+        return new PreparedStatementBuilder(QueryType.SELECT,String.format("select * from %s", tableName));
     }
 
     public PreparedStatementBuilder withLimitAndOffset(Integer limit, Integer offset){
-        this.shouldEnforceLimit = true;
         this.limit = limit;
         this.offset = offset;
         this.rawSql = new StringBuilder(this.rawSql).append(' ').append("limit ? offset ?").toString();
@@ -56,10 +56,17 @@ public class PreparedStatementBuilder {
     }
 
     public PreparedStatement build(Connection connection) throws SQLException {
-        if(shouldEnforceLimit){
-            return criterion.prepareStatement(connection.prepareStatement(this.rawSql), limit, offset);
+        int index = 1;
+        PreparedStatement statement = connection.prepareStatement(this.rawSql);
+        for(String value : criterion.getValues()){
+            statement.setString(index, value);
+            index++;
         }
-        return criterion.prepareStatement(connection.prepareStatement(this.rawSql));
+        if(this.queryType.equals(QueryType.SELECT)){
+            statement.setInt(index, this.limit);
+            statement.setInt(index + 1, this.offset);
+        }
+        return statement;
     }
 
     public String getRawSql() {
