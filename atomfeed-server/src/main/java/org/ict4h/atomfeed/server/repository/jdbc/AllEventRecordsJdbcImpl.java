@@ -25,7 +25,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
     @Override
     public void add(EventRecord eventRecord) {
-        Connection connection;
+        Connection connection = null;
         PreparedStatement stmt = null;
         try {
             connection = getDbConnection();
@@ -38,10 +38,13 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             stmt.setString(4, eventRecord.getContents());
             stmt.setString(5, eventRecord.getCategory());
             stmt.executeUpdate();
+            connection.commit();
         } catch (SQLException e) {
             throw new AtomFeedRuntimeException(e);
-        } finally {
-            closeAll(stmt, null);
+        }
+        finally {
+            close(connection);
+            close(stmt);
         }
     }
 
@@ -74,14 +77,16 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
     }
 
     private void closeAll(PreparedStatement stmt, ResultSet rs) {
+        close(rs);
+        close(stmt);
+    }
+
+    private void close(AutoCloseable rs) {
         try {
             if (rs != null) {
                 rs.close();
             }
-            if (stmt != null) {
-                stmt.close();
-            }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new AtomFeedRuntimeException(e);
         }
     }
