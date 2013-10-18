@@ -149,7 +149,7 @@ public class AtomFeedClientTest {
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
         verify(allMarkersMock).put(feedUri, entry2.getId(), new URI(feedLink));
 
-        verify(mockConnection, times(2)).rollback();
+        verify(mockConnection, times(3)).rollback();
         verify(mockConnection, times(2)).commit();
         verify(mockConnectionProvider).closeConnection(mockConnection);
     }
@@ -168,7 +168,7 @@ public class AtomFeedClientTest {
         FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), mockConnectionProvider, feedUri, eventWorker);
         feedClient.processEvents();
 
-        verify(mockConnection, times(2)).rollback();
+        verify(mockConnection, times(3)).rollback();
         verify(mockConnection, times(2)).commit();
         verify(mockConnectionProvider).closeConnection(mockConnection);
     }
@@ -196,7 +196,7 @@ public class AtomFeedClientTest {
         assertEquals(entry1.getId(), captor.getValue().getEvent().getId());
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
 
-        verify(mockConnection, times(1)).rollback();
+        verify(mockConnection, times(2)).rollback();
         verify(mockConnection, times(1)).commit();
         verify(mockConnectionProvider).closeConnection(mockConnection);
     }
