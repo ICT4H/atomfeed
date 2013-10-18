@@ -104,7 +104,9 @@ public class AtomFeedClient implements FeedClient {
                     if (atomFeedProperties.controlsEventProcessing()) {
                         connection.setAutoCommit(autoCommit);
                     }
-                    connection.rollback();
+                    if(!autoCommit) {
+                        connection.rollback();
+                    }
                     jdbcConnectionProvider.closeConnection(connection);
                 } catch (SQLException e) {
                     throw new AtomFeedClientException(e);
@@ -158,7 +160,9 @@ public class AtomFeedClient implements FeedClient {
                     if (atomFeedProperties.controlsEventProcessing()) {
                         connection.setAutoCommit(autoCommit);
                     }
-                    connection.rollback();
+                    if(!autoCommit) {
+                        connection.rollback();
+                    }
                     jdbcConnectionProvider.closeConnection(connection);
                 } catch (SQLException e) {
                     throw new AtomFeedClientException(e);
