@@ -19,6 +19,10 @@
     <bean id="allEventRecords" class="org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl">
         <constructor-arg ref="jdbcConnectionProvider"/>
     </bean>
+
+    <bean id="eventRecordsOffsetMarkers" class="org.ict4h.atomfeed.server.repository.jdbc.EventRecordsOffsetMarkersJdbcImpl">
+        <constructor-arg ref="jdbcConnectionProvider"/>
+    </bean>
     
     <bean id="allChunkingEntries" class="org.ict4h.atomfeed.server.repository.jdbc.ChunkingEntriesJdbcImpl">
         <constructor-arg ref="jdbcConnectionProvider"/>

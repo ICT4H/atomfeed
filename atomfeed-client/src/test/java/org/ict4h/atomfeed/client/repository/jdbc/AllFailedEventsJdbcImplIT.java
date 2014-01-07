@@ -3,6 +3,7 @@ package org.ict4h.atomfeed.client.repository.jdbc;
 import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,24 +20,24 @@ import static org.junit.Assert.*;
 public class AllFailedEventsJdbcImplIT extends IntegrationTest{
 
     private AllFailedEventsJdbcImpl allFailedEvents;
-    private Connection connection;
+    private JdbcConnectionProvider connectionProvider;
 
     private void clearRecords() throws SQLException {
-        Statement statement = connection.createStatement();
+        Statement statement = connectionProvider.getConnection().createStatement();
         statement.execute("delete from atomfeed.failed_events");
         statement.close();
     }
 
     @Before
     public void setUp() throws SQLException {
-        connection = getConnection();
-        allFailedEvents = new AllFailedEventsJdbcImpl(getProvider(connection));
+        connectionProvider = getConnectionProvider();
+        allFailedEvents = new AllFailedEventsJdbcImpl(connectionProvider);
     }
 
     @After
     public void tearDown() throws SQLException {
         clearRecords();
-        connection.close();
+        connectionProvider.closeConnection(connectionProvider.getConnection());
     }
 
     @Test

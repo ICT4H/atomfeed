@@ -2,6 +2,7 @@ package org.ict4h.atomfeed.client.repository.jdbc;
 
 import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.client.domain.Marker;
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,24 +19,24 @@ import static org.junit.Assert.assertNull;
 public class AllMarkersJdbcImplIT extends IntegrationTest {
 
     private AllMarkersJdbcImpl allMarkers;
-    private Connection connection;
+    private JdbcConnectionProvider connectionProvider;
 
     private void clearRecords() throws SQLException {
-        Statement statement = connection.createStatement();
+        Statement statement = connectionProvider.getConnection().createStatement();
         statement.execute("delete from atomfeed.markers");
         statement.close();
     }
 
     @Before
     public void setUp() throws SQLException {
-        connection = getConnection();
-        allMarkers = new AllMarkersJdbcImpl(getProvider(connection));
+        connectionProvider = getConnectionProvider();
+        allMarkers = new AllMarkersJdbcImpl(connectionProvider);
     }
 
     @After
     public void tearDown() throws SQLException {
         clearRecords();
-        connection.close();
+        connectionProvider.closeConnection(connectionProvider.getConnection());
     }
 
     @Test

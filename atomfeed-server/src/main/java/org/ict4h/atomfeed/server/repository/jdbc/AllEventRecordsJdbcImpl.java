@@ -13,7 +13,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
@@ -28,7 +31,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         Connection connection = null;
         PreparedStatement stmt = null;
         try {
-            connection = getDbConnection();
+            connection = provider.getConnection();
             String insertSql = String.format("insert into %s (uuid, title, uri, object,category) values (?, ?, ?, ?,?)",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
             stmt = connection.prepareStatement(insertSql);
@@ -41,15 +44,14 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             connection.commit();
         } catch (SQLException e) {
             throw new AtomFeedRuntimeException(e);
-        }
-        finally {
-            close(connection);
+        } finally {
             close(stmt);
+            try {
+                provider.closeConnection(connection);
+            } catch (SQLException e) {
+                throw new AtomFeedRuntimeException(e);
+            }
         }
-    }
-
-    private Connection getDbConnection() throws SQLException {
-        return provider.getConnection();
     }
 
     @Override
@@ -58,7 +60,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            connection = getDbConnection();
+            connection = provider.getConnection();
             String sql = String.format("select id, uuid, title, timestamp, uri, object, category from %s where uuid = ?",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
             stmt = connection.prepareStatement(sql);
@@ -98,7 +100,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            connection = getDbConnection();
+            connection = provider.getConnection();
             stmt = buildCountStatement(category, connection);
             rs = stmt.executeQuery();
             return rs.next() ? rs.getInt(1) : 0;
@@ -112,13 +114,13 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
     @Override
     //TODO: Offset - Cannot be negative for initial feed with no entries. Fix this
     //TODO: Order By is required to ensure that the generated query plan is returns events in the same order all the time.
-    public List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit) {
+    public List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit, Integer startId) {
         Connection connection;
         PreparedStatement statement = null;
         ResultSet rs = null;
         try {
-            connection = getDbConnection();
-            statement = buildSelectStatement(connection, category, offset, limit);
+            connection = provider.getConnection();
+            statement = buildSelectStatement(connection, category, offset, limit, startId);
             ResultSet results = statement.executeQuery();
             return mapEventRecords(results);
         } catch (SQLException e) {
@@ -134,7 +136,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getDbConnection();
+            connection = provider.getConnection();
             statement = buildSelectStatement(connection, timeRange, category);
             return mapEventRecords(statement.executeQuery());
         } catch (SQLException ex) {
@@ -144,9 +146,68 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         }
     }
 
+    @Override
+    public int getTotalCountForCategory(String category, Integer beyondIndex, Integer endIndex) {
+        Connection connection;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        ArrayList<Object> params = new ArrayList<>();
+        String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
+        StringBuffer query = new StringBuffer(String.format("select count(id) from %s where 1=1", tableName));
+
+        if (!isBlank(category)) {
+            query.append(" and category = ?");
+            params.add(category);
+        }
+        if (beyondIndex != null) {
+            query.append(" and id > ? ");
+            params.add(beyondIndex);
+        }
+        if ((endIndex != null) && (endIndex > 0)) {
+            query.append(" and id <= ? ");
+            params.add(endIndex);
+        }
+        try {
+            connection = provider.getConnection();
+            stmt = connection.prepareStatement(query.toString());
+            for (int pIndex = 1; pIndex <= params.size(); pIndex++) {
+                stmt.setObject(pIndex, params.get(pIndex - 1));
+            }
+            rs = stmt.executeQuery();
+            return rs.next() ? rs.getInt(1) : 0;
+        } catch (SQLException e) {
+            throw new AtomFeedRuntimeException(e);
+        } finally {
+            closeAll(stmt, rs);
+        }
+    }
+
+    @Override
+    public List<String> findCategories() {
+        Connection connection;
+        PreparedStatement statement = null;
+        ResultSet results = null;
+        List<String> categories = new ArrayList<>();
+        try {
+            connection = provider.getConnection();
+            String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
+            statement = connection.prepareStatement("select distinct category from " + tableName);
+            results = statement.executeQuery();
+            while (results.next()) {
+                categories.add(results.getString(1));
+            }
+            return categories;
+        } catch (SQLException e) {
+            throw new AtomFeedRuntimeException(e);
+        } finally {
+            closeAll(statement, results);
+        }
+
+    }
+
     private PreparedStatement buildSelectStatement(Connection connection, TimeRange timeRange, String category) throws SQLException {
         String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
-        if (category == null) {
+        if (isBlank(category)) {
             String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ? order by timestamp asc",
                     tableName);
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -166,31 +227,33 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
     private PreparedStatement buildCountStatement(String category, Connection connection) throws SQLException {
         String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
-        if (category == null) {
-            return connection.prepareStatement(String.format("select count(*) from %s", tableName));
+        if (isBlank(category)) {
+            return connection.prepareStatement(String.format("select count(id) from %s", tableName));
         } else {
-            PreparedStatement statement = connection.prepareStatement(String.format("select count(*) from %s where category = ?", tableName));
+            PreparedStatement statement = connection.prepareStatement(String.format("select count(id) from %s where category = ?", tableName));
             statement.setString(1, category);
             return statement;
         }
     }
 
-    private PreparedStatement buildSelectStatement(Connection connection, String category, Integer offset, Integer limit) throws SQLException {
+    private PreparedStatement buildSelectStatement(Connection connection, String category, Integer offset, Integer limit, Integer startId) throws SQLException {
         String schema = Configuration.getInstance().getSchema();
         String tableName = JdbcUtils.getTableName(schema, "event_records");
-        if (category == null) {
+        if (isBlank(category)) {
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object from %s order by id asc limit ? offset ?", tableName));
-            statement.setInt(1, limit);
-            statement.setInt(2, offset);
+                    String.format("select id, uuid, title, timestamp, uri, object from %s where id > ? order by id asc limit ? offset ?", tableName));
+            statement.setInt(1, startId);
+            statement.setInt(2, limit);
+            statement.setInt(3, offset);
             return statement;
         } else {
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where category = ? order by id asc limit ? offset ?",
+                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where id > ? and category = ? order by id asc limit ? offset ?",
                             tableName));
-            statement.setString(1, category);
-            statement.setInt(2, limit);
-            statement.setInt(3, offset);
+            statement.setInt(1, startId);
+            statement.setString(2, category);
+            statement.setInt(3, limit);
+            statement.setInt(4, offset);
             return statement;
         }
     }

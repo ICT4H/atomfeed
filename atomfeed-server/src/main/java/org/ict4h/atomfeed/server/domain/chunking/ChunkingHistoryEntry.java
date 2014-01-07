@@ -16,6 +16,14 @@ public class ChunkingHistoryEntry {
     @Column(name = "start")
     private Long leftBound;
 
+    public ChunkingHistoryEntry() {}
+
+    public ChunkingHistoryEntry(int sequenceNumber, Long interval, Long leftBound) {
+        this.sequenceNumber = sequenceNumber;
+        this.interval = interval;
+        this.leftBound = leftBound;
+    }
+
     public int getSequenceNumber() {
         return sequenceNumber;
     }

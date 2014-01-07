@@ -4,7 +4,7 @@ public class NumberRange {
     Integer offset;
     Integer limit;
 
-    public NumberRange(Integer offset, Integer limit) {
+    public NumberRange(Integer offset, Integer limit, int startId) {
         this.offset = offset;
         this.limit = limit;
     }
@@ -16,4 +16,5 @@ public class NumberRange {
     public Integer getLimit() {
         return limit;
     }
+
 }

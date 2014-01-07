@@ -13,6 +13,10 @@
                            http://www.springframework.org/schema/aop
                            http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
+    <!--
+      This context file can't be used to create AtomFeedClient instance, as the constructor arguments don't match.
+      Use AtomFeedClientBuilder instead.
+    -->
     <context:property-placeholder location="classpath*:*.properties"/>
 
     <import resource="classpath:atomFeedClientJdbcContext.xml"/>
@@ -33,6 +37,7 @@
         <constructor-arg ref="allFeeds"/>
         <constructor-arg ref="allMarkers"/>
         <constructor-arg ref="allFailedEvents"/>
+
     </bean>
 
 </beans>

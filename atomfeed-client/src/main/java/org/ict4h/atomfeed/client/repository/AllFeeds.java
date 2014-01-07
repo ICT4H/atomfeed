@@ -23,6 +23,10 @@ public class AllFeeds {
         this.webClient = new WebClient();
     }
 
+    public AllFeeds(WebClient webClient) {
+        this.webClient = webClient;
+    }
+
     public AllFeeds(AtomFeedProperties atomFeedProperties, Map<String, String> clientCookies) {
         this();
         this.atomFeedProperties = atomFeedProperties;

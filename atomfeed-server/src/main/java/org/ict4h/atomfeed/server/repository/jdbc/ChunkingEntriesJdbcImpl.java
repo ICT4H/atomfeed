@@ -16,51 +16,51 @@ import java.util.List;
 
 public class ChunkingEntriesJdbcImpl implements ChunkingEntries {
 
-	private JdbcConnectionProvider provider;
-	
-	public ChunkingEntriesJdbcImpl(JdbcConnectionProvider provider) {
-		this.provider = provider;
-	}
-	
-	@Override
-	public List<ChunkingHistoryEntry> all() {
-		Connection connection;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
-			connection = getDbConnection();
-			String sql = String.format("select id, chunk_length, start from %s order by id",
+    private JdbcConnectionProvider provider;
+
+    public ChunkingEntriesJdbcImpl(JdbcConnectionProvider provider) {
+        this.provider = provider;
+    }
+
+    @Override
+    public List<ChunkingHistoryEntry> all() {
+        Connection connection;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            connection = getDbConnection();
+            String sql = String.format("select id, chunk_length, start from %s order by id",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "chunking_history"));
-			stmt = connection.prepareStatement(sql);
-			rs = stmt.executeQuery();
-			return mapHistories(rs);
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		} finally {
-			closeAll(stmt, rs);
-		}
-	}
+            stmt = connection.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            return mapHistories(rs);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(stmt, rs);
+        }
+    }
 
-	private void closeAll(PreparedStatement stmt, ResultSet rs) {
-		try {
-			if (rs != null) {
-					rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
-		} catch (SQLException e) {
-			throw new AtomFeedRuntimeException(e);
-		}
-	}
+    private void closeAll(PreparedStatement stmt, ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (SQLException e) {
+            throw new AtomFeedRuntimeException(e);
+        }
+    }
 
-	private List<ChunkingHistoryEntry> mapHistories(ResultSet results) {
-		JdbcResultSetMapper<ChunkingHistoryEntry> resultSetMapper = new JdbcResultSetMapper<ChunkingHistoryEntry>();
+    private List<ChunkingHistoryEntry> mapHistories(ResultSet results) {
+        JdbcResultSetMapper<ChunkingHistoryEntry> resultSetMapper = new JdbcResultSetMapper<>();
         return resultSetMapper.mapResultSetToObject(results, ChunkingHistoryEntry.class);
-	}
+    }
 
-	private Connection getDbConnection() throws SQLException {
-		return provider.getConnection();
-	}
+    private Connection getDbConnection() throws SQLException {
+        return provider.getConnection();
+    }
 
 }

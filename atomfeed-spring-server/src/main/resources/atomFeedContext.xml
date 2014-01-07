@@ -57,6 +57,7 @@
     <bean id="feedGenerator" factory-bean="generatorFactory" factory-method="getFeedGenerator">
         <constructor-arg ref="allEventRecords"/>
         <constructor-arg ref="allChunkingEntries"/>
+        <constructor-arg ref="eventRecordsOffsetMarkers"/>
         <constructor-arg ref="resourceHelper"/>
     </bean>
     

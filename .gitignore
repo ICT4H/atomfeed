@@ -7,5 +7,6 @@ atomfeed.ipr
 atomfeed.iws
 .project
 */.project
+*/bin
 .settings/
 activemq-data

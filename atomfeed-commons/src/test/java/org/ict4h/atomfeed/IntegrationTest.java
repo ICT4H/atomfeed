@@ -8,25 +8,39 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public abstract class IntegrationTest {
-    protected Connection getConnection() throws SQLException {
-        ResourceBundle bundle = ResourceBundle.getBundle("atomfeed");
+    private ResourceBundle bundle = ResourceBundle.getBundle("atomfeed");
+
+    protected Connection getConnectionFromDriverManager() throws SQLException {
+        //System.out.println(String.format("jdbc url: %s, username: %s, password: %s", bundle.getString("jdbc.url"), bundle.getString("jdbc.username"), bundle.getString("jdbc.password")));
         return DriverManager.getConnection(bundle.getString("jdbc.url"),
                 bundle.getString("jdbc.username"),
                 bundle.getString("jdbc.password")
         );
     }
 
-    protected JdbcConnectionProvider getProvider(final Connection connection){
+    protected JdbcConnectionProvider getConnectionProvider() {
         return new JdbcConnectionProvider() {
+            private Connection providedConnection = null;
             @Override
             public Connection getConnection() throws SQLException {
-                return connection;
+                if (providedConnection == null) {
+                    providedConnection = getConnectionFromDriverManager();
+                    providedConnection.setAutoCommit(false);
+                }
+                return providedConnection;
             }
 
             @Override
             public void closeConnection(Connection connection) throws SQLException {
-                connection.close();
+                if (connection != null) {
+                    connection.close();
+                }
+                this.providedConnection = null;
             }
         };
+    }
+
+    protected String getProperty(String key) {
+        return bundle.getString(key);
     }
 }

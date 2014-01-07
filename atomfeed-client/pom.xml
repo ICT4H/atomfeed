@@ -16,7 +16,7 @@
         <db.name>atomfeed</db.name>
         <db.port>3306</db.port>
         <db.user>postgres</db.user>
-        <db.password />
+        <db.password>admin</db.password>
         <db.schema>atomfeed</db.schema>
     </properties>
 
@@ -122,19 +122,19 @@
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
                         <executions>
-                            <execution>
-                                <id>Setup Database</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>sh</executable>
-                                    <arguments>
-                                        <argument>${project.build.outputDirectory}/sql/setup.sh</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
+                            <!--<execution>-->
+                                <!--<id>Setup Database</id>-->
+                                <!--<phase>pre-integration-test</phase>-->
+                                <!--<goals>-->
+                                    <!--<goal>exec</goal>-->
+                                <!--</goals>-->
+                                <!--<configuration>-->
+                                    <!--<executable>sh</executable>-->
+                                    <!--<arguments>-->
+                                        <!--<argument>${project.build.outputDirectory}/sql/setup.sh</argument>-->
+                                    <!--</arguments>-->
+                                <!--</configuration>-->
+                            <!--</execution>-->
                         </executions>
                     </plugin>
                     <plugin>
@@ -142,6 +142,8 @@
                         <artifactId>liquibase-maven-plugin</artifactId>
                         <version>2.0.1</version>
                         <configuration>
+                            <propertyFileWillOverride>true</propertyFileWillOverride>
+                            <propertyFile>maven.properties</propertyFile>
                             <changeLogFile>src/main/resources/sql/db_migrations.xml</changeLogFile>
                             <driver>org.postgresql.Driver</driver>
                             <url>jdbc:postgresql://${db.server}/${db.name}</url>

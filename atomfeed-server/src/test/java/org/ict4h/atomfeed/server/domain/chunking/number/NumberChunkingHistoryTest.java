@@ -15,6 +15,7 @@ public class NumberChunkingHistoryTest {
 	@Test
 	public void shouldGetFeedCountGivenTotalNumRecordsFromMultipleHistory() {
 		NumberChunkingHistory historyNumberBased = getMultiEntryHistory();
+        Assert.assertEquals(4, historyNumberBased.getNumberOfFeeds(16));
 		Assert.assertEquals(4, historyNumberBased.getNumberOfFeeds(18));
 		Assert.assertEquals(5, historyNumberBased.getNumberOfFeeds(24));
 		Assert.assertEquals(3, historyNumberBased.getNumberOfFeeds(13));

@@ -1,5 +1,7 @@
 package org.ict4h.atomfeed.server.domain.chunking.number;
 
+import org.ict4h.atomfeed.server.domain.EventRecordsOffsetMarker;
+
 public class NumberChunkingHistoryEntry {
 
     private int sequenceNumber;
@@ -24,8 +26,17 @@ public class NumberChunkingHistoryEntry {
     }
 
     public NumberRange getRange(Integer relativeFeedId) {
-        int start = leftBound + (relativeFeedId - 1) * chunkLength;
-        return new NumberRange(start - 1, chunkLength);
+        int offset = leftBound - 1 + (relativeFeedId - 1) * chunkLength;
+        int chunkSize = findChunkSize(offset);
+        return new NumberRange(offset, chunkSize, 0);
+    }
+
+    private int findChunkSize(int offset) {
+        if (isOpen()) {
+            return chunkLength;
+        } else {
+            return Math.min(chunkLength, rightBound - offset);
+        }
     }
 
     public boolean isOpen() {

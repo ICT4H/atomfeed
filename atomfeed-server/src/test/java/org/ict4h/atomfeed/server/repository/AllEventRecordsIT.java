@@ -1,9 +1,9 @@
 package org.ict4h.atomfeed.server.repository;
 
-import ch.lambdaj.Lambda;
-import org.hamcrest.Matchers;
-import org.hamcrest.core.Is;
+import org.apache.commons.lang3.StringUtils;
 import org.ict4h.atomfeed.IntegrationTest;
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
@@ -14,7 +14,6 @@ import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -22,9 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static ch.lambdaj.Lambda.filter;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.*;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.startsWith;
@@ -33,24 +30,31 @@ import static org.hamcrest.Matchers.startsWith;
 public class AllEventRecordsIT extends IntegrationTest {
 
     private AllEventRecords allEventRecords;
-    private Connection connection;
+    private JdbcConnectionProvider connectionProvider;
 
     @Before
     public void before() throws SQLException {
-        connection = getConnection();
-        allEventRecords = new AllEventRecordsJdbcImpl(getProvider(connection));
+        connectionProvider = getConnectionProvider();
         clearRecords();
+        allEventRecords = new AllEventRecordsJdbcImpl(getConnectionProvider());
+
     }
 
     @After
     public void after() throws SQLException {
         clearRecords();
-        connection.close();
+        connectionProvider.closeConnection(connectionProvider.getConnection());
     }
 
     private void clearRecords() throws SQLException {
-        Statement statement = connection.createStatement();
-        statement.execute("delete from atomfeed.event_records");
+        Statement statement = connectionProvider.getConnection().createStatement();
+        String event_records_table = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "event_records");
+        statement.execute(String.format("delete from %s", event_records_table));
+        String event_records_marker_table = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "event_records_offset_marker");
+        statement.execute(String.format("delete from %s", event_records_marker_table));
+        String chunking_history_table = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "chunking_history");
+        statement.execute(String.format("delete from %s", chunking_history_table));
+        connectionProvider.getConnection().commit();
         statement.close();
     }
 
@@ -103,7 +107,7 @@ public class AllEventRecordsIT extends IntegrationTest {
         EventRecord e2 = allEventRecords.get("uuid2");
         EventRecord e5 = allEventRecords.get("uuid5");
 
-        List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(category, 1, 4);
+        List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(category, 1, 4, 0);
 
         assertEquals(4, events.size());
         assertEquals(e2.getUuid(), events.get(0).getUuid());
@@ -145,7 +149,7 @@ public class AllEventRecordsIT extends IntegrationTest {
         addEvents(2,"uuid1", firstCategory);
         addEvents(3,"uuid2","another");
         addEvents(5,"uuid3", firstCategory);
-        List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(firstCategory, 2, 3);
+        List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(firstCategory, 2, 3, 0);
         assertEquals(3,events.size());
         assertEquals("uuid31",events.get(0).getUuid());
         assertEquals("uuid32",events.get(1).getUuid());
@@ -158,8 +162,32 @@ public class AllEventRecordsIT extends IntegrationTest {
         addEvents(5,"uuid1", firstCategory);
         String anotherCategory = "another";
         addEvents(7,"uuid2", anotherCategory);
-        List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(null, 0, 12);
+        List<EventRecord> events = allEventRecords.getEventsFromRangeForCategory(null, 0, 12, 0);
         assertEquals(12,events.size());
+    }
+
+    @Test
+    public void shouldFetchEventsForCategoryAndGivenBounds() throws Exception {
+        generateData(100, null);
+        int totalCountForCategory = allEventRecords.getTotalCountForCategory("Cat-1", 0, null);
+        assertEquals(50, totalCountForCategory);
+        totalCountForCategory = allEventRecords.getTotalCountForCategory("Cat-0", 0, null);
+        assertEquals(50, totalCountForCategory);
+        totalCountForCategory = allEventRecords.getTotalCountForCategory(null, 0, null);
+        assertEquals(100, totalCountForCategory);
+    }
+
+    @Test
+    public void shouldGetAllDistinctCategories() throws Exception {
+        generateData(10, "Cat1");
+        generateData(10, "Cat2");
+        generateData(10, "Cat3");
+        generateData(1, "Cat4");
+        generateData(1, "Cat1");
+        List<String> categories = allEventRecords.findCategories();
+        assertEquals(4, categories.size());
+        assertTrue(categories.indexOf("Cat1") >=  0);
+        assertTrue(categories.indexOf("Cat3") >=  0);
     }
 
     private void addEvents(int numberOfEvents, String uuidStartsWith, String category) throws URISyntaxException {
@@ -168,4 +196,17 @@ public class AllEventRecordsIT extends IntegrationTest {
             allEventRecords.add(new EventRecord(uuidStartsWith + i, title, new URI("http://uri/" + title), null, new Date(), category));
         }
     }
+
+    private void generateData(int total, String eventCategory) throws URISyntaxException {
+        for (int i = 0; i < total; i++) {
+            String uuid = UUID.randomUUID().toString();
+            String category = StringUtils.isBlank(eventCategory) ? (((i % 2) == 0) ? "Cat-0" : "Cat-1") : eventCategory;
+            EventRecord eventRecordAdded = new EventRecord(uuid, "title-" + i, new URI("http://uri/" + i), "content-" + uuid, new Date(), category);
+            allEventRecords.add(eventRecordAdded);
+        }
+    }
+
+
+
+
 }

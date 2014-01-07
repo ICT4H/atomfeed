@@ -11,14 +11,15 @@ import org.joda.time.LocalDateTime;
 public class TimeChunkingHistory {
     private List<TimeChunkingHistoryEntry> chunkingHistoryEntries = new ArrayList<TimeChunkingHistoryEntry>();
 
-    public TimeChunkingHistory(){}
+    public TimeChunkingHistory() {
+    }
 
-    public long currentSequenceNumber(){
+    public long currentSequenceNumber() {
         return currentSequenceNumber(chunkingHistoryEntries.iterator());
     }
 
-    private long currentSequenceNumber(Iterator<TimeChunkingHistoryEntry> iterator){
-        if(iterator.hasNext()){
+    private long currentSequenceNumber(Iterator<TimeChunkingHistoryEntry> iterator) {
+        if (iterator.hasNext()) {
             return iterator.next().numberOfEncapsulatedFeeds() + currentSequenceNumber(iterator);
         }
         return 1;
@@ -30,7 +31,7 @@ public class TimeChunkingHistory {
             int relativeSequenceNumber = sequenceNumber - feedsSoFar;
 
             if (timeChunkingHistoryEntry.isUnbounded()
-             || sequenceNumber <= timeChunkingHistoryEntry.numberOfFeeds() + feedsSoFar) {
+                    || sequenceNumber <= timeChunkingHistoryEntry.numberOfFeeds() + feedsSoFar) {
                 return timeChunkingHistoryEntry.getTimeRangeForChunk(relativeSequenceNumber);
             }
             feedsSoFar += timeChunkingHistoryEntry.numberOfFeeds();
@@ -44,13 +45,13 @@ public class TimeChunkingHistory {
 
     public void add(Long startTime, Long interval) {
         enforceRightBoundOnPreviousEntry(startTime);
-        TimeChunkingHistoryEntry historyEntry = new TimeChunkingHistoryEntry(new LocalDateTime(startTime),null,new Duration(interval));
+        TimeChunkingHistoryEntry historyEntry = new TimeChunkingHistoryEntry(new LocalDateTime(startTime), null, new Duration(interval));
         chunkingHistoryEntries.add(historyEntry);
     }
 
     private void enforceRightBoundOnPreviousEntry(Long startTime) {
         int size = chunkingHistoryEntries.size();
-        if(size == 0){
+        if (size == 0) {
             return;
         }
         chunkingHistoryEntries.get(size - 1).enforceRightBound(startTime);

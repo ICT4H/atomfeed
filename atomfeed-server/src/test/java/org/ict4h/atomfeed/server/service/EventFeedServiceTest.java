@@ -3,8 +3,12 @@ package org.ict4h.atomfeed.server.service;
 import com.sun.syndication.feed.atom.*;
 import junit.framework.Assert;
 import org.ict4h.atomfeed.server.domain.EventRecord;
+import org.ict4h.atomfeed.server.domain.EventRecordsOffsetMarker;
+import org.ict4h.atomfeed.server.domain.chunking.ChunkingHistoryEntry;
 import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsStub;
+import org.ict4h.atomfeed.server.repository.ChunkingEntries;
+import org.ict4h.atomfeed.server.repository.EventRecordsOffsetMarkers;
 import org.ict4h.atomfeed.server.repository.InMemoryEventRecordCreator;
 import org.ict4h.atomfeed.server.service.feedgenerator.FeedGenerator;
 import org.ict4h.atomfeed.server.service.feedgenerator.NumberFeedGenerator;
@@ -24,16 +28,33 @@ public class EventFeedServiceTest {
     private InMemoryEventRecordCreator recordCreator;
     private String category;
 
+    private ChunkingEntries allChunkingEntries = new ChunkingEntries() {
+        @Override
+        public List<ChunkingHistoryEntry> all() {
+            List<ChunkingHistoryEntry> entries = new ArrayList<>();
+            entries.add(new ChunkingHistoryEntry(1, 5L, 1L));
+            return entries;
+        }
+    };
+
     @Before
     public void setupEventRecords() throws URISyntaxException {
         allEventRecords = new AllEventRecordsStub();
+        EventRecordsOffsetMarkers eventRecordsOffsetMarkers = new EventRecordsOffsetMarkers() {
+            @Override
+            public void setOffSetMarkerForCategory(String category, Integer offsetId, Integer countTillOffSetId) {
+            }
+
+            @Override
+            public List<EventRecordsOffsetMarker> getAll() {
+                return new ArrayList<>();
+            }
+        };
         recordCreator = new InMemoryEventRecordCreator(allEventRecords);
         category = "category";
         recordCreator.create(7, category);
         
-        NumberChunkingHistory config = new NumberChunkingHistory();
-        config.add(1, 5, 1);
-        FeedGenerator feedGenerator = new NumberFeedGenerator(allEventRecords, config);
+        FeedGenerator feedGenerator = new NumberFeedGenerator(allEventRecords, eventRecordsOffsetMarkers, allChunkingEntries);
         eventFeedService = new EventFeedServiceImpl(feedGenerator);
     }
 
@@ -69,7 +90,7 @@ public class EventFeedServiceTest {
     }
 
     private HashMap<String, Link> getAllFeedLinks(Feed feed) {
-        HashMap<String, Link> hashMap = new HashMap<String, Link>();
+        HashMap<String, Link> hashMap = new HashMap<>();
         List<Link> alternateLinks = feed.getAlternateLinks();
         for (Link link : alternateLinks) {
             hashMap.put(link.getRel(), link);

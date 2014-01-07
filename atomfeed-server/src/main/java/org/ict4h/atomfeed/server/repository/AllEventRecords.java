@@ -38,13 +38,15 @@ public interface AllEventRecords {
 
     /**
      * Fetches a {@code List} of {@code EventRecord} from the underlying data store with size specified by {@code Integer} limit and starting point specified by {@code Integer} offset (exclusive), ordered by Identity.
+     *
      * @param category an {@code String} that refers to the category that an {@code EventRecord} is associated with.
      * @param offset an {@code Integer} that refers to the starting offset, exclusive.
      * @param limit an {@code Integer} that refers to the size of the {@code List} of {@code EventRecord} to be retrieved.
+     * @param startId
      * @return {@code List} of {@code EventRecord}
      * @throws AtomFeedRuntimeException
      */
-    List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit);
+    List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit, Integer startId);
 
     /**
      * Fetches a {@code List} of {@code EventRecord} from the underlying data store that lie within a {@code TimeRange}.
@@ -55,4 +57,17 @@ public interface AllEventRecords {
      * @throws AtomFeedRuntimeException
      */
     List<EventRecord> getEventsFromTimeRange(TimeRange timeRange, String category);
+
+    /**
+     * Retrieves the total count of {@code EventRecord} entities based on a category
+     * @param category an {@code String} that refers to the category that a {@code EventRecord} is associated with, if null considers all categories.
+     * @param beyondIndex starting index, excluded.
+     * @param endIndex    end index, included
+     * @return {@code List} of {@code EventRecord}
+     * @throws AtomFeedRuntimeException
+     */
+    int getTotalCountForCategory(String category, Integer beyondIndex, Integer endIndex);
+
+
+    List<String> findCategories();
 }

@@ -6,20 +6,20 @@
 
     <!-- dataSource should be provided by the implementation -->
 
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
-        <property name="dataSource" ref="dataSource" />
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
-    
-    <tx:annotation-driven transaction-manager="transactionManager" />
-    
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
     <bean id="jdbcConnectionProvider" class="org.ict4h.atomfeed.client.repository.SpringJdbcConnectionProvider">
         <constructor-arg ref="dataSource"/>
     </bean>
-    
-    <bean id="webClient" class="org.ict4h.atomfeed.client.repository.datasource.WebClient" />
+
+    <bean id="webClient" class="org.ict4h.atomfeed.client.repository.datasource.WebClient"/>
 
     <bean id="allFeeds" class="org.ict4h.atomfeed.client.repository.AllFeeds">
-        <constructor-arg ref="webClient"/>
+        <constructor-arg type="org.ict4h.atomfeed.client.repository.datasource.WebClient" ref="webClient"/>
     </bean>
 
     <bean id="allMarkers" class="org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl">

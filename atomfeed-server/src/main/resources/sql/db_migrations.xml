@@ -4,7 +4,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet context="setup" author="ict4h" id="1">
-        <createTable tableName="event_records" schemaName="atomfeed">
+        <createTable tableName="event_records" schemaName="${schemaName}">
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -15,7 +15,7 @@
             <!-- TODO: Change to CLOB -->
             <column name="object" type="varchar(1000)"/>
         </createTable>
-        <createTable tableName="chunking_history" schemaName="atomfeed">
+        <createTable tableName="chunking_history" schemaName="${schemaName}">
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -32,14 +32,24 @@
         <addAutoIncrement tableName="event_records" columnName="id" columnDataType="int"/>
     </changeSet>
     <changeSet id="3" author="ict4h">
-        <insert tableName="chunking_history" schemaName="atomfeed">
+        <insert tableName="chunking_history" schemaName="${schemaName}">
             <column name="chunk_length" valueNumeric="5"></column>
             <column name="start" valueNumeric="1"></column>
         </insert>
     </changeSet>
     <changeSet id="4" author="ict4h">
-        <addColumn tableName="event_records" schemaName="atomfeed">
+        <addColumn tableName="event_records" schemaName="${schemaName}">
             <column name="category" type="varchar(255)"></column>
         </addColumn>
+    </changeSet>
+    <changeSet context="setup" author="ict4h" id="5">
+        <createTable tableName="event_records_offset_marker" schemaName="${schemaName}">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="event_id" type="int"/>
+            <column name="event_count" type="int"/>
+            <column name="category" type="varchar(255)"/>
+        </createTable>
     </changeSet>
 </databaseChangeLog>

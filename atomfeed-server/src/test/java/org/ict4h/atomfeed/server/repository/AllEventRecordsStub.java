@@ -2,6 +2,7 @@ package org.ict4h.atomfeed.server.repository;
 
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
+
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.*;
 
@@ -20,13 +21,13 @@ public class AllEventRecordsStub implements AllEventRecords {
 
     @Override
     public int getTotalCountForCategory(String category) {
-        return filterEventsBasedOnCategory(category,eventRecords.values()).size();
+        return filterEventsBasedOnCategory(category, eventRecords.values()).size();
     }
 
     @Override
-    public List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit) {
+    public List<EventRecord> getEventsFromRangeForCategory(String category, Integer offset, Integer limit, Integer startId) {
         Collection<EventRecord> values = eventRecords.values();
-        if(values.isEmpty()){
+        if (values.isEmpty()) {
             return new ArrayList<>();
         }
         return filterEventsBasedOnCategory(category, values)
@@ -34,7 +35,7 @@ public class AllEventRecordsStub implements AllEventRecords {
     }
 
     private List<EventRecord> filterEventsBasedOnCategory(String category, Collection<EventRecord> values) {
-        if(category == null){
+        if (category == null) {
             return new ArrayList<>(values);
         }
         return filter(having(on(EventRecord.class).getCategory(), equalTo(category)), values);
@@ -42,14 +43,24 @@ public class AllEventRecordsStub implements AllEventRecords {
 
     @Override
     public List<EventRecord> getEventsFromTimeRange(TimeRange timeRange, String category) {
-        return  filterEventsThatFallInsideTimeRange(timeRange,filterEventsBasedOnCategory(category,eventRecords.values()));
+        return filterEventsThatFallInsideTimeRange(timeRange, filterEventsBasedOnCategory(category, eventRecords.values()));
+    }
+
+    @Override
+    public int getTotalCountForCategory(String category, Integer beginIndex, Integer endIndex) {
+        return filterEventsBasedOnCategory(category, eventRecords.values()).size();
+    }
+
+    @Override
+    public List<String> findCategories() {
+        return null;
     }
 
     private List<EventRecord> filterEventsThatFallInsideTimeRange(TimeRange timeRange, Collection<EventRecord> records) {
         List<EventRecord> filteredRecords = new ArrayList<EventRecord>();
         for (EventRecord record : records) {
             if (timeRange.getStartTimestamp().before(record.getTimeStamp())
-                && timeRange.getEndTimestamp().after(record.getTimeStamp())) {
+                    && timeRange.getEndTimestamp().after(record.getTimeStamp())) {
                 filteredRecords.add(record);
             }
         }

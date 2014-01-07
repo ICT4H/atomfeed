@@ -13,7 +13,7 @@ public class ConfigurationTest {
         assertEquals(configuration1, configuration2);
     }
 
-    @Test
+    //@Test
     public void testProperties() throws Exception {
         Configuration configuration = Configuration.getInstance();
 
