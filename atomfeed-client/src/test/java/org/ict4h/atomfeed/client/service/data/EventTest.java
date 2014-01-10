@@ -27,4 +27,12 @@ public class EventTest {
         Event event = new Event(entry);
         Assert.assertNull(event.getContent());
     }
+
+    @Test
+    public void shouldGetTitle() {
+        Entry entry = new Entry();
+        entry.setTitle("some title");
+        Event event = new Event(entry);
+        Assert.assertEquals(entry.getTitle(), event.getTitle());
+    }
 }

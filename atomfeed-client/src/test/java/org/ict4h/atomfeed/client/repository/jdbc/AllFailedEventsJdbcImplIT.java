@@ -44,7 +44,7 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
         String feedUri = "http://feedUri";
         String errorMessage = "errorMessage";
         long failedAt = new Date().getTime();
-        Event event = new Event("eventId", "eventContent");
+        Event event = new Event("eventId", "eventContent", "title");
         FailedEvent failedEvent = new FailedEvent(feedUri, event, errorMessage, failedAt);
 
         allFailedEvents.addOrUpdate(failedEvent);
@@ -73,7 +73,7 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
         for(int i = 0; i < 4500; i++) sb.append("*");
         String errorMessage = sb.toString();
         long failedAt = new Date().getTime();
-        Event event = new Event("eventId", "eventContent");
+        Event event = new Event("eventId", "eventContent", "title");
         FailedEvent failedEvent = new FailedEvent(feedUri, event, errorMessage, failedAt);
 
         allFailedEvents.addOrUpdate(failedEvent);
@@ -105,7 +105,7 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
 
         List<FailedEvent> failedEvents = new ArrayList<>();
         for (int i = 1; i <= 5; i ++) {
-            FailedEvent failedEvent = new FailedEvent(feedUri, new Event("eventId" + i, "eventContent1" + i), errorMessage);
+            FailedEvent failedEvent = new FailedEvent(feedUri, new Event("eventId" + i, "eventContent1" + i, "title"), errorMessage);
             failedEvents.add(failedEvent);
             allFailedEvents.addOrUpdate(failedEvent);
         }

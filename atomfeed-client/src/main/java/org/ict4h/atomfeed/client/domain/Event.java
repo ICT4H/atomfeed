@@ -8,20 +8,29 @@ public class Event {
     private String id;
     private String content;
     private String feedUri;
+    private String title;
 
     public Event(Entry entry) {
-        this.id = entry.getId();
-		this.content = extractContent(entry);
+        this(entry, null);
 	}
 
     public Event(String id, String content) {
+        this(id, content, null, null);
+    }
+
+    public Event(String id, String content, String title) {
+        this(id, content, title, null);
+    }
+
+    public Event(String id, String content, String title, String feedUri) {
         this.id = id;
         this.content = content;
+        this.title = title;
+        this.feedUri = feedUri;
     }
 
     public Event(Entry entry ,String feedUri) {
-        this(entry);
-        this.feedUri = feedUri;
+        this(entry.getId(), extractContent(entry), entry.getTitle(), feedUri);
     }
 
     /**
@@ -30,7 +39,7 @@ public class Event {
      *
      * @return
      */
-    private String extractContent(Entry entry) {
+    private static String extractContent(Entry entry) {
         if(entry.getContents().isEmpty()){
             return null;
         }
@@ -61,5 +70,13 @@ public class Event {
 
     public String getFeedUri() {
         return feedUri;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
