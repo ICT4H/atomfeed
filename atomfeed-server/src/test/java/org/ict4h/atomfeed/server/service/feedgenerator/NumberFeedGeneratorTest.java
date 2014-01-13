@@ -9,7 +9,7 @@ import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
-import org.ict4h.atomfeed.server.repository.EventRecordsOffsetMarkers;
+import org.ict4h.atomfeed.server.repository.AllEventRecordsOffsetMarkers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,9 +26,9 @@ import static org.mockito.Mockito.*;
 public class NumberFeedGeneratorTest {
 
     AllEventRecords eventsRecord = new AllEventRecordsStub();
-    private EventRecordsOffsetMarkers eventRecordsOffsetMarkers = new EventRecordsOffsetMarkers() {
+    private AllEventRecordsOffsetMarkers allEventRecordsOffsetMarkers = new AllEventRecordsOffsetMarkers() {
         @Override
-        public void setOffSetMarkerForCategory(String category, Integer offsetId, Integer countTillOffSetId) {
+        public void addOrUpdate(String category, Integer offsetId, Integer countTillOffSetId) {
         }
 
         @Override
@@ -49,7 +49,7 @@ public class NumberFeedGeneratorTest {
 
     @Before
     public void setUp() {
-        feedGenerator = new NumberFeedGenerator(eventsRecord, eventRecordsOffsetMarkers, allChunkingEntries);
+        feedGenerator = new NumberFeedGenerator(eventsRecord, allEventRecordsOffsetMarkers, allChunkingEntries);
     }
 
     @Test(expected = AtomFeedRuntimeException.class)
@@ -86,7 +86,7 @@ public class NumberFeedGeneratorTest {
     @Test
     public void shouldRetrieveEmptyFeedForWhenRecentFeedIsQueriedForWithNoEventsPresent() {
         AllEventRecords eventRecords = mock(AllEventRecords.class);
-        feedGenerator = new NumberFeedGenerator(eventRecords, eventRecordsOffsetMarkers, allChunkingEntries);
+        feedGenerator = new NumberFeedGenerator(eventRecords, allEventRecordsOffsetMarkers, allChunkingEntries);
         stub(eventRecords.getTotalCountForCategory(anyString())).toReturn(0);
         EventFeed feed = feedGenerator.getRecentFeed("");
 

@@ -6,8 +6,8 @@ import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
+import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsOffsetMarkersJdbcImpl;
 import org.ict4h.atomfeed.server.repository.jdbc.ChunkingEntriesJdbcImpl;
-import org.ict4h.atomfeed.server.repository.jdbc.EventRecordsOffsetMarkersJdbcImpl;
 import org.ict4h.atomfeed.server.service.NumberOffsetMarkerServiceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +28,7 @@ public class NumberOffsetMarkerServiceImplIT extends IntegrationTest {
         connectionProvider = getConnectionProvider();
         AllEventRecords allEventRecords = new AllEventRecordsJdbcImpl(connectionProvider);
         ChunkingEntries chunkingEntries = new ChunkingEntriesJdbcImpl(connectionProvider);
-        markerService = new NumberOffsetMarkerServiceImpl(allEventRecords, chunkingEntries, new EventRecordsOffsetMarkersJdbcImpl(connectionProvider));
+        markerService = new NumberOffsetMarkerServiceImpl(allEventRecords, chunkingEntries, new AllEventRecordsOffsetMarkersJdbcImpl(connectionProvider));
     }
 
     @After

@@ -4,10 +4,9 @@ import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.jdbc.JdbcResultSetMapper;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
-import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.EventRecordsOffsetMarker;
 import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
-import org.ict4h.atomfeed.server.repository.EventRecordsOffsetMarkers;
+import org.ict4h.atomfeed.server.repository.AllEventRecordsOffsetMarkers;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,18 +16,18 @@ import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public class EventRecordsOffsetMarkersJdbcImpl implements EventRecordsOffsetMarkers {
+public class AllEventRecordsOffsetMarkersJdbcImpl implements AllEventRecordsOffsetMarkers {
 
     public static final String EVENT_RECORDS_OFFSET_MARKER = "event_records_offset_marker";
 
     private JdbcConnectionProvider provider;
 
-    public EventRecordsOffsetMarkersJdbcImpl(JdbcConnectionProvider provider) {
+    public AllEventRecordsOffsetMarkersJdbcImpl(JdbcConnectionProvider provider) {
         this.provider = provider;
     }
 
     @Override
-    public void setOffSetMarkerForCategory(String category, Integer offsetId, Integer countTillOffSetId) {
+    public void addOrUpdate(String category, Integer offsetId, Integer countTillOffSetId) {
         Connection connection = null;
         PreparedStatement stmt = null;
         Integer offsetMarkerCountForCategory = getOffsetMarkerCountForCategory(category);

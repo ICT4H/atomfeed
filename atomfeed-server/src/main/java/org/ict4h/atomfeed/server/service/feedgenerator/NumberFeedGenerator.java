@@ -9,21 +9,21 @@ import org.ict4h.atomfeed.server.domain.chunking.number.NumberRange;
 import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
-import org.ict4h.atomfeed.server.repository.EventRecordsOffsetMarkers;
+import org.ict4h.atomfeed.server.repository.AllEventRecordsOffsetMarkers;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NumberFeedGenerator implements FeedGenerator {
     private AllEventRecords allEventRecords;
-    private EventRecordsOffsetMarkers eventRecordsOffsetMarkers;
+    private AllEventRecordsOffsetMarkers allEventRecordsOffsetMarkers;
     private ChunkingEntries chunkingEntries;
     private NumberChunkingHistory numberChunkingHistory;
     private final Object lockObject = new Object();
 
-    public NumberFeedGenerator(AllEventRecords eventsRecord, EventRecordsOffsetMarkers eventRecordsOffsetMarkers, ChunkingEntries chunkingEntries) {
+    public NumberFeedGenerator(AllEventRecords eventsRecord, AllEventRecordsOffsetMarkers allEventRecordsOffsetMarkers, ChunkingEntries chunkingEntries) {
         this.allEventRecords = eventsRecord;
-        this.eventRecordsOffsetMarkers = eventRecordsOffsetMarkers;
+        this.allEventRecordsOffsetMarkers = allEventRecordsOffsetMarkers;
         this.chunkingEntries = chunkingEntries;
     }
 
@@ -54,7 +54,7 @@ public class NumberFeedGenerator implements FeedGenerator {
     }
 
     private EventRecordsOffsetMarker findMarker(String category) {
-        List<EventRecordsOffsetMarker> markers = eventRecordsOffsetMarkers.getAll();
+        List<EventRecordsOffsetMarker> markers = allEventRecordsOffsetMarkers.getAll();
         String markerCategory = category == null ? "" : category;
         for (EventRecordsOffsetMarker marker : markers) {
             if (markerCategory.equals(marker.getCategory())) {

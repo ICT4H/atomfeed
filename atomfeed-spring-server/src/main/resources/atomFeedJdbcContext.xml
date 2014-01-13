@@ -20,7 +20,7 @@
         <constructor-arg ref="jdbcConnectionProvider"/>
     </bean>
 
-    <bean id="eventRecordsOffsetMarkers" class="org.ict4h.atomfeed.server.repository.jdbc.EventRecordsOffsetMarkersJdbcImpl">
+    <bean id="eventRecordsOffsetMarkers" class="org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsOffsetMarkersJdbcImpl">
         <constructor-arg ref="jdbcConnectionProvider"/>
     </bean>
     

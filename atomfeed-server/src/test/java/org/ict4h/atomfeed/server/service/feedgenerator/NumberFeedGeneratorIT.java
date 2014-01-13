@@ -6,10 +6,10 @@ import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
-import org.ict4h.atomfeed.server.repository.EventRecordsOffsetMarkers;
+import org.ict4h.atomfeed.server.repository.AllEventRecordsOffsetMarkers;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
+import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsOffsetMarkersJdbcImpl;
 import org.ict4h.atomfeed.server.repository.jdbc.ChunkingEntriesJdbcImpl;
-import org.ict4h.atomfeed.server.repository.jdbc.EventRecordsOffsetMarkersJdbcImpl;
 import org.ict4h.atomfeed.server.service.NumberOffsetMarkerServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class NumberFeedGeneratorIT extends IntegrationTest {
     private AllEventRecordsJdbcImpl allEventRecords;
     private NumberFeedGenerator feedGenerator;
     private NumberOffsetMarkerServiceImpl markerService;
-    private EventRecordsOffsetMarkers eventRecordsOffsetMarkers;
+    private AllEventRecordsOffsetMarkers allEventRecordsOffsetMarkers;
     private ChunkingEntries chunkingEntries;
 
     @Before
@@ -40,11 +40,11 @@ public class NumberFeedGeneratorIT extends IntegrationTest {
         addChunkingHistory(5, 1);
 
         allEventRecords = new AllEventRecordsJdbcImpl(connectionProvider);
-        eventRecordsOffsetMarkers = new EventRecordsOffsetMarkersJdbcImpl(connectionProvider);
+        allEventRecordsOffsetMarkers = new AllEventRecordsOffsetMarkersJdbcImpl(connectionProvider);
         chunkingEntries = new ChunkingEntriesJdbcImpl(connectionProvider);
 
-        feedGenerator = new NumberFeedGenerator(allEventRecords, eventRecordsOffsetMarkers, chunkingEntries);
-        markerService = new NumberOffsetMarkerServiceImpl(allEventRecords, chunkingEntries, new EventRecordsOffsetMarkersJdbcImpl(connectionProvider));
+        feedGenerator = new NumberFeedGenerator(allEventRecords, allEventRecordsOffsetMarkers, chunkingEntries);
+        markerService = new NumberOffsetMarkerServiceImpl(allEventRecords, chunkingEntries, new AllEventRecordsOffsetMarkersJdbcImpl(connectionProvider));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class NumberFeedGeneratorIT extends IntegrationTest {
         assertEquals(5, feedGenerator.getFeedForId(9, "Cat-1").getEvents().size());
         assertEquals(3, feedGenerator.getRecentFeed("Cat-1").getEvents().size());
         addChunkingHistory(9, 49);
-        FeedGenerator newFeedGenerator = new NumberFeedGenerator(allEventRecords, eventRecordsOffsetMarkers, chunkingEntries);
+        FeedGenerator newFeedGenerator = new NumberFeedGenerator(allEventRecords, allEventRecordsOffsetMarkers, chunkingEntries);
         assertEquals(3, newFeedGenerator.getRecentFeed("Cat-1").getEvents().size());
         assertEquals(3, newFeedGenerator.getFeedForId(10, "Cat-1").getEvents().size());
         generateData(49, "Cat-1");
@@ -118,7 +118,7 @@ public class NumberFeedGeneratorIT extends IntegrationTest {
         assertEquals(5, feedGenerator.getFeedForId(9, "Cat-1").getEvents().size());
         assertEquals(3, feedGenerator.getRecentFeed("Cat-1").getEvents().size());
         addChunkingHistory(9, 49);
-        FeedGenerator newFeedGenerator = new NumberFeedGenerator(allEventRecords, eventRecordsOffsetMarkers, chunkingEntries);
+        FeedGenerator newFeedGenerator = new NumberFeedGenerator(allEventRecords, allEventRecordsOffsetMarkers, chunkingEntries);
         assertEquals(3, newFeedGenerator.getRecentFeed("Cat-1").getEvents().size());
         assertEquals(3, newFeedGenerator.getFeedForId(10, "Cat-1").getEvents().size());
         generateData(49, "Cat-1");
@@ -151,16 +151,6 @@ public class NumberFeedGeneratorIT extends IntegrationTest {
         connectionProvider.getConnection().commit();
         statement.close();
     }
-
-    private void clearChunkingHistory() throws SQLException {
-        Statement statement = connectionProvider.getConnection().createStatement();
-        String tableName = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "chunking_history");
-        statement.execute(String.format("delete from %s", tableName));
-        connectionProvider.getConnection().commit();
-        statement.close();
-
-    }
-
 
     private void generateData(int total, String eventCategory) throws URISyntaxException {
         for (int i = 0; i < total; i++) {

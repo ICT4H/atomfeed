@@ -5,10 +5,9 @@ import junit.framework.Assert;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.EventRecordsOffsetMarker;
 import org.ict4h.atomfeed.server.domain.chunking.ChunkingHistoryEntry;
-import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsStub;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
-import org.ict4h.atomfeed.server.repository.EventRecordsOffsetMarkers;
+import org.ict4h.atomfeed.server.repository.AllEventRecordsOffsetMarkers;
 import org.ict4h.atomfeed.server.repository.InMemoryEventRecordCreator;
 import org.ict4h.atomfeed.server.service.feedgenerator.FeedGenerator;
 import org.ict4h.atomfeed.server.service.feedgenerator.NumberFeedGenerator;
@@ -40,9 +39,9 @@ public class EventFeedServiceTest {
     @Before
     public void setupEventRecords() throws URISyntaxException {
         allEventRecords = new AllEventRecordsStub();
-        EventRecordsOffsetMarkers eventRecordsOffsetMarkers = new EventRecordsOffsetMarkers() {
+        AllEventRecordsOffsetMarkers allEventRecordsOffsetMarkers = new AllEventRecordsOffsetMarkers() {
             @Override
-            public void setOffSetMarkerForCategory(String category, Integer offsetId, Integer countTillOffSetId) {
+            public void addOrUpdate(String category, Integer offsetId, Integer countTillOffSetId) {
             }
 
             @Override
@@ -54,7 +53,7 @@ public class EventFeedServiceTest {
         category = "category";
         recordCreator.create(7, category);
         
-        FeedGenerator feedGenerator = new NumberFeedGenerator(allEventRecords, eventRecordsOffsetMarkers, allChunkingEntries);
+        FeedGenerator feedGenerator = new NumberFeedGenerator(allEventRecords, allEventRecordsOffsetMarkers, allChunkingEntries);
         eventFeedService = new EventFeedServiceImpl(feedGenerator);
     }
 

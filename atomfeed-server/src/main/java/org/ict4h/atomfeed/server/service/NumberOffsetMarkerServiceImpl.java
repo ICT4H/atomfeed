@@ -7,7 +7,7 @@ import org.ict4h.atomfeed.server.domain.chunking.number.NumberChunkingHistory;
 import org.ict4h.atomfeed.server.domain.chunking.number.NumberRange;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
 import org.ict4h.atomfeed.server.repository.ChunkingEntries;
-import org.ict4h.atomfeed.server.repository.EventRecordsOffsetMarkers;
+import org.ict4h.atomfeed.server.repository.AllEventRecordsOffsetMarkers;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,12 +16,12 @@ import java.util.List;
 public class NumberOffsetMarkerServiceImpl implements OffsetMarkerService {
 
     private AllEventRecords allEventRecords;
-    private EventRecordsOffsetMarkers eventRecordsOffsetMarkers;
+    private AllEventRecordsOffsetMarkers allEventRecordsOffsetMarkers;
     private NumberChunkingHistory chunkingHistory;
 
-    public NumberOffsetMarkerServiceImpl(AllEventRecords allEventRecords, ChunkingEntries chunkingEntries, EventRecordsOffsetMarkers eventRecordsOffsetMarkers) {
+    public NumberOffsetMarkerServiceImpl(AllEventRecords allEventRecords, ChunkingEntries chunkingEntries, AllEventRecordsOffsetMarkers allEventRecordsOffsetMarkers) {
         this.allEventRecords = allEventRecords;
-        this.eventRecordsOffsetMarkers = eventRecordsOffsetMarkers;
+        this.allEventRecordsOffsetMarkers = allEventRecordsOffsetMarkers;
         this.chunkingHistory = getChunkingHistory(chunkingEntries);
     }
 
@@ -65,7 +65,7 @@ public class NumberOffsetMarkerServiceImpl implements OffsetMarkerService {
         }
         EventRecord lastEventInFeed = events.get(0);
         int totalCountForCategory = allEventRecords.getTotalCountForCategory(category, null, lastEventInFeed.getId());
-        eventRecordsOffsetMarkers.setOffSetMarkerForCategory(category, lastEventInFeed.getId(), totalCountForCategory);
+        allEventRecordsOffsetMarkers.addOrUpdate(category, lastEventInFeed.getId(), totalCountForCategory);
     }
 
     private EventFeed findFeed(int feedId, String category, int totalCountForCategory) {

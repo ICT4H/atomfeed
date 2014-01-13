@@ -4,7 +4,7 @@ import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.ict4h.atomfeed.server.domain.EventRecordsOffsetMarker;
-import org.ict4h.atomfeed.server.repository.EventRecordsOffsetMarkers;
+import org.ict4h.atomfeed.server.repository.AllEventRecordsOffsetMarkers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,13 +18,13 @@ import static junit.framework.Assert.assertEquals;
 
 public class EventRecordsOffsetMarkersJdbcIT extends IntegrationTest {
 
-    private EventRecordsOffsetMarkers eventRecordsOffsetMarkers;
+    private AllEventRecordsOffsetMarkers allEventRecordsOffsetMarkers;
     private JdbcConnectionProvider connectionProvider;
 
     @Before
     public void before() throws SQLException {
         connectionProvider = getConnectionProvider();
-        eventRecordsOffsetMarkers = new EventRecordsOffsetMarkersJdbcImpl(getConnectionProvider());
+        allEventRecordsOffsetMarkers = new AllEventRecordsOffsetMarkersJdbcImpl(getConnectionProvider());
         clearRecords();
     }
 
@@ -44,10 +44,10 @@ public class EventRecordsOffsetMarkersJdbcIT extends IntegrationTest {
 
     @Test
     public void shouldAddEventRecordAndFetchByUUID() throws URISyntaxException, SQLException {
-        eventRecordsOffsetMarkers.setOffSetMarkerForCategory("CAT-01", 10, 5);
-        eventRecordsOffsetMarkers.setOffSetMarkerForCategory("CAT-02", 10, 4);
+        allEventRecordsOffsetMarkers.addOrUpdate("CAT-01", 10, 5);
+        allEventRecordsOffsetMarkers.addOrUpdate("CAT-02", 10, 4);
 
-        List<EventRecordsOffsetMarker> markers = eventRecordsOffsetMarkers.getAll();
+        List<EventRecordsOffsetMarker> markers = allEventRecordsOffsetMarkers.getAll();
         assertEquals(2, markers.size());
         assertEquals("CAT-01", markers.get(0).getCategory());
         assertEquals("CAT-02", markers.get(1).getCategory());
