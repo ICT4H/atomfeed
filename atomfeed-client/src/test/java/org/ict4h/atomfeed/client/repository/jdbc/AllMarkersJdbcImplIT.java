@@ -3,13 +3,13 @@ package org.ict4h.atomfeed.client.repository.jdbc;
 import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -23,7 +23,8 @@ public class AllMarkersJdbcImplIT extends IntegrationTest {
 
     private void clearRecords() throws SQLException {
         Statement statement = connectionProvider.getConnection().createStatement();
-        statement.execute("delete from atomfeed.markers");
+        String tableName = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "markers");
+        statement.execute("delete from " + tableName);
         statement.close();
     }
 

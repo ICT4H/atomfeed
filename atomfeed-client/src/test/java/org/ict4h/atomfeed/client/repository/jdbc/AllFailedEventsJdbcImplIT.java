@@ -4,11 +4,11 @@ import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -17,14 +17,15 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class AllFailedEventsJdbcImplIT extends IntegrationTest{
+public class AllFailedEventsJdbcImplIT extends IntegrationTest {
 
     private AllFailedEventsJdbcImpl allFailedEvents;
     private JdbcConnectionProvider connectionProvider;
 
     private void clearRecords() throws SQLException {
         Statement statement = connectionProvider.getConnection().createStatement();
-        statement.execute("delete from atomfeed.failed_events");
+        String tableName = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "failed_events");
+        statement.execute("delete from " + tableName);
         statement.close();
     }
 
@@ -45,7 +46,7 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
         String feedUri = "http://feedUri";
         String errorMessage = "errorMessage";
         long failedAt = new Date().getTime();
-        Event event = new Event("eventId", "eventContent");
+        Event event = new Event("eventId", "eventContent", "title");
         FailedEvent failedEvent = new FailedEvent(feedUri, event, errorMessage, failedAt);
 
         allFailedEvents.addOrUpdate(failedEvent);
@@ -74,7 +75,7 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
         for(int i = 0; i < 4500; i++) sb.append("*");
         String errorMessage = sb.toString();
         long failedAt = new Date().getTime();
-        Event event = new Event("eventId", "eventContent");
+        Event event = new Event("eventId", "eventContent", "title");
         FailedEvent failedEvent = new FailedEvent(feedUri, event, errorMessage, failedAt);
 
         allFailedEvents.addOrUpdate(failedEvent);
@@ -106,7 +107,7 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest{
 
         List<FailedEvent> failedEvents = new ArrayList<>();
         for (int i = 1; i <= 5; i ++) {
-            FailedEvent failedEvent = new FailedEvent(feedUri, new Event("eventId" + i, "eventContent1" + i), errorMessage);
+            FailedEvent failedEvent = new FailedEvent(feedUri, new Event("eventId" + i, "eventContent1" + i, "title"), errorMessage);
             failedEvents.add(failedEvent);
             allFailedEvents.addOrUpdate(failedEvent);
         }

@@ -32,7 +32,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         try {
             connection = connectionProvider.getConnection();
             String sql = String.format(
-                    "select id, feed_uri, failed_at, error_message, event_id, event_content from %s where feed_uri = ? and event_id = ?",
+                    "select id, feed_uri, failed_at, error_message, event_id, event_content, title from %s where feed_uri = ? and event_id = ?",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "failed_events"));
             statement = connection.prepareStatement(sql);
             statement.setString(1, feedUri);
@@ -69,7 +69,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         List<FailedEvent> failedEvents = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                Event event = new Event(resultSet.getString(5), resultSet.getString(6));
+                Event event = new Event(resultSet.getString(5), resultSet.getString(6), resultSet.getString(7));
                 FailedEvent failedEvent = new FailedEvent(resultSet.getString(2), event,
                         resultSet.getString(4), resultSet.getTimestamp(3).getTime());
                 failedEvents.add(failedEvent);
@@ -158,7 +158,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         try {
             connection = connectionProvider.getConnection();
             String sql = String.format(
-                    "select id, feed_uri, failed_at, error_message, event_id, event_content from %s where feed_uri = ? order by id",
+                    "select id, feed_uri, failed_at, error_message, event_id, event_content, title from %s where feed_uri = ? order by id",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
             statement = connection.prepareStatement(sql);
             statement.setString(1, feedUri);
