@@ -1,0 +1,47 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="ict4h-atomfeed-server-1" context="setup" author="ict4h">
+        <createTable tableName="event_records" schemaName="${schemaName}">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="uuid" type="varchar(40)"/>
+            <column name="title" type="varchar(255)"/>
+            <column name="timestamp" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP(6)"/>
+            <column name="uri" type="varchar(255)"/>
+            <!-- TODO: Change to CLOB -->
+            <column name="object" type="varchar(1000)"/>
+            <column name="category" type="varchar(255)"></column>
+        </createTable>
+    </changeSet>
+    <changeSet id="ict4h-atomfeed-server-2" context="setup" author="ict4h">
+        <createTable tableName="chunking_history" schemaName="${schemaName}">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="chunk_length" type="BIGINT"/>
+            <column name="start" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="ict4h-atomfeed-server-3" author="ict4h" context="data-setup">
+        <insert tableName="chunking_history" schemaName="${schemaName}">
+            <column name="chunk_length" valueNumeric="5"></column>
+            <column name="start" valueNumeric="1"></column>
+        </insert>
+    </changeSet>
+    <changeSet id="ict4h-atomfeed-server-4" context="setup" author="ict4h">
+        <createTable tableName="event_records_offset_marker" schemaName="${schemaName}">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="event_id" type="int"/>
+            <column name="event_count" type="int"/>
+            <column name="category" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

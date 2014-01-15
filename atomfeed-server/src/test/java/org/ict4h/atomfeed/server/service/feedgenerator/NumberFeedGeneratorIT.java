@@ -44,7 +44,7 @@ public class NumberFeedGeneratorIT extends IntegrationTest {
         chunkingEntries = new ChunkingEntriesJdbcImpl(connectionProvider);
 
         feedGenerator = new NumberFeedGenerator(allEventRecords, allEventRecordsOffsetMarkers, chunkingEntries);
-        markerService = new NumberOffsetMarkerServiceImpl(allEventRecords, chunkingEntries, new AllEventRecordsOffsetMarkersJdbcImpl(connectionProvider));
+        markerService = new NumberOffsetMarkerServiceImpl(allEventRecords, chunkingEntries, allEventRecordsOffsetMarkers);
     }
 
     @Test
