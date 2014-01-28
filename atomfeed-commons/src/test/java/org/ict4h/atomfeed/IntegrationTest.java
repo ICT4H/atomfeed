@@ -37,6 +37,33 @@ public abstract class IntegrationTest {
                 }
                 this.providedConnection = null;
             }
+
+            @Override
+            public void startTransaction() {
+                try {
+                    providedConnection.setAutoCommit(false);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void commit() {
+                try {
+                    providedConnection.commit();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            public void rollback() {
+                try {
+                    providedConnection.rollback();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         };
     }
 

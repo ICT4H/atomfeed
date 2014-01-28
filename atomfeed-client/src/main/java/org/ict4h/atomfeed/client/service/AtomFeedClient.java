@@ -19,7 +19,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class AtomFeedClient implements FeedClient {
     private static final int FAILED_EVENTS_PROCESS_BATCH_SIZE = 5;
@@ -53,19 +52,11 @@ public class AtomFeedClient implements FeedClient {
     @Override
     public void processEvents() {
         logger.info(String.format("Processing events for feed URI : %s using event worker : %s", feedUri, eventWorker.getClass().getSimpleName()));
-
         Connection connection = null;
-        boolean autoCommit = false;
         try {
             connection = jdbcConnectionProvider.getConnection();
-            autoCommit = connection.getAutoCommit();
-            if (atomFeedProperties.controlsEventProcessing()) {
-                connection.setAutoCommit(false);
-            }
 
-            Marker marker = allMarkers.get(feedUri);
-            if (marker == null) marker = new Marker(feedUri, null, null);
-            FeedEnumerator feedEnumerator = new FeedEnumerator(allFeeds, marker);
+            FeedEnumerator feedEnumerator = fetchFeeds();
 
             Event event = null;
             for (Entry entry : feedEnumerator) {
@@ -73,38 +64,32 @@ public class AtomFeedClient implements FeedClient {
                     logger.warn("Too many failed events have failed while processing. Cannot continue.");
                     return;
                 }
+                if (atomFeedProperties.controlsEventProcessing()) {
+                    jdbcConnectionProvider.startTransaction();
+                }
                 try {
                     event = new Event(entry, getEntryFeedUri(feedEnumerator));
                     logger.debug("Processing event : " + event);
                     eventWorker.process(event);
                     if (atomFeedProperties.controlsEventProcessing()) {
                         allMarkers.put(feedUri, entry.getId(), Util.getViaLink(feedEnumerator.getCurrentFeed()));
-                        connection.commit();
+                        jdbcConnectionProvider.commit();
                     }
                 } catch (Exception e) {
                     logger.error("", e);
                     if (atomFeedProperties.controlsEventProcessing()) {
-                        connection.rollback();
+                        jdbcConnectionProvider.rollback();
                     }
                     handleFailedEvent(entry, feedUri, e, feedEnumerator.getCurrentFeed(), event);
-                    if (atomFeedProperties.controlsEventProcessing()) {
-                        connection.commit();
-                    }
                 } finally {
                     eventWorker.cleanUp(event);
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new AtomFeedClientException(e);
         } finally {
             if (connection != null) {
                 try {
-                    if (atomFeedProperties.controlsEventProcessing()) {
-                        connection.setAutoCommit(autoCommit);
-                    }
-                    if(!autoCommit) {
-                        connection.rollback();
-                    }
                     jdbcConnectionProvider.closeConnection(connection);
                 } catch (SQLException e) {
                     throw new AtomFeedClientException(e);
@@ -113,59 +98,91 @@ public class AtomFeedClient implements FeedClient {
         }
     }
 
+    private FeedEnumerator fetchFeeds() {
+        jdbcConnectionProvider.startTransaction();
+        FeedEnumerator feedEnumerator;
+        try{
+            Marker marker = allMarkers.get(feedUri);
+            if (marker == null) marker = new Marker(feedUri, null, null);
+            feedEnumerator = new FeedEnumerator(allFeeds, marker);
+            jdbcConnectionProvider.commit();
+        }catch(Exception e){
+            jdbcConnectionProvider.rollback();
+            throw new AtomFeedClientException(e);
+        }
+        return feedEnumerator;
+    }
+
 
     @Override
     public void processFailedEvents() {
-        logger.info(String.format("Processing failed events for feed URI : %s using event worker : %s", feedUri, eventWorker.getClass().getSimpleName()));
-
+        logger.info(String.format("Processing failed events for feed URI : %s using event worker : %s",
+                feedUri, eventWorker.getClass().getSimpleName()));
         Connection connection = null;
-        boolean autoCommit = false;
+//        boolean hasProcessedAnyEvent = false;
         try {
             connection = jdbcConnectionProvider.getConnection();
-            autoCommit = connection.getAutoCommit();
-            if (atomFeedProperties.controlsEventProcessing()) {
-                connection.setAutoCommit(false);
-            }
-
-            List<FailedEvent> failedEvents =
-                    allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE);
-
+            List<FailedEvent> failedEvents = getFailedEvents();
             for (FailedEvent failedEvent : failedEvents) {
+                if (atomFeedProperties.controlsEventProcessing()) {
+                    jdbcConnectionProvider.startTransaction();
+                }
                 try {
                     logger.debug(String.format("Processing failed event : %s", failedEvent));
+//                    hasProcessedAnyEvent = true;
                     eventWorker.process(failedEvent.getEvent());
                     if (atomFeedProperties.controlsEventProcessing()) {
                         allFailedEvents.remove(failedEvent);
-                        connection.commit();
+                        jdbcConnectionProvider.commit();
                     }
                 } catch (Exception e) {
                     logger.error("", e);
                     if (atomFeedProperties.controlsEventProcessing()) {
-                        connection.rollback();
-                        failedEvent.setFailedAt(new Date().getTime());
-                        failedEvent.setErrorMessage(Util.getExceptionString(e));
-                        allFailedEvents.addOrUpdate(failedEvent);
-                        connection.commit();
+                        jdbcConnectionProvider.rollback();
                     }
+                    updateFailedEvents(failedEvent, e);
                     logger.info(String.format("Failed to process failed event. %s", failedEvent));
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new AtomFeedClientException(e);
         } finally {
             if (connection != null) {
                 try {
-                    if (atomFeedProperties.controlsEventProcessing()) {
-                        connection.setAutoCommit(autoCommit);
-                    }
-                    if(!autoCommit) {
-                        connection.rollback();
-                    }
+//                    if(!hasProcessedAnyEvent) {
+//                        jdbcConnectionProvider.rollback();
+//                    }
                     jdbcConnectionProvider.closeConnection(connection);
                 } catch (SQLException e) {
                     throw new AtomFeedClientException(e);
                 }
             }
+        }
+    }
+
+    private List<FailedEvent> getFailedEvents() {
+        List<FailedEvent> oldestNFailedEvents = null;
+        jdbcConnectionProvider.startTransaction();
+        try{
+            oldestNFailedEvents = allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE);
+            jdbcConnectionProvider.commit();
+        }catch(Exception e){
+            jdbcConnectionProvider.rollback();
+            throw new AtomFeedClientException(e);
+        }
+        return oldestNFailedEvents;
+    }
+
+    private void updateFailedEvents(FailedEvent failedEvent, Exception e) throws SQLException {
+        jdbcConnectionProvider.startTransaction();
+        try{
+            failedEvent.setFailedAt(new Date().getTime());
+            failedEvent.setErrorMessage(Util.getExceptionString(e));
+            allFailedEvents.addOrUpdate(failedEvent);
+            jdbcConnectionProvider.commit();
+        }catch(Exception e1){
+            jdbcConnectionProvider.rollback();
+            throw new AtomFeedClientException(e1);
         }
     }
 
@@ -178,8 +195,16 @@ public class AtomFeedClient implements FeedClient {
     }
 
     private void handleFailedEvent(Entry entry, URI feedUri, Exception e, Feed feed, Event event) {
-        allFailedEvents.addOrUpdate(new FailedEvent(feedUri.toString(), event, Util.getExceptionString(e)));
-        if (atomFeedProperties.controlsEventProcessing())
-            allMarkers.put(this.feedUri, entry.getId(), Util.getViaLink(feed));
+        jdbcConnectionProvider.startTransaction();
+        try{
+            allFailedEvents.addOrUpdate(new FailedEvent(feedUri.toString(), event, Util.getExceptionString(e)));
+            if (atomFeedProperties.controlsEventProcessing())
+                allMarkers.put(this.feedUri, entry.getId(), Util.getViaLink(feed));
+            jdbcConnectionProvider.commit();
+        }catch(Exception e1){
+            jdbcConnectionProvider.rollback();
+            throw new AtomFeedClientException(e1);
+        }
+
     }
 }

@@ -7,9 +7,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider {
-    private static final ThreadLocal<Connection> threadConnection = new ThreadLocal();
+    private  final ThreadLocal<Connection> threadConnection = new ThreadLocal();
 
     private DataSource dataSource;
+    private Connection connection;
 
     public ThreadLocalJdbcConnectionProvider(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -18,13 +19,14 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
     @Override
     public Connection getConnection() throws SQLException {
         Connection existingConnection = threadConnection.get();
-        if (existingConnection != null)
+        if (existingConnection != null && !existingConnection.isClosed())
             return existingConnection;
 
         Connection newConnection = dataSource.getConnection();
         threadConnection.set(newConnection);
 
-        return threadConnection.get();
+        connection = threadConnection.get();
+        return connection;
     }
 
     @Override
@@ -33,6 +35,41 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
             connection.close();
         } finally {
             threadConnection.remove();
+        }
+    }
+
+    @Override
+    public void startTransaction() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                throw new RuntimeException("Connection is null or closed");
+            }
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void commit() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                throw new RuntimeException("Connection is null or closed");
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }    }
+
+    @Override
+    public void rollback() {
+        try {
+            if (connection == null) {
+                getConnection();
+            }
+            connection.rollback();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

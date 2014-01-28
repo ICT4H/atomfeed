@@ -10,6 +10,7 @@ import java.sql.SQLException;
 public class SpringJdbcConnectionProvider implements JdbcConnectionProvider {
 
     private DataSource dataSource;
+    private Connection connection;
 
     public SpringJdbcConnectionProvider(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -17,12 +18,50 @@ public class SpringJdbcConnectionProvider implements JdbcConnectionProvider {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return DataSourceUtils.doGetConnection(dataSource);
+        connection = DataSourceUtils.doGetConnection(dataSource);
+        return connection;
     }
 
     @Override
     public void closeConnection(Connection connection) throws SQLException {
         connection.close();
     }
+
+
+    @Override
+    public void startTransaction() {
+        try {
+            if (connection == null) {
+                getConnection();
+            }
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void commit() {
+        try {
+            if (connection == null) {
+                getConnection();
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }    }
+
+    @Override
+    public void rollback() {
+        try {
+            if (connection == null) {
+                getConnection();
+            }
+            connection.rollback();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }
