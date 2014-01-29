@@ -42,7 +42,7 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
     public void startTransaction() {
         try {
             if (connection == null || connection.isClosed()) {
-                throw new RuntimeException("Connection is null or closed");
+                getConnection();
             }
             connection.setAutoCommit(false);
         } catch (SQLException e) {
@@ -54,7 +54,7 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
     public void commit() {
         try {
             if (connection == null || connection.isClosed()) {
-                throw new RuntimeException("Connection is null or closed");
+                throw new RuntimeException("Cannot commit.Connection is null or closed");
             }
             connection.commit();
         } catch (SQLException e) {
@@ -64,8 +64,8 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
     @Override
     public void rollback() {
         try {
-            if (connection == null) {
-                getConnection();
+            if (connection == null || connection.isClosed()) {
+                throw new RuntimeException("Cannot rollback .Connection is null or closed");
             }
             connection.rollback();
         } catch (SQLException e) {
