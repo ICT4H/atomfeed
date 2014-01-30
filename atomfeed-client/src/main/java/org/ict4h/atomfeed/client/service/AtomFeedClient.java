@@ -99,15 +99,12 @@ public class AtomFeedClient implements FeedClient {
     }
 
     private FeedEnumerator fetchFeeds() {
-//        jdbcConnectionProvider.startTransaction();
         FeedEnumerator feedEnumerator;
-        try{
+        try {
             Marker marker = allMarkers.get(feedUri);
             if (marker == null) marker = new Marker(feedUri, null, null);
             feedEnumerator = new FeedEnumerator(allFeeds, marker);
-//            jdbcConnectionProvider.commit();
-        }catch(Exception e){
-//            jdbcConnectionProvider.rollback();
+        } catch (Exception e) {
             throw new AtomFeedClientException(e);
         }
         return feedEnumerator;
