@@ -99,15 +99,15 @@ public class AtomFeedClient implements FeedClient {
     }
 
     private FeedEnumerator fetchFeeds() {
-        jdbcConnectionProvider.startTransaction();
+//        jdbcConnectionProvider.startTransaction();
         FeedEnumerator feedEnumerator;
         try{
             Marker marker = allMarkers.get(feedUri);
             if (marker == null) marker = new Marker(feedUri, null, null);
             feedEnumerator = new FeedEnumerator(allFeeds, marker);
-            jdbcConnectionProvider.commit();
+//            jdbcConnectionProvider.commit();
         }catch(Exception e){
-            jdbcConnectionProvider.rollback();
+//            jdbcConnectionProvider.rollback();
             throw new AtomFeedClientException(e);
         }
         return feedEnumerator;
@@ -119,7 +119,6 @@ public class AtomFeedClient implements FeedClient {
         logger.info(String.format("Processing failed events for feed URI : %s using event worker : %s",
                 feedUri, eventWorker.getClass().getSimpleName()));
         Connection connection = null;
-//        boolean hasProcessedAnyEvent = false;
         try {
             connection = jdbcConnectionProvider.getConnection();
             List<FailedEvent> failedEvents = getFailedEvents();
@@ -129,7 +128,6 @@ public class AtomFeedClient implements FeedClient {
                 }
                 try {
                     logger.debug(String.format("Processing failed event : %s", failedEvent));
-//                    hasProcessedAnyEvent = true;
                     eventWorker.process(failedEvent.getEvent());
                     if (atomFeedProperties.controlsEventProcessing()) {
                         allFailedEvents.remove(failedEvent);
@@ -149,9 +147,6 @@ public class AtomFeedClient implements FeedClient {
         } finally {
             if (connection != null) {
                 try {
-//                    if(!hasProcessedAnyEvent) {
-//                        jdbcConnectionProvider.rollback();
-//                    }
                     jdbcConnectionProvider.closeConnection(connection);
                 } catch (SQLException e) {
                     throw new AtomFeedClientException(e);

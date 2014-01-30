@@ -22,10 +22,9 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
         if (existingConnection != null && !existingConnection.isClosed())
             return existingConnection;
 
-        Connection newConnection = dataSource.getConnection();
-        threadConnection.set(newConnection);
+        connection = dataSource.getConnection();
+        threadConnection.set(connection);
 
-        connection = threadConnection.get();
         return connection;
     }
 
