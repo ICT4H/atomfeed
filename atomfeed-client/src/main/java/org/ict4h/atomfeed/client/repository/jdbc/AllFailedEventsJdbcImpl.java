@@ -94,7 +94,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
 
     private void insertFailedEvent(FailedEvent failedEvent) {
         String sql = String.format(
-                "insert into %s (feed_uri, failed_at, error_message, event_id, event_content, error_hash_code) values (?, ?, ?, ?, ?, ?)",
+                "insert into %s (feed_uri, failed_at, error_message, event_id, event_content, error_hash_code, title) values (?, ?, ?, ?, ?, ?, ?)",
                 JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
 
         // DB limit is 4000. reduce to ensure it doesn't cross that.
@@ -112,6 +112,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setString(4, failedEvent.getEventId());
             statement.setString(5, failedEvent.getEvent().getContent());
             statement.setInt(6, errorMessage.hashCode());
+            statement.setString(7, failedEvent.getEvent().getTitle());
             statement.executeUpdate();
             logger.info(String.format("Created a new %s", failedEvent.toString()));
         } catch (SQLException e) {
@@ -123,7 +124,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
 
     private void updateFailedEvent(FailedEvent failedEvent) {
         String sql = String.format(
-                "update %s set failed_at = ?, error_message = ?, event_content = ?, error_hash_code = ? where feed_uri = ? and event_id = ?",
+                "update %s set failed_at = ?, error_message = ?, event_content = ?, error_hash_code = ?, title = ? where feed_uri = ? and event_id = ?",
                 JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
 
         // DB limit is 4000. reduce to ensure it doesn't cross that.
@@ -139,8 +140,9 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setString(2, errorMessage);
             statement.setString(3, failedEvent.getEvent().getContent());
             statement.setLong(4, errorMessage.hashCode());
-            statement.setString(5, failedEvent.getFeedUri());
-            statement.setString(6, failedEvent.getEventId());
+            statement.setString(5, failedEvent.getEvent().getTitle());
+            statement.setString(6, failedEvent.getFeedUri());
+            statement.setString(7, failedEvent.getEventId());
             statement.executeUpdate();
             logger.info(String.format("Updated %s", failedEvent.toString()));
         } catch (SQLException e) {

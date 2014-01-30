@@ -98,6 +98,7 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest {
         assertEquals(expectedFailedEvent.getFailedAt(), actualFailedEvent.getFailedAt());
         assertEquals(expectedFailedEvent.getEventId(), actualFailedEvent.getEventId());
         assertEquals(expectedFailedEvent.getEvent().getContent(), actualFailedEvent.getEvent().getContent());
+        assertEquals(expectedFailedEvent.getEvent().getTitle(), actualFailedEvent.getEvent().getTitle());
     }
 
     private List<FailedEvent> setupWith5Events() {
