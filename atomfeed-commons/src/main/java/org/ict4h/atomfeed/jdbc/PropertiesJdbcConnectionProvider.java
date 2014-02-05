@@ -61,4 +61,5 @@ public class PropertiesJdbcConnectionProvider implements JdbcConnectionProvider 
             throw new RuntimeException(e);
         }
     }
+
 }
