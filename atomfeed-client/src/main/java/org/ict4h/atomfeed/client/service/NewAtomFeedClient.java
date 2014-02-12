@@ -74,6 +74,11 @@ public class NewAtomFeedClient implements FeedClient {
                 allMarkers.put(feedUri, this.eventInProcess.getId(), Util.getViaLink(this.currentFeed));
             }
         }
+
+        @Override
+        public PropagationDefinition getTxPropagationDefinition() {
+            return PropagationDefinition.PROPAGATION_REQUIRES_NEW;
+        }
     }
 
     @Override
@@ -82,6 +87,10 @@ public class NewAtomFeedClient implements FeedClient {
         try {
             transactionManager.executeWithTransaction(new AFTransactionWork() {
                 private final URI uri = feedUri;
+                @Override
+                public PropagationDefinition getTxPropagationDefinition() {
+                    return PropagationDefinition.PROPAGATION_REQUIRED;
+                }
                 @Override
                 public void execute() {
                     final FeedEnumerator enumerator = getEnumerator(this.uri);
@@ -102,6 +111,10 @@ public class NewAtomFeedClient implements FeedClient {
                                     @Override
                                     public void execute() {
                                         handleFailedEvent(entry, feedUri, e, enumerator.getCurrentFeed(), failedEvent);
+                                    }
+                                    @Override
+                                    public PropagationDefinition getTxPropagationDefinition() {
+                                        return PropagationDefinition.PROPAGATION_REQUIRES_NEW;
                                     }
                                 });
                             } catch (Exception feEx) {
@@ -132,6 +145,11 @@ public class NewAtomFeedClient implements FeedClient {
             logger.debug(String.format("Processing failed event : %s", eventInProcess));
             eventWorker.process(eventInProcess.getEvent());
             allFailedEvents.remove(eventInProcess);
+        }
+
+        @Override
+        public PropagationDefinition getTxPropagationDefinition() {
+            return PropagationDefinition.PROPAGATION_REQUIRES_NEW;
         }
     }
 
