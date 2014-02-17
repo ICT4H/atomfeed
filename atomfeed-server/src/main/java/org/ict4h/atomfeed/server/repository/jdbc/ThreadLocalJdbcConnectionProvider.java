@@ -10,7 +10,6 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
     private  final ThreadLocal<Connection> threadConnection = new ThreadLocal();
 
     private DataSource dataSource;
-    private Connection connection;
 
     public ThreadLocalJdbcConnectionProvider(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -22,7 +21,7 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
         if (existingConnection != null && !existingConnection.isClosed())
             return existingConnection;
 
-        connection = dataSource.getConnection();
+        Connection connection = dataSource.getConnection();
         threadConnection.set(connection);
 
         return connection;
@@ -40,9 +39,7 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
     @Override
     public void startTransaction() {
         try {
-            if (connection == null || connection.isClosed()) {
-                getConnection();
-            }
+            Connection connection = getConnection();
             connection.setAutoCommit(false);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -52,6 +49,7 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
     @Override
     public void commit() {
         try {
+            Connection connection = threadConnection.get();
             if (connection == null || connection.isClosed()) {
                 throw new RuntimeException("Cannot commit.Connection is null or closed");
             }
@@ -63,6 +61,7 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
     @Override
     public void rollback() {
         try {
+            Connection connection = threadConnection.get();
             if (connection == null || connection.isClosed()) {
                 throw new RuntimeException("Cannot rollback .Connection is null or closed");
             }
@@ -71,5 +70,4 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
             throw new RuntimeException(e);
         }
     }
-
 }
