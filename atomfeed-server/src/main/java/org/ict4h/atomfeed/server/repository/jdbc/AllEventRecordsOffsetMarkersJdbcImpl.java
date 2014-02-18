@@ -31,8 +31,11 @@ public class AllEventRecordsOffsetMarkersJdbcImpl implements AllEventRecordsOffs
         Connection connection = null;
         PreparedStatement stmt = null;
         Integer offsetMarkerCountForCategory = getOffsetMarkerCountForCategory(category);
+        boolean autoCommit = true;
         try {
             connection = provider.getConnection();
+            autoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
             String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records_offset_marker");
             String sqlString = String.format("insert into %s (event_id, event_count, category) values (?, ?, ?)", tableName);
             if (offsetMarkerCountForCategory > 0) {
@@ -49,6 +52,7 @@ public class AllEventRecordsOffsetMarkersJdbcImpl implements AllEventRecordsOffs
         } finally {
             close(stmt);
             try {
+                connection.setAutoCommit(autoCommit);
                 provider.closeConnection(connection);
             } catch (SQLException e) {
                 throw new AtomFeedRuntimeException(e);
