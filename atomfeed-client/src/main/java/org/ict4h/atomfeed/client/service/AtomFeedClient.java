@@ -60,6 +60,7 @@ public class AtomFeedClient implements FeedClient {
 
             Event event = null;
             for (Entry entry : feedEnumerator) {
+                logger.info("Processing event : " + event);
                 if (shouldNotProcessEvents(feedUri)) {
                     logger.warn("Too many failed events have failed while processing. Cannot continue.");
                     return;
@@ -69,7 +70,6 @@ public class AtomFeedClient implements FeedClient {
                 }
                 try {
                     event = new Event(entry, getEntryFeedUri(feedEnumerator));
-                    logger.debug("Processing event : " + event);
                     eventWorker.process(event);
                     if (atomFeedProperties.controlsEventProcessing()) {
                         allMarkers.put(feedUri, entry.getId(), Util.getViaLink(feedEnumerator.getCurrentFeed()));
@@ -84,6 +84,7 @@ public class AtomFeedClient implements FeedClient {
                 } finally {
                     eventWorker.cleanUp(event);
                 }
+                logger.info("Done:Processing event : " + event);
             }
         } catch (Exception e) {
             throw new AtomFeedClientException(e);
@@ -96,6 +97,7 @@ public class AtomFeedClient implements FeedClient {
                 }
             }
         }
+        logger.info(String.format("Done:Processing events for feed URI : %s using event worker : %s", feedUri, eventWorker.getClass().getSimpleName()));
     }
 
     private FeedEnumerator fetchFeeds() {
