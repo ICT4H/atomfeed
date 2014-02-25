@@ -175,6 +175,11 @@ public class NewAtomFeedClient implements FeedClient {
                                     public void execute() {
                                         updateFailedEvents(failedEvent, e);
                                     }
+
+                                    @Override
+                                    public PropagationDefinition getTxPropagationDefinition() {
+                                        return PropagationDefinition.PROPAGATION_REQUIRES_NEW;
+                                    }
                                 });
                             } catch (Exception fePEx) {
                                 throw new RuntimeException(
@@ -184,6 +189,11 @@ public class NewAtomFeedClient implements FeedClient {
 
                         }
                     }
+                }
+
+                @Override
+                public PropagationDefinition getTxPropagationDefinition() {
+                    return PropagationDefinition.PROPAGATION_REQUIRED;
                 }
             });
         } catch (Exception e) {
