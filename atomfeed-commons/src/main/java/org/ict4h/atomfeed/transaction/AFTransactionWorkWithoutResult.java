@@ -1,4 +1,4 @@
-package org.ict4h.atomfeed.client.service;
+package org.ict4h.atomfeed.transaction;
 
 public abstract class AFTransactionWorkWithoutResult implements  AFTransactionWork<Object> {
     @Override

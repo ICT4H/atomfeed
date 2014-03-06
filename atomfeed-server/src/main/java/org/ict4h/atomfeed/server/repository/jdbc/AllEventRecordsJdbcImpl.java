@@ -41,16 +41,16 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             stmt.setString(4, eventRecord.getContents());
             stmt.setString(5, eventRecord.getCategory());
             stmt.executeUpdate();
-            connection.commit();
+            //connection.commit();
         } catch (SQLException e) {
             throw new AtomFeedRuntimeException(e);
         } finally {
             close(stmt);
-            try {
-                provider.closeConnection(connection);
-            } catch (SQLException e) {
-                throw new AtomFeedRuntimeException(e);
-            }
+//            try {
+//                provider.closeConnection(connection);
+//            } catch (SQLException e) {
+//                throw new AtomFeedRuntimeException(e);
+//            }
         }
     }
 

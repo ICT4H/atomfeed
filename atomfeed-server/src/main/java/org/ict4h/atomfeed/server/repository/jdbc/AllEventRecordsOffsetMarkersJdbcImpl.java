@@ -46,17 +46,17 @@ public class AllEventRecordsOffsetMarkersJdbcImpl implements AllEventRecordsOffs
             stmt.setObject(2, countTillOffSetId);
             stmt.setObject(3, category);
             stmt.executeUpdate();
-            connection.commit();
+            //connection.commit();
         } catch (SQLException e) {
             throw new AtomFeedRuntimeException(e);
         } finally {
             close(stmt);
-            try {
-                connection.setAutoCommit(autoCommit);
-                provider.closeConnection(connection);
-            } catch (SQLException e) {
-                throw new AtomFeedRuntimeException(e);
-            }
+//            try {
+//                connection.setAutoCommit(autoCommit);
+//                provider.closeConnection(connection);
+//            } catch (SQLException e) {
+//                throw new AtomFeedRuntimeException(e);
+//            }
         }
     }
 

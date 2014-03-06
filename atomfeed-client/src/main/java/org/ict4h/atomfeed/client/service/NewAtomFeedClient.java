@@ -12,6 +12,9 @@ import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.AllMarkers;
 import org.ict4h.atomfeed.client.util.Util;
+import org.ict4h.atomfeed.transaction.AFTransactionManager;
+import org.ict4h.atomfeed.transaction.AFTransactionWork;
+import org.ict4h.atomfeed.transaction.AFTransactionWorkWithoutResult;
 
 import java.net.URI;
 import java.util.Date;
@@ -63,7 +66,7 @@ public class NewAtomFeedClient implements FeedClient {
                 try {
                     eventInProcess = new Event(entry, getEntryFeedUri(enumerator));
                     logger.info(String.format("Processing event : %s", eventInProcess));
-                    transactionManager.executeWithTransaction(new FeedEntryProcessor(eventInProcess, enumerator.getCurrentFeed()));
+                    transactionManager.executeWithTransaction(new EventProcessor(eventInProcess, enumerator.getCurrentFeed()));
                 } catch (final Exception eventProcessingException) {
                     logger.error(String.format("Error occurred while processing feed entry:%s", entry), eventProcessingException);
                     final Event failedEvent = eventInProcess;
@@ -94,11 +97,11 @@ public class NewAtomFeedClient implements FeedClient {
             for (final FailedEvent failedEvent : failedEvents) {
                 try {
                     logger.info(String.format("Processing previously failed event : %s", failedEvent));
-                    transactionManager.executeWithTransaction(new FailedFeedEventProcessor(failedEvent));
+                    transactionManager.executeWithTransaction(new FailedEventProcessor(failedEvent));
                 } catch (final Exception retryException) {
                     logger.error(String.format("Failed to process failed event. %s", failedEvent), retryException);
                     try {
-                        transactionManager.executeWithTransaction(new FailedEventRetryFailureHandler(failedEvent, retryException));
+                        transactionManager.executeWithTransaction(new EventRetryFailureHandler(failedEvent, retryException));
                     } catch (Exception fePEx) {
                         String errorMsg = String.format("Error occurred while trying to update failed event. %s", failedEvent);
                         logger.error(errorMsg, fePEx);
@@ -146,10 +149,10 @@ public class NewAtomFeedClient implements FeedClient {
         }
     }
 
-    private class FeedEntryProcessor extends AFTransactionWorkWithoutResult {
+    private class EventProcessor extends AFTransactionWorkWithoutResult {
         private Event eventInProcess;
         private Feed currentFeed;
-        public FeedEntryProcessor(Event eventInProcess, Feed currentFeed) {
+        public EventProcessor(Event eventInProcess, Feed currentFeed) {
             this.eventInProcess = eventInProcess;
             this.currentFeed = currentFeed;
         }
@@ -162,8 +165,8 @@ public class NewAtomFeedClient implements FeedClient {
             }
         }
         @Override
-        public PropagationDefinition getTxPropagationDefinition() {
-            return PropagationDefinition.PROPAGATION_REQUIRES_NEW;
+        public AFTransactionWork.PropagationDefinition getTxPropagationDefinition() {
+            return AFTransactionWork.PropagationDefinition.PROPAGATION_REQUIRES_NEW;
         }
     }
 
@@ -210,10 +213,10 @@ public class NewAtomFeedClient implements FeedClient {
         }
     }
 
-    private class FailedEventRetryFailureHandler extends AFTransactionWorkWithoutResult {
+    private class EventRetryFailureHandler extends AFTransactionWorkWithoutResult {
         private FailedEvent failedEvent;
         private Exception failureException;
-        public FailedEventRetryFailureHandler(FailedEvent failedEvent, Exception failureException) {
+        public EventRetryFailureHandler(FailedEvent failedEvent, Exception failureException) {
             this.failedEvent = failedEvent;
             this.failureException = failureException;
         }
@@ -227,9 +230,9 @@ public class NewAtomFeedClient implements FeedClient {
         }
     }
 
-    private class FailedFeedEventProcessor extends AFTransactionWorkWithoutResult {
+    private class FailedEventProcessor extends AFTransactionWorkWithoutResult {
         private final FailedEvent eventInProcess;
-        public FailedFeedEventProcessor(FailedEvent failedEvent) {
+        public FailedEventProcessor(FailedEvent failedEvent) {
             this.eventInProcess = failedEvent;
         }
         @Override
