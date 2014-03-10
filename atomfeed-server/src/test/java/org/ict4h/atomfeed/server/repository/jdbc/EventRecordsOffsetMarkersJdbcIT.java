@@ -5,6 +5,9 @@ import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.ict4h.atomfeed.server.domain.EventRecordsOffsetMarker;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsOffsetMarkers;
+import org.ict4h.atomfeed.transaction.AFTransactionManager;
+import org.ict4h.atomfeed.transaction.AFTransactionWork;
+import org.ict4h.atomfeed.transaction.AFTransactionWorkWithoutResult;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,26 +23,41 @@ public class EventRecordsOffsetMarkersJdbcIT extends IntegrationTest {
 
     private AllEventRecordsOffsetMarkers allEventRecordsOffsetMarkers;
     private JdbcConnectionProvider connectionProvider;
+    private AFTransactionManager atomfeedTransactionManager;
 
     @Before
     public void before() throws SQLException {
         connectionProvider = getConnectionProvider();
-        allEventRecordsOffsetMarkers = new AllEventRecordsOffsetMarkersJdbcImpl(getConnectionProvider());
+        atomfeedTransactionManager = getAtomfeedTransactionManager(connectionProvider);
+        allEventRecordsOffsetMarkers = new AllEventRecordsOffsetMarkersJdbcImpl(connectionProvider);
         clearRecords();
     }
 
     @After
     public void after() throws SQLException {
         clearRecords();
-        connectionProvider.closeConnection(connectionProvider.getConnection());
     }
 
-    private void clearRecords() throws SQLException {
-        Statement statement = connectionProvider.getConnection().createStatement();
-        String tableName = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "event_records_offset_marker");
-        statement.execute(String.format("delete from %s", tableName));
-        connectionProvider.getConnection().commit();
-        statement.close();
+    private void clearRecords() {
+        atomfeedTransactionManager.executeWithTransaction(new AFTransactionWorkWithoutResult() {
+            @Override
+            protected void doInTransaction() {
+                try {
+                    Statement statement = connectionProvider.getConnection().createStatement();
+                    String tableName = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "event_records_offset_marker");
+                    statement.execute(String.format("delete from %s", tableName));
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Error occurred while trying to clear records.", e);
+                }
+            }
+            @Override
+            public PropagationDefinition getTxPropagationDefinition() {
+                return PropagationDefinition.PROPAGATION_REQUIRED;
+            }
+        });
+
     }
 
     @Test

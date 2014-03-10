@@ -3,11 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ict4h</groupId>
     <artifactId>atomfeed</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>atomfeed</name>
     <description />
     <url>https://github.com/ICT4H/atomfeed</url>
+
+    <properties>
+        <jetty.version>8.1.8.v20121106</jetty.version>
+    </properties>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -47,9 +51,7 @@
         <module>atomfeed-client-spring</module>
     </modules>
 
-    <properties>
-        <jetty.version>8.1.8.v20121106</jetty.version>
-    </properties>
+
 
     <build>
         <pluginManagement>

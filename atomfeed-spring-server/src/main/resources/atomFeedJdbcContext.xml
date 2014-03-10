@@ -12,20 +12,26 @@
     
     <tx:annotation-driven transaction-manager="transactionManager" />
     
-    <bean id="jdbcConnectionProvider" class="org.ict4h.atomfeed.server.repository.jdbc.SpringJdbcConnectionProvider">
+    <!--<bean id="jdbcConnectionProvider" class="org.ict4h.atomfeed.server.repository.jdbc.SpringJdbcConnectionProvider">-->
+        <!--<constructor-arg ref="dataSource"/>-->
+    <!--</bean>-->
+
+    <bean id="atomConnnectionProvider" class="org.ict4h.atomfeed.server.transaction.AtomFeedSpringTransactionSupport">
+        <constructor-arg ref="transactionManager"/>
         <constructor-arg ref="dataSource"/>
     </bean>
+
     
     <bean id="allEventRecords" class="org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl">
-        <constructor-arg ref="jdbcConnectionProvider"/>
+        <constructor-arg ref="atomConnnectionProvider"/>
     </bean>
 
     <bean id="eventRecordsOffsetMarkers" class="org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsOffsetMarkersJdbcImpl">
-        <constructor-arg ref="jdbcConnectionProvider"/>
+        <constructor-arg ref="atomConnnectionProvider"/>
     </bean>
     
     <bean id="allChunkingEntries" class="org.ict4h.atomfeed.server.repository.jdbc.ChunkingEntriesJdbcImpl">
-        <constructor-arg ref="jdbcConnectionProvider"/>
+        <constructor-arg ref="atomConnnectionProvider"/>
     </bean>
 
 </beans>

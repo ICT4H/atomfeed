@@ -5,6 +5,8 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedOutput;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.server.service.EventFeedService;
+import org.ict4h.atomfeed.transaction.AFTransactionManager;
+import org.ict4h.atomfeed.transaction.AFTransactionWork;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,9 +15,19 @@ import java.net.URISyntaxException;
  * A Helper class that can be used to generate a {@code String} representation of a {@code Feed}.
  */
 public class EventFeedServiceHelper {
-    public static String getRecentFeed(EventFeedService eventFeedService, String requestURL, String category, Logger logger){
+    public static String getRecentFeed(final EventFeedService eventFeedService, final String requestURL, final String category, Logger logger, AFTransactionManager atomTxManager){
         try {
-            Feed feed = eventFeedService.getRecentFeed(new URI(requestURL),category);
+            final URI requestUri = new URI(requestURL);
+            Feed feed = atomTxManager.executeWithTransaction(new AFTransactionWork<Feed>() {
+                @Override
+                public Feed execute() {
+                    return eventFeedService.getRecentFeed(requestUri,category);
+                }
+                @Override
+                public PropagationDefinition getTxPropagationDefinition() {
+                    return PropagationDefinition.PROPAGATION_REQUIRED;
+                }
+            });
             return new WireFeedOutput().outputString(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);
@@ -27,10 +39,20 @@ public class EventFeedServiceHelper {
         }
     }
 
-    public static String getEventFeed(EventFeedService eventFeedService,
-                                      String requestURL, String category, int feedNumber, Logger logger){
+    public static String getEventFeed(final EventFeedService eventFeedService,
+                                      String requestURL, final String category, final int feedNumber, Logger logger, AFTransactionManager atomTxManager){
         try {
-            Feed feed = eventFeedService.getEventFeed(new URI(requestURL), category, feedNumber);
+            final URI requestUri = new URI(requestURL);
+            Feed feed = atomTxManager.executeWithTransaction(new AFTransactionWork<Feed>() {
+                @Override
+                public Feed execute() {
+                    return eventFeedService.getEventFeed(requestUri, category, feedNumber);
+                }
+                @Override
+                public PropagationDefinition getTxPropagationDefinition() {
+                    return PropagationDefinition.PROPAGATION_REQUIRED;
+                }
+            });
             return new WireFeedOutput().outputString(feed);
         } catch (URISyntaxException e) {
             throw new RuntimeException("Bad URI", e);

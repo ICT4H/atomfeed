@@ -7,6 +7,9 @@ import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
+import org.ict4h.atomfeed.transaction.AFTransactionManager;
+import org.ict4h.atomfeed.transaction.AFTransactionWork;
+import org.ict4h.atomfeed.transaction.AFTransactionWorkWithoutResult;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,31 +34,47 @@ public class AllEventRecordsIT extends IntegrationTest {
 
     private AllEventRecords allEventRecords;
     private JdbcConnectionProvider connectionProvider;
+    private AFTransactionManager atomfeedTransactionManager;
 
     @Before
     public void before() throws SQLException {
         connectionProvider = getConnectionProvider();
-        clearRecords();
-        allEventRecords = new AllEventRecordsJdbcImpl(getConnectionProvider());
+        atomfeedTransactionManager = getAtomfeedTransactionManager(connectionProvider);
+        allEventRecords = new AllEventRecordsJdbcImpl(connectionProvider);
 
+        clearRecords();
     }
 
     @After
     public void after() throws SQLException {
         clearRecords();
-        connectionProvider.closeConnection(connectionProvider.getConnection());
     }
 
-    private void clearRecords() throws SQLException {
-        Statement statement = connectionProvider.getConnection().createStatement();
-        String event_records_table = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "event_records");
-        statement.execute(String.format("delete from %s", event_records_table));
-        String event_records_marker_table = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "event_records_offset_marker");
-        statement.execute(String.format("delete from %s", event_records_marker_table));
-        String chunking_history_table = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "chunking_history");
-        statement.execute(String.format("delete from %s", chunking_history_table));
-        connectionProvider.getConnection().commit();
-        statement.close();
+    private void clearRecords() {
+        atomfeedTransactionManager.executeWithTransaction(new AFTransactionWorkWithoutResult() {
+            @Override
+            protected void doInTransaction() {
+                try {
+                    Statement statement = connectionProvider.getConnection().createStatement();
+                    String event_records_table = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "event_records");
+                    statement.execute(String.format("delete from %s", event_records_table));
+                    String event_records_marker_table = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "event_records_offset_marker");
+                    statement.execute(String.format("delete from %s", event_records_marker_table));
+                    String chunking_history_table = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "chunking_history");
+                    statement.execute(String.format("delete from %s", chunking_history_table));
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Error occurred while trying to clear records.", e);
+                }
+            }
+
+            @Override
+            public PropagationDefinition getTxPropagationDefinition() {
+                return PropagationDefinition.PROPAGATION_REQUIRES_NEW; //doesn't matter
+            }
+        });
+
     }
 
     @Test

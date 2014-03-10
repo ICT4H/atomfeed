@@ -69,11 +69,10 @@ public class NewAtomFeedClient implements FeedClient {
                     transactionManager.executeWithTransaction(new EventProcessor(eventInProcess, enumerator.getCurrentFeed()));
                 } catch (final Exception eventProcessingException) {
                     logger.error(String.format("Error occurred while processing feed entry:%s", entry), eventProcessingException);
-                    final Event failedEvent = eventInProcess;
                     try {
-                        transactionManager.executeWithTransaction(new FailedEventHandler(feedUri, entry, failedEvent, enumerator.getCurrentFeed(), eventProcessingException));
+                        transactionManager.executeWithTransaction(new FailedEventHandler(feedUri, entry, eventInProcess, enumerator.getCurrentFeed(), eventProcessingException));
                     } catch (Exception feEx) {
-                        String errorMsg = String.format("Error occurred while trying to save event as Failed: %s", failedEvent);
+                        String errorMsg = String.format("Error occurred while trying to save event as Failed: %s", eventInProcess);
                         logger.error(errorMsg, feEx);
                         throw new RuntimeException(errorMsg, feEx);
                     }
@@ -119,6 +118,7 @@ public class NewAtomFeedClient implements FeedClient {
 
 
     private void updateFailedEvents(FailedEvent failedEvent, Exception e)  {
+        //TODO: create a new Event with failedAt and errorMessage set
         failedEvent.setFailedAt(new Date().getTime());
         failedEvent.setErrorMessage(Util.getExceptionString(e));
         allFailedEvents.addOrUpdate(failedEvent);

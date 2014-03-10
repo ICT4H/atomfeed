@@ -1,7 +1,10 @@
 package org.ict4h.atomfeed;
 
 
+import org.ict4h.atomfeed.jdbc.AtomFeedJdbcTransactionManager;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.transaction.AFTransactionManager;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -69,5 +72,9 @@ public abstract class IntegrationTest {
 
     protected String getProperty(String key) {
         return bundle.getString(key);
+    }
+
+    protected AFTransactionManager getAtomfeedTransactionManager(JdbcConnectionProvider connectionProvider) {
+        return new AtomFeedJdbcTransactionManager(connectionProvider);
     }
 }
