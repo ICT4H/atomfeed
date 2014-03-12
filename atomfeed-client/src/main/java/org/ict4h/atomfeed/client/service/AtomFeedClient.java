@@ -7,16 +7,16 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
 import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
-import org.ict4h.atomfeed.client.factory.AtomFeedProperties;
+import org.ict4h.atomfeed.client.AtomFeedProperties;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.AllMarkers;
 import org.ict4h.atomfeed.client.util.Util;
-import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.transaction.AFTransactionManager;
+import org.ict4h.atomfeed.transaction.AFTransactionWork;
+import org.ict4h.atomfeed.transaction.AFTransactionWorkWithoutResult;
 
 import java.net.URI;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +27,8 @@ public class AtomFeedClient implements FeedClient {
 
     private AllFeeds allFeeds;
     private AtomFeedProperties atomFeedProperties;
-    private JdbcConnectionProvider jdbcConnectionProvider;
+
+    private AFTransactionManager transactionManager;
     private URI feedUri;
     private EventWorker eventWorker;
     private AllMarkers allMarkers;
@@ -38,167 +39,223 @@ public class AtomFeedClient implements FeedClient {
     }
 
     public AtomFeedClient(AllFeeds allFeeds, AllMarkers allMarkers, AllFailedEvents allFailedEvents, AtomFeedProperties atomFeedProperties,
-                          JdbcConnectionProvider jdbcConnectionProvider,
+                          AFTransactionManager transactionManager,
                           URI feedUri, EventWorker eventWorker) {
         this.allFeeds = allFeeds;
         this.allMarkers = allMarkers;
         this.allFailedEvents = allFailedEvents;
         this.atomFeedProperties = atomFeedProperties;
-        this.jdbcConnectionProvider = jdbcConnectionProvider;
+        this.transactionManager = transactionManager;
         this.feedUri = feedUri;
         this.eventWorker = eventWorker;
     }
 
     @Override
     public void processEvents() {
-        logger.info(String.format("Processing events for feed URI : %s using event worker : %s", feedUri, eventWorker.getClass().getSimpleName()));
-        Connection connection = null;
+        logger.info(String.format("Processing events for feed URI : %s using event worker : %s", this.feedUri, eventWorker.getClass().getSimpleName()));
         try {
-            connection = jdbcConnectionProvider.getConnection();
-
-            FeedEnumerator feedEnumerator = fetchFeeds();
-
-            Event event = null;
-            for (Entry entry : feedEnumerator) {
-                logger.info("Processing event : " + event);
-                if (shouldNotProcessEvents(feedUri)) {
-                    logger.warn("Too many failed events have failed while processing. Cannot continue.");
+            Marker lastRead = transactionManager.executeWithTransaction(new MarkerReader(feedUri));
+            final FeedEnumerator enumerator = new FeedEnumerator(allFeeds, lastRead);
+            for (final Entry entry : enumerator) {
+                Integer numberOfFailedEvents = transactionManager.executeWithTransaction(new FailedEventCounter(feedUri));
+                if ((numberOfFailedEvents.intValue() >= atomFeedProperties.getMaxFailedEvents())) {
+                    logger.error(String.format("Too many failed events for URI:%s have failed while processing. Cannot continue.", feedUri));
                     return;
                 }
-                if (atomFeedProperties.controlsEventProcessing()) {
-                    jdbcConnectionProvider.startTransaction();
-                }
+                Event eventInProcess = null;
                 try {
-                    event = new Event(entry, getEntryFeedUri(feedEnumerator));
-                    eventWorker.process(event);
-                    if (atomFeedProperties.controlsEventProcessing()) {
-                        allMarkers.put(feedUri, entry.getId(), Util.getViaLink(feedEnumerator.getCurrentFeed()));
-                        jdbcConnectionProvider.commit();
+                    eventInProcess = new Event(entry, getEntryFeedUri(enumerator));
+                    logger.info(String.format("Processing event : %s", eventInProcess));
+                    transactionManager.executeWithTransaction(new EventProcessor(eventInProcess, enumerator.getCurrentFeed()));
+                } catch (final Exception eventProcessingException) {
+                    logger.error(String.format("Error occurred while processing feed entry:%s", entry), eventProcessingException);
+                    try {
+                        transactionManager.executeWithTransaction(new FailedEventHandler(feedUri, entry, eventInProcess, enumerator.getCurrentFeed(), eventProcessingException));
+                    } catch (Exception feEx) {
+                        String errorMsg = String.format("Error occurred while trying to save event as Failed: %s", eventInProcess);
+                        logger.error(errorMsg, feEx);
+                        throw new RuntimeException(errorMsg, feEx);
                     }
-                } catch (Exception e) {
-                    logger.error("", e);
-                    if (atomFeedProperties.controlsEventProcessing()) {
-                        jdbcConnectionProvider.rollback();
-                    }
-                    handleFailedEvent(entry, feedUri, e, feedEnumerator.getCurrentFeed(), event);
                 } finally {
-                    eventWorker.cleanUp(event);
+                    eventWorker.cleanUp(eventInProcess);
                 }
-                logger.info("Done:Processing event : " + event);
             }
         } catch (Exception e) {
             throw new AtomFeedClientException(e);
         } finally {
-            if (connection != null) {
-                try {
-                    jdbcConnectionProvider.closeConnection(connection);
-                } catch (SQLException e) {
-                    throw new AtomFeedClientException(e);
-                }
-            }
+            //?
         }
-        logger.info(String.format("Done:Processing events for feed URI : %s using event worker : %s", feedUri, eventWorker.getClass().getSimpleName()));
     }
-
-    private FeedEnumerator fetchFeeds() {
-        FeedEnumerator feedEnumerator;
-        try {
-            Marker marker = allMarkers.get(feedUri);
-            if (marker == null) marker = new Marker(feedUri, null, null);
-            feedEnumerator = new FeedEnumerator(allFeeds, marker);
-        } catch (Exception e) {
-            throw new AtomFeedClientException(e);
-        }
-        return feedEnumerator;
-    }
-
 
     @Override
     public void processFailedEvents() {
         logger.info(String.format("Processing failed events for feed URI : %s using event worker : %s",
                 feedUri, eventWorker.getClass().getSimpleName()));
-        Connection connection = null;
         try {
-            connection = jdbcConnectionProvider.getConnection();
-            List<FailedEvent> failedEvents = getFailedEvents();
-            for (FailedEvent failedEvent : failedEvents) {
-                if (atomFeedProperties.controlsEventProcessing()) {
-                    jdbcConnectionProvider.startTransaction();
-                }
+            List<FailedEvent> failedEvents = transactionManager.executeWithTransaction(new FailedEventsFetcher());
+            for (final FailedEvent failedEvent : failedEvents) {
                 try {
-                    logger.debug(String.format("Processing failed event : %s", failedEvent));
-                    eventWorker.process(failedEvent.getEvent());
-                    if (atomFeedProperties.controlsEventProcessing()) {
-                        allFailedEvents.remove(failedEvent);
-                        jdbcConnectionProvider.commit();
+                    logger.info(String.format("Processing previously failed event : %s", failedEvent));
+                    transactionManager.executeWithTransaction(new FailedEventProcessor(failedEvent));
+                } catch (final Exception retryException) {
+                    logger.error(String.format("Failed to process failed event. %s", failedEvent), retryException);
+                    try {
+                        transactionManager.executeWithTransaction(new EventRetryFailureHandler(failedEvent, retryException));
+                    } catch (Exception fePEx) {
+                        String errorMsg = String.format("Error occurred while trying to update failed event. %s", failedEvent);
+                        logger.error(errorMsg, fePEx);
+                        throw new RuntimeException(errorMsg,fePEx);
                     }
-                } catch (Exception e) {
-                    logger.error("", e);
-                    if (atomFeedProperties.controlsEventProcessing()) {
-                        jdbcConnectionProvider.rollback();
-                    }
-                    updateFailedEvents(failedEvent, e);
-                    logger.info(String.format("Failed to process failed event. %s", failedEvent));
                 }
             }
         } catch (Exception e) {
             throw new AtomFeedClientException(e);
         } finally {
-            if (connection != null) {
-                try {
-                    jdbcConnectionProvider.closeConnection(connection);
-                } catch (SQLException e) {
-                    throw new AtomFeedClientException(e);
-                }
-            }
+            //?
         }
+
     }
 
-    private List<FailedEvent> getFailedEvents() {
-        List<FailedEvent> oldestNFailedEvents = null;
-        jdbcConnectionProvider.startTransaction();
-        try{
-            oldestNFailedEvents = allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE);
-            jdbcConnectionProvider.commit();
-        }catch(Exception e){
-            jdbcConnectionProvider.rollback();
-            throw new AtomFeedClientException(e);
-        }
-        return oldestNFailedEvents;
-    }
 
-    private void updateFailedEvents(FailedEvent failedEvent, Exception e) throws SQLException {
-        jdbcConnectionProvider.startTransaction();
-        try{
-            failedEvent.setFailedAt(new Date().getTime());
-            failedEvent.setErrorMessage(Util.getExceptionString(e));
-            allFailedEvents.addOrUpdate(failedEvent);
-            jdbcConnectionProvider.commit();
-        }catch(Exception e1){
-            jdbcConnectionProvider.rollback();
-            throw new AtomFeedClientException(e1);
-        }
+    private void updateFailedEvents(FailedEvent failedEvent, Exception e)  {
+        //TODO: create a new Event with failedAt and errorMessage set
+        failedEvent.setFailedAt(new Date().getTime());
+        failedEvent.setErrorMessage(Util.getExceptionString(e));
+        allFailedEvents.addOrUpdate(failedEvent);
     }
 
     private String getEntryFeedUri(FeedEnumerator feedEnumerator) {
         return Util.getSelfLink(feedEnumerator.getCurrentFeed()).toString();
     }
 
-    private boolean shouldNotProcessEvents(URI feedUri) {
-        return (allFailedEvents.getNumberOfFailedEvents(feedUri.toString()) >= atomFeedProperties.getMaxFailedEvents());
-    }
-
     private void handleFailedEvent(Entry entry, URI feedUri, Exception e, Feed feed, Event event) {
-        jdbcConnectionProvider.startTransaction();
-        try{
-            allFailedEvents.addOrUpdate(new FailedEvent(feedUri.toString(), event, Util.getExceptionString(e)));
-            if (atomFeedProperties.controlsEventProcessing())
-                allMarkers.put(this.feedUri, entry.getId(), Util.getViaLink(feed));
-            jdbcConnectionProvider.commit();
-        }catch(Exception e1){
-            jdbcConnectionProvider.rollback();
-            throw new AtomFeedClientException(e1);
-        }
-
+        allFailedEvents.addOrUpdate(new FailedEvent(feedUri.toString(), event, Util.getExceptionString(e)));
+        if (atomFeedProperties.controlsEventProcessing())
+            allMarkers.put(this.feedUri, entry.getId(), Util.getViaLink(feed));
     }
+
+    private class FailedEventCounter implements AFTransactionWork<Integer> {
+        private URI feedURI;
+        public FailedEventCounter(URI feedURI) {
+            this.feedURI = feedURI;
+        }
+        @Override
+        public Integer execute() {
+            return allFailedEvents.getNumberOfFailedEvents(this.feedURI.toString());
+        }
+        @Override
+        public PropagationDefinition getTxPropagationDefinition() {
+            return PropagationDefinition.PROPAGATION_REQUIRED;
+        }
+    }
+
+    private class EventProcessor extends AFTransactionWorkWithoutResult {
+        private Event eventInProcess;
+        private Feed currentFeed;
+        public EventProcessor(Event eventInProcess, Feed currentFeed) {
+            this.eventInProcess = eventInProcess;
+            this.currentFeed = currentFeed;
+        }
+        @Override
+        protected void doInTransaction() {
+            logger.debug("Processing event : " + this.eventInProcess);
+            eventWorker.process(this.eventInProcess);
+            if (atomFeedProperties.controlsEventProcessing()) {
+                allMarkers.put(feedUri, this.eventInProcess.getId(), Util.getViaLink(this.currentFeed));
+            }
+        }
+        @Override
+        public AFTransactionWork.PropagationDefinition getTxPropagationDefinition() {
+            return AFTransactionWork.PropagationDefinition.PROPAGATION_REQUIRES_NEW;
+        }
+    }
+
+    public class MarkerReader implements AFTransactionWork<Marker> {
+        private URI feedUri;
+        public MarkerReader(URI feedUri) {
+            this.feedUri = feedUri;
+        }
+        @Override
+        public Marker execute() {
+            Marker lastRead = allMarkers.get(feedUri);
+            if (lastRead == null) {
+                lastRead = new Marker(feedUri, null, null);
+            }
+            return lastRead;
+        }
+        @Override
+        public PropagationDefinition getTxPropagationDefinition() {
+            return PropagationDefinition.PROPAGATION_REQUIRED;
+        }
+    }
+
+    private class FailedEventHandler extends AFTransactionWorkWithoutResult {
+        private URI feedURI;
+        private Entry failedEntry;
+        private Event failedEvent;
+        private Feed workingFeed;
+        private Exception failureException;
+
+        public FailedEventHandler(URI feedURI, Entry failedEntry, Event failedEvent, Feed workingFeed, Exception failureException) {
+            this.feedURI = feedURI;
+            this.failedEntry = failedEntry;
+            this.failedEvent = failedEvent;
+            this.workingFeed = workingFeed;
+            this.failureException = failureException;
+        }
+        @Override
+        protected void doInTransaction() {
+            handleFailedEvent(this.failedEntry, this.feedURI, this.failureException, this.workingFeed, this.failedEvent);
+        }
+        @Override
+        public PropagationDefinition getTxPropagationDefinition() {
+            return PropagationDefinition.PROPAGATION_REQUIRES_NEW;
+        }
+    }
+
+    private class EventRetryFailureHandler extends AFTransactionWorkWithoutResult {
+        private FailedEvent failedEvent;
+        private Exception failureException;
+        public EventRetryFailureHandler(FailedEvent failedEvent, Exception failureException) {
+            this.failedEvent = failedEvent;
+            this.failureException = failureException;
+        }
+        @Override
+        public AFTransactionWork.PropagationDefinition getTxPropagationDefinition() {
+            return AFTransactionWork.PropagationDefinition.PROPAGATION_REQUIRES_NEW;
+        }
+        @Override
+        protected void doInTransaction() {
+            updateFailedEvents(this.failedEvent, this.failureException);
+        }
+    }
+
+    private class FailedEventProcessor extends AFTransactionWorkWithoutResult {
+        private final FailedEvent eventInProcess;
+        public FailedEventProcessor(FailedEvent failedEvent) {
+            this.eventInProcess = failedEvent;
+        }
+        @Override
+        public PropagationDefinition getTxPropagationDefinition() {
+            return PropagationDefinition.PROPAGATION_REQUIRES_NEW;
+        }
+        @Override
+        protected void doInTransaction() {
+            logger.debug(String.format("Processing failed event : %s", eventInProcess));
+            eventWorker.process(eventInProcess.getEvent());
+            allFailedEvents.remove(eventInProcess);
+        }
+    }
+
+    private class FailedEventsFetcher implements AFTransactionWork<List<FailedEvent>> {
+        @Override
+        public List<FailedEvent> execute() {
+            return allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE);
+        }
+        @Override
+        public PropagationDefinition getTxPropagationDefinition() {
+            return PropagationDefinition.PROPAGATION_REQUIRED;
+        }
+    }
+
 }

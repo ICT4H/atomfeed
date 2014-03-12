@@ -7,12 +7,4 @@ public interface JdbcConnectionProvider {
 
 	Connection getConnection() throws SQLException;
 
-    void closeConnection(Connection connection) throws SQLException;
-
-    void startTransaction();
-
-    void commit();
-
-    void rollback();
-
 }

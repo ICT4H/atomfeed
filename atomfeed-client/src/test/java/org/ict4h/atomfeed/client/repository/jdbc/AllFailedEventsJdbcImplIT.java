@@ -5,6 +5,9 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
+import org.ict4h.atomfeed.transaction.AFTransactionManager;
+import org.ict4h.atomfeed.transaction.AFTransactionWork;
+import org.ict4h.atomfeed.transaction.AFTransactionWorkWithoutResult;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,24 +24,41 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest {
 
     private AllFailedEventsJdbcImpl allFailedEvents;
     private JdbcConnectionProvider connectionProvider;
+    private AFTransactionManager atomfeedTransactionManager;
 
     private void clearRecords() throws SQLException {
-        Statement statement = connectionProvider.getConnection().createStatement();
-        String tableName = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "failed_events");
-        statement.execute("delete from " + tableName);
-        statement.close();
+        atomfeedTransactionManager.executeWithTransaction(
+                new AFTransactionWorkWithoutResult() {
+                    @Override
+                    protected void doInTransaction() {
+                        try {
+                            Statement statement = connectionProvider.getConnection().createStatement();
+                            String tableName = JdbcUtils.getTableName(getProperty("atomdb.default_schema"), "failed_events");
+                            statement.execute("delete from " + tableName);
+                            statement.close();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    @Override
+                    public PropagationDefinition getTxPropagationDefinition() {
+                        return PropagationDefinition.PROPAGATION_REQUIRED;
+                    }
+                }
+        );
     }
 
     @Before
     public void setUp() throws SQLException {
         connectionProvider = getConnectionProvider();
+        atomfeedTransactionManager = getAtomfeedTransactionManager(connectionProvider);
         allFailedEvents = new AllFailedEventsJdbcImpl(connectionProvider);
     }
 
     @After
     public void tearDown() throws SQLException {
         clearRecords();
-        connectionProvider.closeConnection(connectionProvider.getConnection());
     }
 
     @Test

@@ -1,13 +1,12 @@
 package org.ict4h.atomfeed.client.repository.datasource;
 
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
-import org.ict4h.atomfeed.client.factory.AtomFeedProperties;
+import org.ict4h.atomfeed.client.AtomFeedProperties;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 
 public class WebClient {

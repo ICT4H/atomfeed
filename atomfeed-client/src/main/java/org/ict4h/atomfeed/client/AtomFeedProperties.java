@@ -1,4 +1,4 @@
-package org.ict4h.atomfeed.client.factory;
+package org.ict4h.atomfeed.client;
 
 import org.apache.log4j.Logger;
 

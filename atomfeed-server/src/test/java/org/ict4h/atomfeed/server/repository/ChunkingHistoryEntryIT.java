@@ -28,7 +28,7 @@ public class ChunkingHistoryEntryIT extends IntegrationTest {
 
     @After
     public void after() throws SQLException {
-        connectionProvider.closeConnection(connectionProvider.getConnection());
+        connectionProvider.getConnection().close();
     }
 
     @Test

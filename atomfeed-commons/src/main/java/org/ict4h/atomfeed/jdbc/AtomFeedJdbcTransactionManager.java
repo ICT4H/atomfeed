@@ -21,7 +21,6 @@ public class AtomFeedJdbcTransactionManager implements AFTransactionManager {
             connection.setAutoCommit(false);
             T result = action.execute();
             connection.commit();
-            connectionProvider.closeConnection(connection);
             return result;
         } catch (SQLException e ) {
             if (connection != null) {

@@ -4,12 +4,11 @@ import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.WireFeedInput;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
-import org.ict4h.atomfeed.client.factory.AtomFeedProperties;
+import org.ict4h.atomfeed.client.AtomFeedProperties;
 import org.ict4h.atomfeed.client.repository.datasource.WebClient;
 
 import java.io.StringReader;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 
 public class AllFeeds {

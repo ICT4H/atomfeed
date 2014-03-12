@@ -1,11 +1,10 @@
 package org.ict4h.atomfeed.client.repository.datasource;
 
-import org.ict4h.atomfeed.client.factory.AtomFeedProperties;
+import org.ict4h.atomfeed.client.AtomFeedProperties;
 import org.ict4h.atomfeed.spring.resource.EventResource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.Mockito.mock;

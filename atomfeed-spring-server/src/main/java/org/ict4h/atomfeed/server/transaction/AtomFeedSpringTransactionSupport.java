@@ -57,40 +57,4 @@ public class AtomFeedSpringTransactionSupport implements AFTransactionManager, J
         return DataSourceUtils.getConnection(dataSource);
     }
 
-
-    /**
-     * @see org.ict4h.atomfeed.jdbc.JdbcConnectionProvider
-     * @param connection
-     * @throws java.sql.SQLException
-     */
-    @Override
-    public void closeConnection(Connection connection) throws SQLException {
-        logger.error("Close connection has been called on JdbcConnectionProvider. This should not happen");
-    }
-
-
-    /**
-     *  @see org.ict4h.atomfeed.jdbc.JdbcConnectionProvider
-     */
-    @Override
-    public void startTransaction() {
-        logger.error("Start transaction has been called on JdbcConnectionProvider. This should not happen");
-    }
-
-    /**
-     *  @see org.ict4h.atomfeed.jdbc.JdbcConnectionProvider
-     */
-    @Override
-    public void commit() {
-        logger.error("Commit has been called on JdbcConnectionProvider. This should not happen");
-    }
-
-    /**
-     *  @see org.ict4h.atomfeed.jdbc.JdbcConnectionProvider
-     */
-    @Override
-    public void rollback() {
-        logger.error("Rollback has been called on JdbcConnectionProvider. This should not happen");
-    }
-
 }

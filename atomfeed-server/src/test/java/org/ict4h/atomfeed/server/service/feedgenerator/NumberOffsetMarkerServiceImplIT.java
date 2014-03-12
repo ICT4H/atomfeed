@@ -34,7 +34,7 @@ public class NumberOffsetMarkerServiceImplIT extends IntegrationTest {
     @After
     public void after() throws SQLException {
         clearRecords();
-        connectionProvider.closeConnection(connectionProvider.getConnection());
+        connectionProvider.getConnection().close();
     }
 
     @Test
