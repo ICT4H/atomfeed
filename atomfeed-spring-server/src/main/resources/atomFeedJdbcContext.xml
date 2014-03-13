@@ -16,22 +16,22 @@
         <!--<constructor-arg ref="dataSource"/>-->
     <!--</bean>-->
 
-    <bean id="atomConnnectionProvider" class="org.ict4h.atomfeed.server.transaction.AtomFeedSpringTransactionSupport">
+    <bean id="atomFeedTrasactionSupport" class="org.ict4h.atomfeed.server.transaction.AtomFeedSpringTransactionSupport">
         <constructor-arg ref="transactionManager"/>
         <constructor-arg ref="dataSource"/>
     </bean>
 
     
     <bean id="allEventRecords" class="org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl">
-        <constructor-arg ref="atomConnnectionProvider"/>
+        <constructor-arg ref="atomFeedTrasactionSupport"/>
     </bean>
 
     <bean id="eventRecordsOffsetMarkers" class="org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsOffsetMarkersJdbcImpl">
-        <constructor-arg ref="atomConnnectionProvider"/>
+        <constructor-arg ref="atomFeedTrasactionSupport"/>
     </bean>
     
     <bean id="allChunkingEntries" class="org.ict4h.atomfeed.server.repository.jdbc.ChunkingEntriesJdbcImpl">
-        <constructor-arg ref="atomConnnectionProvider"/>
+        <constructor-arg ref="atomFeedTrasactionSupport"/>
     </bean>
 
 </beans>

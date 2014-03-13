@@ -29,7 +29,7 @@
     
     <tx:advice id="noTxAdvice">
 	    <tx:attributes>
-	      <tx:method name="*" propagation="NEVER"/>
+	      <tx:method name="*" propagation="REQUIRED"/>
 	    </tx:attributes>
 	</tx:advice>
 
