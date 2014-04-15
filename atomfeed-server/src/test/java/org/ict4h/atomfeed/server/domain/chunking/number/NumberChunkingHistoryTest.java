@@ -1,6 +1,7 @@
 package org.ict4h.atomfeed.server.domain.chunking.number;
 
 import junit.framework.Assert;
+import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.junit.Test;
 
 public class NumberChunkingHistoryTest {
@@ -37,6 +38,18 @@ public class NumberChunkingHistoryTest {
 		assertRange(10, 5, historyNumberBased.findRange(3, 100));
 		assertRange(15, 7, historyNumberBased.findRange(4, 100));
 		assertRange(22, 7, historyNumberBased.findRange(5, 100));
+	}
+
+	@Test (expected = AtomFeedRuntimeException.class)
+	public void shouldFailToGetNumberOfFeedsWhenChunkingHistoryNotSet() {
+		NumberChunkingHistory numberChunkingHistory = new NumberChunkingHistory();
+        numberChunkingHistory.getNumberOfFeeds(0);
+	}
+
+	@Test (expected = AtomFeedRuntimeException.class)
+	public void shouldFailFindRangeWhenChunkingHistoryNotSet() {
+		NumberChunkingHistory numberChunkingHistory = new NumberChunkingHistory();
+        numberChunkingHistory.findRange(0, 1);
 	}
 
 	private void assertRange(int offset, int limit, NumberRange range) {

@@ -1,6 +1,6 @@
 package org.ict4h.atomfeed.server.domain.chunking.number;
 
-import org.ict4h.atomfeed.server.domain.EventRecordsOffsetMarker;
+import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +23,7 @@ public class NumberChunkingHistory {
     }
 
     public NumberRange findRange(Integer feedId, int upperBound) {
+        checkSanityOfConfiguration();
         int feedsSofar = 0;
         for (NumberChunkingHistoryEntry historyEntry : chunkingHistoryEntries) {
             int feedCount = historyEntry.getFeedCount(upperBound);
@@ -36,11 +37,18 @@ public class NumberChunkingHistory {
     }
 
     public int getNumberOfFeeds(int limit) {
+        checkSanityOfConfiguration();
         int feedCount = 0;
         for (NumberChunkingHistoryEntry historyEntry : chunkingHistoryEntries) {
             feedCount += historyEntry.getFeedCount(limit);
         }
         return feedCount;
+    }
+
+    private void checkSanityOfConfiguration() {
+        if (chunkingHistoryEntries.size() == 0) {
+            throw new AtomFeedRuntimeException("Chunking history configuration not set. ");
+        }
     }
 
     private void closeOffCurrent(int endPosition) {
