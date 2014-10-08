@@ -3,13 +3,13 @@
     <parent>
         <artifactId>atomfeed</artifactId>
         <groupId>org.ict4h</groupId>
-        <version>1.2-SNAPSHOT</version>
+        <version>1.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ict4h</groupId>
     <artifactId>atomfeed-commons</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
 
     <dependencies>
         <dependency>
