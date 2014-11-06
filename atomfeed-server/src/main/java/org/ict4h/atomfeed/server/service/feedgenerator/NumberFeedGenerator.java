@@ -57,7 +57,7 @@ public class NumberFeedGenerator implements FeedGenerator {
         List<EventRecordsOffsetMarker> markers = allEventRecordsOffsetMarkers.getAll();
         String markerCategory = category == null ? "" : category;
         for (EventRecordsOffsetMarker marker : markers) {
-            if (markerCategory.equals(marker.getCategory())) {
+            if (markerCategory.equalsIgnoreCase(marker.getCategory())) {
                 return marker;
             }
         }
