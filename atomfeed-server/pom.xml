@@ -5,12 +5,12 @@
     <parent>
         <artifactId>atomfeed</artifactId>
         <groupId>org.ict4h</groupId>
-        <version>1.3</version>
+        <version>1.4-SNAPSHOT</version>
     </parent>
 
     <groupId>org.ict4h</groupId>
     <artifactId>atomfeed-server</artifactId>
-    <version>1.3</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!--<properties>-->
@@ -113,12 +113,12 @@
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-commons</artifactId>
-            <version>1.3</version>
+            <version>1.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-commons</artifactId>
-            <version>1.3</version>
+            <version>1.4-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
