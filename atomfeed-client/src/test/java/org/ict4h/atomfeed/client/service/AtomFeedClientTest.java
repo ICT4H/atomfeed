@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -224,6 +225,7 @@ public class AtomFeedClientTest {
         entry1.setId("id1");
         entry2 = new Entry();
         entry2.setId("id2");
+        entry1.setUpdated(new Date());
         return getFeed(entry1, entry2);
     }
 
