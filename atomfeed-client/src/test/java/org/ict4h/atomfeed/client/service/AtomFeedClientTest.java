@@ -6,6 +6,7 @@ import com.sun.syndication.feed.atom.Link;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
 import org.ict4h.atomfeed.client.AtomFeedProperties;
+import org.ict4h.atomfeed.client.domain.FailedEventRetryLog;
 import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
@@ -199,9 +200,9 @@ public class AtomFeedClientTest {
     public void shouldProcessFailedEvents() throws SQLException {
         List<FailedEvent> failedEvents = new ArrayList<FailedEvent>();
         setupFeedWithTwoEvents();
-        failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry1), ""));
-        failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry2), ""));
-        when(allFailedEvents.getOldestNFailedEvents(feedUri.toString(), 5)).thenReturn(failedEvents);
+        failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry1), "", 0));
+        failedEvents.add(new FailedEvent(feedUri.toString(), new Event(entry2), "", 0));
+        when(allFailedEvents.getOldestNFailedEvents(feedUri.toString(), 5, 5)).thenReturn(failedEvents);
 
         FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), transactionManager, feedUri, eventWorker);
         feedClient.processFailedEvents();
@@ -219,6 +220,34 @@ public class AtomFeedClientTest {
         assertEquals(entry1.getId(), failedEventsCaptured.get(0).getEvent().getId());
         assertEquals(entry2.getId(), failedEventsCaptured.get(1).getEvent().getId());
     }
+
+    @Test
+    public void shouldRecordFailedEventsFailureAndIncrementTheRetryCount() throws SQLException {
+        List<FailedEvent> failedEvents = new ArrayList<FailedEvent>();
+        entry1 = new Entry();
+        entry1.setId("id1");
+        entry1.setUpdated(new Date());
+        FailedEvent failedEvent = new FailedEvent(feedUri.toString(), new Event(entry1), "", 0);
+        failedEvents.add(failedEvent);
+        when(allFailedEvents.getOldestNFailedEvents(feedUri.toString(), 5, 5)).thenReturn(failedEvents);
+        transactionManager = new AFTransactionManager() {
+            @Override
+            public <T> T executeWithTransaction(AFTransactionWork<T> action) throws RuntimeException {
+                if(action instanceof AtomFeedClient.FailedEventProcessor) {
+                    throw new RuntimeException("Some exception!");
+                }
+                return action.execute();
+            }
+        };
+
+        FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), transactionManager, feedUri, eventWorker);
+        feedClient.processFailedEvents();
+
+        assertEquals(1, failedEvent.getRetries());
+        verify(allFailedEvents).addOrUpdate(failedEvent);
+        verify(allFailedEvents).insert(any(FailedEventRetryLog.class));
+    }
+
 
     private Feed setupFeedWithTwoEvents() {
         entry1 = new Entry();
