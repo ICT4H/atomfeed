@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
+import org.ict4h.atomfeed.client.domain.FailedEventRetryLog;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllFailedEvents;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
@@ -16,6 +17,7 @@ import java.util.List;
 public class AllFailedEventsJdbcImpl implements AllFailedEvents {
     private static Logger logger = Logger.getLogger(AllFailedEventsJdbcImpl.class);
     public static final String FAILED_EVENTS_TABLE = "failed_events";
+    public static final String FAILED_EVENT_RETRY_LOG_TABLE = "failed_event_retry_log";
     public static final int ERROR_MSG_MAX_LEN = 4000;
 
     private JdbcConnectionProvider connectionProvider;
@@ -32,7 +34,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         try {
             connection = connectionProvider.getConnection();
             String sql = String.format(
-                    "select id, feed_uri, failed_at, error_message, event_id, event_content, title from %s where feed_uri = ? and event_id = ?",
+                    "select id, feed_uri, failed_at, error_message, event_id, event_content, title, retries from %s where feed_uri = ? and event_id = ?",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "failed_events"));
             statement = connection.prepareStatement(sql);
             statement.setString(1, feedUri);
@@ -71,7 +73,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             while (resultSet.next()) {
                 Event event = new Event(resultSet.getString(5), resultSet.getString(6), resultSet.getString(7));
                 FailedEvent failedEvent = new FailedEvent(resultSet.getString(2), event,
-                        resultSet.getString(4), resultSet.getTimestamp(3).getTime());
+                        resultSet.getString(4), resultSet.getTimestamp(3).getTime(), resultSet.getInt(8));
                 failedEvents.add(failedEvent);
             }
         } catch (Exception e) {
@@ -94,7 +96,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
 
     private void insertFailedEvent(FailedEvent failedEvent) {
         String sql = String.format(
-                "insert into %s (feed_uri, failed_at, error_message, event_id, event_content, error_hash_code, title) values (?, ?, ?, ?, ?, ?, ?)",
+                "insert into %s (feed_uri, failed_at, error_message, event_id, event_content, error_hash_code, title, retries) values (?, ?, ?, ?, ?, ?, ?, ?)",
                 JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
 
         // DB limit is 4000. reduce to ensure it doesn't cross that.
@@ -113,6 +115,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setString(5, failedEvent.getEvent().getContent());
             statement.setInt(6, errorMessage.hashCode());
             statement.setString(7, failedEvent.getEvent().getTitle());
+            statement.setInt(8, failedEvent.getRetries());
             statement.executeUpdate();
             logger.info(String.format("Created a new %s", failedEvent.toString()));
         } catch (SQLException e) {
@@ -122,9 +125,38 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         }
     }
 
+    @Override
+    public void insert(FailedEventRetryLog failedEventRetryLog) {
+        String sql = String.format("insert into %s (feed_uri, failed_at, error_message, error_hash_code, event_id, event_content) values (?, ?, ?, ?, ?, ?)",
+                JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENT_RETRY_LOG_TABLE));
+
+        // DB limit is 4000. reduce to ensure it doesn't cross that.
+        String errorMessage = failedEventRetryLog.getErrorMessage().length() > ERROR_MSG_MAX_LEN
+                ? failedEventRetryLog.getErrorMessage().substring(0, ERROR_MSG_MAX_LEN) : failedEventRetryLog.getErrorMessage();
+
+        Connection connection;
+        PreparedStatement statement = null;
+        try {
+            connection = connectionProvider.getConnection();
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, failedEventRetryLog.getFeedUri());
+            statement.setTimestamp(2, new Timestamp(failedEventRetryLog.getFailedAt()));
+            statement.setString(3, errorMessage);
+            statement.setInt(4, errorMessage.hashCode());
+            statement.setString(5, failedEventRetryLog.getEventId());
+            statement.setString(6, failedEventRetryLog.getEventContent());
+            statement.executeUpdate();
+            logger.info(String.format("Created a new %s", failedEventRetryLog.toString()));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(statement, null);
+        }
+    }
+
     private void updateFailedEvent(FailedEvent failedEvent) {
         String sql = String.format(
-                "update %s set failed_at = ?, error_message = ?, event_content = ?, error_hash_code = ?, title = ? where feed_uri = ? and event_id = ?",
+                "update %s set failed_at = ?, error_message = ?, event_content = ?, error_hash_code = ?, title = ?, retries = ? where feed_uri = ? and event_id = ?",
                 JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
 
         // DB limit is 4000. reduce to ensure it doesn't cross that.
@@ -141,8 +173,9 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setString(3, failedEvent.getEvent().getContent());
             statement.setLong(4, errorMessage.hashCode());
             statement.setString(5, failedEvent.getEvent().getTitle());
-            statement.setString(6, failedEvent.getFeedUri());
-            statement.setString(7, failedEvent.getEventId());
+            statement.setInt(6, failedEvent.getRetries());
+            statement.setString(7, failedEvent.getFeedUri());
+            statement.setString(8, failedEvent.getEventId());
             statement.executeUpdate();
             logger.info(String.format("Updated %s", failedEvent.toString()));
         } catch (SQLException e) {
@@ -153,17 +186,18 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
     }
 
     @Override
-    public List<FailedEvent> getOldestNFailedEvents(String feedUri, int numberOfFailedEvents) {
+    public List<FailedEvent> getOldestNFailedEvents(String feedUri, int numberOfFailedEvents, int failedEventMaxRetry) {
         Connection connection;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = connectionProvider.getConnection();
             String sql = String.format(
-                    "select id, feed_uri, failed_at, error_message, event_id, event_content, title from %s where feed_uri = ? order by id",
+                    "select id, feed_uri, failed_at, error_message, event_id, event_content, title, retries from %s where feed_uri = ? and retries < ? order by id",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE));
             statement = connection.prepareStatement(sql);
             statement.setString(1, feedUri);
+            statement.setInt(2, failedEventMaxRetry);
             statement.setMaxRows(numberOfFailedEvents);
             resultSet = statement.executeQuery();
 
@@ -200,21 +234,25 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
 
     @Override
     public void remove(FailedEvent failedEvent) {
+        deleteRecords(FAILED_EVENTS_TABLE, failedEvent.getFeedUri(), failedEvent.getEventId());
+        deleteRecords(FAILED_EVENT_RETRY_LOG_TABLE, failedEvent.getFeedUri(), failedEvent.getEventId());
+        logger.info(String.format("Deleted failed event and retry logs for %s", failedEvent.toString()));
+    }
+
+    private void deleteRecords(String tableName, String feedUri, String eventId) {
         Connection connection;
         PreparedStatement statement = null;
-        ResultSet resultSet = null;
         try {
             connection = connectionProvider.getConnection();
             statement = connection.prepareStatement(String.format("delete from %s where feed_uri = ? and event_id = ?",
-                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE)));
-            statement.setString(1, failedEvent.getFeedUri());
-            statement.setString(2, failedEvent.getEventId());
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), tableName)));
+            statement.setString(1, feedUri);
+            statement.setString(2, eventId);
             statement.executeUpdate();
-            logger.info(String.format("Deleted %s", failedEvent.toString()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            closeAll(statement, resultSet);
+            closeAll(statement, null);
         }
     }
 

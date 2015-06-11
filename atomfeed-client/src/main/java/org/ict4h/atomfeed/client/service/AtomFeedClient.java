@@ -5,6 +5,7 @@ import com.sun.syndication.feed.atom.Feed;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
+import org.ict4h.atomfeed.client.domain.FailedEventRetryLog;
 import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.AtomFeedProperties;
@@ -118,10 +119,14 @@ public class AtomFeedClient implements FeedClient {
 
 
     private void updateFailedEvents(FailedEvent failedEvent, Exception e)  {
-        //TODO: create a new Event with failedAt and errorMessage set
-        failedEvent.setFailedAt(new Date().getTime());
-        failedEvent.setErrorMessage(Util.getExceptionString(e));
+        failedEvent.incrementRetryCount();
         allFailedEvents.addOrUpdate(failedEvent);
+
+        long failedAt = new Date().getTime();
+        String exceptionString = Util.getExceptionString(e);
+        String eventContent = failedEvent.getEvent().getContent();
+        FailedEventRetryLog failedEventRetryLog = new FailedEventRetryLog(failedEvent.getFeedUri(), failedAt, exceptionString, failedEvent.getEventId(), eventContent);
+        allFailedEvents.insert(failedEventRetryLog);
     }
 
     private String getEntryFeedUri(FeedEnumerator feedEnumerator) {
@@ -129,7 +134,7 @@ public class AtomFeedClient implements FeedClient {
     }
 
     private void handleFailedEvent(Entry entry, URI feedUri, Exception e, Feed feed, Event event) {
-        allFailedEvents.addOrUpdate(new FailedEvent(feedUri.toString(), event, Util.getExceptionString(e)));
+        allFailedEvents.addOrUpdate(new FailedEvent(feedUri.toString(), event, Util.getExceptionString(e), 0));
         if (atomFeedProperties.controlsEventProcessing())
             allMarkers.put(this.feedUri, entry.getId(), Util.getViaLink(feed));
     }
@@ -189,7 +194,7 @@ public class AtomFeedClient implements FeedClient {
         }
     }
 
-    private class FailedEventHandler extends AFTransactionWorkWithoutResult {
+    class FailedEventHandler extends AFTransactionWorkWithoutResult {
         private URI feedURI;
         private Entry failedEntry;
         private Event failedEvent;
@@ -213,7 +218,7 @@ public class AtomFeedClient implements FeedClient {
         }
     }
 
-    private class EventRetryFailureHandler extends AFTransactionWorkWithoutResult {
+    class EventRetryFailureHandler extends AFTransactionWorkWithoutResult {
         private FailedEvent failedEvent;
         private Exception failureException;
         public EventRetryFailureHandler(FailedEvent failedEvent, Exception failureException) {
@@ -230,7 +235,7 @@ public class AtomFeedClient implements FeedClient {
         }
     }
 
-    private class FailedEventProcessor extends AFTransactionWorkWithoutResult {
+    class FailedEventProcessor extends AFTransactionWorkWithoutResult {
         private final FailedEvent eventInProcess;
         public FailedEventProcessor(FailedEvent failedEvent) {
             this.eventInProcess = failedEvent;
@@ -247,10 +252,10 @@ public class AtomFeedClient implements FeedClient {
         }
     }
 
-    private class FailedEventsFetcher implements AFTransactionWork<List<FailedEvent>> {
+    class FailedEventsFetcher implements AFTransactionWork<List<FailedEvent>> {
         @Override
         public List<FailedEvent> execute() {
-            return allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE);
+            return allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE, atomFeedProperties.getFailedEventMaxRetry());
         }
         @Override
         public PropagationDefinition getTxPropagationDefinition() {

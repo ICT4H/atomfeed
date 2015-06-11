@@ -7,6 +7,7 @@ public class AtomFeedProperties {
     private int connectTimeout = 10000;
     private boolean controlsEventProcessing = true;
     private int maxFailedEvents = 5;
+    private int failedEventMaxRetry = 5;
 
     private static Logger logger = Logger.getLogger(AtomFeedProperties.class);
 
@@ -45,4 +46,13 @@ public class AtomFeedProperties {
     public void setMaxFailedEvents(int maxFailedEvents) {
         this.maxFailedEvents = maxFailedEvents;
     }
+
+    public int getFailedEventMaxRetry() {
+        return failedEventMaxRetry;
+    }
+
+    public void setFailedEventMaxRetry(int failedEventMaxRetry) {
+        this.failedEventMaxRetry = failedEventMaxRetry;
+    }
+
 }
