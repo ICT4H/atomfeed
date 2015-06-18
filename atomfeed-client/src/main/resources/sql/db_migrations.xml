@@ -34,14 +34,11 @@
     </changeSet>
     <changeSet id="102" author="Sudhakar, Abishek">
         <addColumn tableName="failed_events" schemaName="${schemaName}" >
-            <column name="retries" type="int"/>
+            <column name="retries" type="int"
+                    defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
         </addColumn>
-
-        <addNotNullConstraint columnDataType="int"
-                              columnName="retries"
-                              defaultNullValue="0"
-                              schemaName="${schemaName}"
-                              tableName="failed_events"/>
 
         <createTable tableName="failed_event_retry_log" schemaName="${schemaName}">
             <column name="id" type="serial">
