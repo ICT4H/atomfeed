@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
+import static org.junit.Assert.assertEquals;
+
 public class MultiThreadConsistencyTest {
     private EventFeedService eventFeedService;
     private AllEventRecordsStub allEventRecords;
@@ -99,6 +101,7 @@ public class MultiThreadConsistencyTest {
 
         System.out.println("Total events generated = " + totalEventsGenerated);
         System.out.println("Total events consumed = " + totalEventsConsumed);
+        assertEquals(totalEventsGenerated, totalEventsConsumed);
     }
 
     private static class EventConsumer implements Runnable {
