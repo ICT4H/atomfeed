@@ -4,7 +4,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet id="ict4h-atomfeed-server-1" context="setup" author="ict4h">
-        <createTable tableName="event_records" schemaName="${schemaName}">
+        <createTable tableName="event_records" schemaName="atomfeed">
             <column name="id" type="int" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -18,7 +18,7 @@
         </createTable>
     </changeSet>
     <changeSet id="ict4h-atomfeed-server-2" context="setup" author="ict4h">
-        <createTable tableName="chunking_history" schemaName="${schemaName}">
+        <createTable tableName="chunking_history" schemaName="atomfeed">
             <column name="id" type="int" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -29,13 +29,13 @@
         </createTable>
     </changeSet>
     <changeSet id="ict4h-atomfeed-server-3" author="ict4h" context="data-setup">
-        <insert tableName="chunking_history" schemaName="${schemaName}">
+        <insert tableName="chunking_history" schemaName="atomfeed">
             <column name="chunk_length" valueNumeric="5"></column>
             <column name="start" valueNumeric="1"></column>
         </insert>
     </changeSet>
     <changeSet id="ict4h-atomfeed-server-4" context="setup" author="ict4h">
-        <createTable tableName="event_records_offset_marker" schemaName="${schemaName}">
+        <createTable tableName="event_records_offset_marker" schemaName="atomfeed">
             <column name="id" type="int" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>

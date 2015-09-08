@@ -1,7 +1,5 @@
 package org.ict4h.atomfeed.server.domain.chunking.number;
 
-import org.ict4h.atomfeed.server.domain.EventRecordsOffsetMarker;
-
 public class NumberChunkingHistoryEntry {
 
     private int sequenceNumber;

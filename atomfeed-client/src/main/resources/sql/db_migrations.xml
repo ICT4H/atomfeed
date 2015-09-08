@@ -4,7 +4,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet context="setup" author="ict4h" id="100">
-        <createTable tableName="markers" schemaName="${schemaName}">
+        <createTable tableName="markers" schemaName="atomfeed">
             <column name="feed_uri" type="varchar(255)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -12,7 +12,7 @@
             <column name="feed_uri_for_last_read_entry" type="varchar(255)"/>
         </createTable>
 
-        <createTable tableName="failed_events" schemaName="${schemaName}">
+        <createTable tableName="failed_events" schemaName="atomfeed">
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -28,19 +28,19 @@
     </changeSet>
 
     <changeSet id="101" author="ict4h" context="setup">
-        <addColumn tableName="failed_events" schemaName="${schemaName}">
+        <addColumn tableName="failed_events" schemaName="atomfeed">
             <column name="title" type="varchar(255)"></column>
         </addColumn>
     </changeSet>
     <changeSet id="102" author="Sudhakar, Abishek">
-        <addColumn tableName="failed_events" schemaName="${schemaName}" >
+        <addColumn tableName="failed_events" schemaName="atomfeed" >
             <column name="retries" type="int"
                     defaultValueNumeric="0">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
 
-        <createTable tableName="failed_event_retry_log" schemaName="${schemaName}">
+        <createTable tableName="failed_event_retry_log" schemaName="atomfeed">
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>

@@ -23,6 +23,7 @@ public class ThreadLocalJdbcConnectionProvider implements JdbcConnectionProvider
 
         Connection connection = dataSource.getConnection();
         threadConnection.set(connection);
+        connection.setAutoCommit(false);
         return connection;
     }
 

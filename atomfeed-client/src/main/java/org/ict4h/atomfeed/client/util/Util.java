@@ -29,7 +29,7 @@ public class Util {
 
    private static URI getArchiveLink(Feed feed, String archiveType) {
         try {
-            for (Object obj : feed.getOtherLinks()) {
+            for (Object obj : feed.getAlternateLinks()) {
                 Link l = (Link) obj;
                 if (l.getRel().equals(archiveType)) {
                     return new URI(l.getHref());

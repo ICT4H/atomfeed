@@ -4,7 +4,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
     <changeSet id="ict4h-atomfeed-client-1" context="setup" author="ict4h">
-        <createTable tableName="markers" schemaName="${schemaName}">
+        <createTable tableName="markers" schemaName="atomfeed">
             <column name="feed_uri" type="varchar(255)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
@@ -13,7 +13,7 @@
         </createTable>
     </changeSet>
     <changeSet id="ict4h-atomfeed-client-2" context="setup" author="ict4h">
-        <createTable tableName="failed_events" schemaName="${schemaName}">
+        <createTable tableName="failed_events" schemaName="atomfeed">
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>

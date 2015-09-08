@@ -138,7 +138,7 @@ public class EventFeedServiceImpl implements EventFeedService {
         int port = requestUri.getPort();
         String path = requestUri.getPath().substring(0,
                 requestUri.getPath().lastIndexOf("/"));
-        if (port != 80 && port != -1) {
+        if (port != 80 & port != -1) {
             return scheme + "://" + hostname + ":" + port + path;
         } else {
             return scheme + "://" + hostname + path;
