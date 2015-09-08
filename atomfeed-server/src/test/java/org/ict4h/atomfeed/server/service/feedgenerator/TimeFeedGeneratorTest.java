@@ -31,7 +31,7 @@ public class TimeFeedGeneratorTest {
         };
 
         AllEventRecords allEventRecordsStub = new AllEventRecordsStub();
-        EventRecord eventRecord = new EventRecord(null, null, new URI(""), null, startTime.plusHours(2).toDate(), "");
+        EventRecord eventRecord = new EventRecord(null, null, "", null, startTime.plusHours(2).toDate(), "");
         allEventRecordsStub.add(eventRecord);
 
         FeedGenerator generator = new TimeFeedGenerator(allEventRecordsStub, allChunkingEntries);

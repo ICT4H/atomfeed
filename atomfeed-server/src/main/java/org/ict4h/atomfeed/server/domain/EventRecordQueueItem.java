@@ -9,13 +9,13 @@ import java.net.URI;
 import java.util.Date;
 
 @Entity
-@Table(name = "event_records")
+@Table(name = "event_records_queue")
 @NamedQueries({
-        @NamedQuery(name = EventRecord.FIND_BY_UUID, query = "select e from EventRecord e where e.uuid=:uuid"),
-        @NamedQuery(name = EventRecord.TOTAL_COUNT, query = "select count(er) FROM EventRecord er")
+        @NamedQuery(name = EventRecordQueueItem.FIND_BY_UUID, query = "select e from EventRecordQueue e where e.uuid=:uuid"),
+        @NamedQuery(name = EventRecordQueueItem.TOTAL_COUNT, query = "select count(er) FROM EventRecordQueue er")
 })
-@XmlRootElement(name = "event", namespace = EventRecord.EVENT_NAMESPACE)
-public class EventRecord {
+@XmlRootElement(name = "event", namespace = EventRecordQueueItem.EVENT_NAMESPACE)
+public class EventRecordQueueItem {
     public static final String FIND_BY_UUID = "find.by.uuid";
     public static final String TOTAL_COUNT = "event_records.total_count";
 
@@ -52,13 +52,13 @@ public class EventRecord {
     @XmlTransient
     private String category;
 
-    public EventRecord() { }
+    public EventRecordQueueItem() { }
 
-    public EventRecord(String uuid, String title, String uri, String serializedContents, Date timeStamp, String category) {
+    public EventRecordQueueItem(String uuid, String title, URI uri, String serializedContents, Date timeStamp, String category) {
         this.uuid = uuid;
         this.title = title;
         this.category = category;
-        this.uri = uri;
+        this.uri = uri == null ? null : uri.toString();
         this.serializedContents = serializedContents;
         //note: this is not the date used. the date will be assigned by database
         this.timeStamp = timeStamp;
@@ -92,9 +92,10 @@ public class EventRecord {
         return serializedContents;
     }
 
+
     @Override
     public String toString() {
-        return "EventRecord [id=" + id + ", uuid=" + uuid + ", title=" + title
+        return "EventRecordQueueItem [id=" + id + ", uuid=" + uuid + ", title=" + title
                 + ", timeStamp=" + timeStamp + ", uri=" + uri + ", contents="
                 + serializedContents + "]";
     }
@@ -102,5 +103,4 @@ public class EventRecord {
     public String getCategory() {
         return category;
     }
-
 }

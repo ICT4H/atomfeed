@@ -81,7 +81,7 @@ public class AllEventRecordsIT extends IntegrationTest {
     public void shouldAddEventRecordAndFetchByUUID() throws URISyntaxException, SQLException {
         System.out.println("executing shouldAddEventRecordAndFetchByUUID");
         String uuid = UUID.randomUUID().toString();
-        EventRecord eventRecordAdded = new EventRecord(uuid, "title", new URI("http://uri"), null, new Date(), "category");
+        EventRecord eventRecordAdded = new EventRecord(uuid, "title", "http://uri", null, new Date(), "category");
         allEventRecords.add(eventRecordAdded);
         EventRecord eventRecordFetched = allEventRecords.get(uuid);
         assertEquals(eventRecordAdded.getUuid(), eventRecordFetched.getUuid());
@@ -94,8 +94,8 @@ public class AllEventRecordsIT extends IntegrationTest {
     public void shouldGetTotalCountOfEventRecordsWithCategory() throws URISyntaxException {
         System.out.println("executing shouldGetTotalCountOfEventRecords");
         String category = "category";
-        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null, new Date(), category);
-        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null, new Date(), "anotherCategory");
+        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", "http://uri", null, new Date(), category);
+        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", "http://uri", null, new Date(), "anotherCategory");
 
         allEventRecords.add(eventRecordAdded1);
         allEventRecords.add(eventRecordAdded2);
@@ -107,8 +107,8 @@ public class AllEventRecordsIT extends IntegrationTest {
     @Test
     public void shouldGetTotalCountOfEventRecordsWithoutCategory() throws URISyntaxException {
         System.out.println("executing shouldGetTotalCountOfEventRecords");
-        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", new URI("http://uri"), null, new Date(), "someCategory");
-        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", new URI("http://uri"), null, new Date(), "someOtherCategory");
+        EventRecord eventRecordAdded1 = new EventRecord("uuid1", "title", "http://uri", null, new Date(), "someCategory");
+        EventRecord eventRecordAdded2 = new EventRecord("uuid2", "title", "http://uri", null, new Date(), "someOtherCategory");
 
         allEventRecords.add(eventRecordAdded1);
         allEventRecords.add(eventRecordAdded2);
@@ -212,7 +212,7 @@ public class AllEventRecordsIT extends IntegrationTest {
     private void addEvents(int numberOfEvents, String uuidStartsWith, String category) throws URISyntaxException {
         for (int i = 1; i <= numberOfEvents; i++) {
             String title = "Event" + i;
-            allEventRecords.add(new EventRecord(uuidStartsWith + i, title, new URI("http://uri/" + title), null, new Date(), category));
+            allEventRecords.add(new EventRecord(uuidStartsWith + i, title, "http://uri/" + title, null, new Date(), category));
         }
     }
 
@@ -220,7 +220,7 @@ public class AllEventRecordsIT extends IntegrationTest {
         for (int i = 0; i < total; i++) {
             String uuid = UUID.randomUUID().toString();
             String category = StringUtils.isBlank(eventCategory) ? (((i % 2) == 0) ? "Cat-0" : "Cat-1") : eventCategory;
-            EventRecord eventRecordAdded = new EventRecord(uuid, "title-" + i, new URI("http://uri/" + i), "content-" + uuid, new Date(), category);
+            EventRecord eventRecordAdded = new EventRecord(uuid, "title-" + i, "http://uri/" + i, "content-" + uuid, new Date(), category);
             allEventRecords.add(eventRecordAdded);
         }
     }

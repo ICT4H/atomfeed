@@ -197,7 +197,7 @@ public class NumberFeedGeneratorIT extends IntegrationTest {
         for (int i = 0; i < total; i++) {
             String uuid = UUID.randomUUID().toString();
             String category = StringUtils.isBlank(eventCategory) ? (((i % 2) == 0) ? "Cat-0" : "Cat-1") : eventCategory;
-            EventRecord eventRecordAdded = new EventRecord(uuid, "title-" + i, new URI("http://uri/" + i), "content-" + uuid, new Date(), category);
+            EventRecord eventRecordAdded = new EventRecord(uuid, "title-" + i, "http://uri/" + i, "content-" + uuid, new Date(), category);
             allEventRecords.add(eventRecordAdded);
         }
     }

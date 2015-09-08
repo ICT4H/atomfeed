@@ -26,6 +26,10 @@
         <constructor-arg ref="atomFeedTrasactionSupport"/>
     </bean>
 
+    <bean id="allEventRecordsQueue" class="org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsQueueJdbcImpl">
+        <constructor-arg ref="atomFeedTrasactionSupport"/>
+    </bean>
+
     <bean id="eventRecordsOffsetMarkers" class="org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsOffsetMarkersJdbcImpl">
         <constructor-arg ref="atomFeedTrasactionSupport"/>
     </bean>

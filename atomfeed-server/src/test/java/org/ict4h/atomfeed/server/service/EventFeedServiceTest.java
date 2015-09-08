@@ -129,7 +129,7 @@ public class EventFeedServiceTest {
     public void shouldNotWrapContentsInCDATAWhenContentsAreNotPresent() throws URISyntaxException {
         String recentUrl = "http://hostname/feedgenerator/1";
         allEventRecords.clear();
-        recordCreator.create(new EventRecord("","", new URI(""),null,new Date(), ""));
+        recordCreator.create(new EventRecord("","", "",null,new Date(), ""));
         Feed feed = eventFeedService.getRecentFeed(new URI(recentUrl), null);
         Entry entry = (Entry) feed.getEntries().get(0);
         Assert.assertNull(((Content)entry.getContents().get(0)).getValue());

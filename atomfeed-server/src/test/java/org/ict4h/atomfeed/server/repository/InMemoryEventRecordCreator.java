@@ -23,7 +23,7 @@ public class InMemoryEventRecordCreator extends EventRecordCreator {
             allEventRecords.add(new EventRecord(
             		"uuid" + index,
                     "title" + index,
-            		new URI("http://foo.bar/" + index),
+            		"http://foo.bar/" + index,
             		"Event " + index + "'s contents.",
                     cal.getTime(), category));
         }
