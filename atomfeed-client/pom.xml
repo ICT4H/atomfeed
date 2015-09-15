@@ -3,13 +3,13 @@
     <parent>
         <artifactId>atomfeed</artifactId>
         <groupId>org.ict4h</groupId>
-        <version>1.8</version>
+        <version>1.9-SNAPSHOT</version>
     </parent>
     
     <modelVersion>4.0.0</modelVersion>
 	<groupId>org.ict4h</groupId>
     <artifactId>atomfeed-client</artifactId>
-    <version>1.8</version>
+    <version>1.9-SNAPSHOT</version>
 
     <properties>
         <atomdb.default_schema />
@@ -34,12 +34,12 @@
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-commons</artifactId>
-            <version>1.8</version>
+            <version>1.9-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-commons</artifactId>
-            <version>1.8</version>
+            <version>1.9-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
