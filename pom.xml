@@ -6,7 +6,7 @@
     <version>1.9-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>atomfeed</name>
-    <description />
+    <description>Atomfeed core libraries</description>
     <url>https://github.com/ICT4H/atomfeed</url>
 
     <properties>
