@@ -44,7 +44,7 @@
             <column name="category" type="varchar(255)"/>
         </createTable>
     </changeSet>
-    <changeSet id="ict4h-atomfeed-server-4" context="setup" author="Bahmni">
+    <changeSet id="ict4h-atomfeed-server-5" context="setup" author="Bahmni">
         <createTable tableName="event_records_queue" schemaName="${schemaName}">
             <column name="id" type="int" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>

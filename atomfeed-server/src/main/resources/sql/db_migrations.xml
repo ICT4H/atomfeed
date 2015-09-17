@@ -52,4 +52,18 @@
             <column name="category" type="varchar(255)"/>
         </createTable>
     </changeSet>
+    <changeSet id="6" context="setup" author="Bahmni">
+        <createTable tableName="event_records_queue" schemaName="${schemaName}">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="uuid" type="varchar(40)"/>
+            <column name="title" type="varchar(255)"/>
+            <column name="timestamp" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP(6)"/>
+            <column name="uri" type="varchar(255)"/>
+            <!-- TODO: Change to CLOB -->
+            <column name="object" type="varchar(1000)"/>
+            <column name="category" type="varchar(255)"></column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
