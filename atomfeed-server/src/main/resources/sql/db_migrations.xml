@@ -54,7 +54,7 @@
     </changeSet>
     <changeSet id="6" context="setup" author="Bahmni">
         <createTable tableName="event_records_queue" schemaName="${schemaName}">
-            <column name="id" type="serial" autoIncrement="true">
+            <column name="id" type="int" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="uuid" type="varchar(40)"/>
