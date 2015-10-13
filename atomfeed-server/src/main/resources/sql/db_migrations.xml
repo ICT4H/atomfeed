@@ -68,6 +68,19 @@
     </changeSet>
     <changeSet id="7" context="setup" author="Bahmni" >
         <preConditions onFail="MARK_RAN">
+            <dbms type="mysql,h2" />
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_NAME = 'event_records' AND INDEX_NAME = 'event_records_category_idx'
+            </sqlCheck>
+        </preConditions>
+        <comment>Add index to the category column in event_records table for performance (if it is not already present)</comment>
+        <createIndex tableName="event_records" indexName="event_records_category_idx">
+            <column name="category"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="8" context="setup" author="Bahmni" >
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql" />
             <sqlCheck expectedResult="0">
                 select count(i.relname)
                 from pg_class t,
