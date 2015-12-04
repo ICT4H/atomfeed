@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -78,16 +79,18 @@ public class AllEventRecordsIT extends IntegrationTest {
     }
 
     @Test
-    public void shouldAddEventRecordAndFetchByUUID() throws URISyntaxException, SQLException {
+    public void shouldAddEventRecordAndFetchByUUID() throws Exception {
         System.out.println("executing shouldAddEventRecordAndFetchByUUID");
         String uuid = UUID.randomUUID().toString();
-        EventRecord eventRecordAdded = new EventRecord(uuid, "title", "http://uri", null, new Date(), "category");
+        Date dateCreated = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse("10-10-2015 12:35:00");
+        EventRecord eventRecordAdded = new EventRecord(uuid, "title", "http://uri", null, dateCreated, "category");
         allEventRecords.add(eventRecordAdded);
         EventRecord eventRecordFetched = allEventRecords.get(uuid);
         assertEquals(eventRecordAdded.getUuid(), eventRecordFetched.getUuid());
         assertEquals(eventRecordAdded.getTitle(), eventRecordFetched.getTitle());
         assertEquals(eventRecordAdded.getCategory(), eventRecordFetched.getCategory());
         assertTrue((new Date()).after(eventRecordFetched.getTimeStamp()));
+        assertEquals(dateCreated, eventRecordFetched.getDateCreated());
     }
 
     @Test

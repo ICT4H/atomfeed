@@ -35,7 +35,7 @@ public class EventRecordQueueItem {
     @XmlTransient
     private String title;
 
-    @Column(name = "timestamp", insertable = false, updatable = false)
+    @Column(name = "timestamp", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @XmlTransient
     private Date timeStamp;
@@ -54,14 +54,22 @@ public class EventRecordQueueItem {
 
     public EventRecordQueueItem() { }
 
+    public EventRecordQueueItem(String uuid, String title, URI uri, String serializedContents, String category) {
+        this.uuid = uuid;
+        this.title = title;
+        this.category = category;
+        this.uri = uri == null ? null : uri.toString();
+        this.serializedContents = serializedContents;
+        this.timeStamp = new Date();
+    }
+
     public EventRecordQueueItem(String uuid, String title, URI uri, String serializedContents, Date timeStamp, String category) {
         this.uuid = uuid;
         this.title = title;
         this.category = category;
         this.uri = uri == null ? null : uri.toString();
         this.serializedContents = serializedContents;
-        //note: this is not the date used. the date will be assigned by database
-        this.timeStamp = timeStamp;
+        this.timeStamp = (timeStamp != null) ? timeStamp : new Date();
     }
 
     public Integer getId() {

@@ -3,17 +3,20 @@ package org.ict4h.atomfeed.client.domain;
 import com.sun.syndication.feed.atom.Content;
 import com.sun.syndication.feed.atom.Entry;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Event {
 
-    private List categories;
+    private List categories = new ArrayList();
     private String id;
     private String content;
     private String feedUri;
     private Date updatedDate;
     private String title;
+
+    private Date dateCreated;
 
     public Event(Entry entry) {
         this(entry, null);
@@ -38,6 +41,7 @@ public class Event {
     public Event(Entry entry ,String feedUri) {
         this(entry.getId(), extractContent(entry), entry.getTitle(), feedUri, entry.getUpdated());
         this.categories = entry.getCategories();
+        this.dateCreated = entry.getCreated();
     }
 
 
@@ -94,5 +98,9 @@ public class Event {
 
     public List getCategories() {
         return categories;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated != null ? dateCreated : updatedDate;
     }
 }

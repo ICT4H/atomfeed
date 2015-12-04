@@ -7,6 +7,9 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -30,5 +33,16 @@ public class EventServiceImplTest {
         assertEquals(event.getUri().toString(), eventRecordQueueItem.getUri());
         assertEquals(event.getContents(), eventRecordQueueItem.getContents());
         assertEquals(event.getCategory(), eventRecordQueueItem.getCategory());
+    }
+
+
+    @Test
+    public void testJodaTime() {
+//        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSZ");
+        Date date = DateTime.now().toDate();
+        Timestamp dbDate = new Timestamp(date.getTime());
+//        System.out.println(date.getTime());
+//        System.out.println(dbDate.getTime());
+        assertEquals(date.getTime(),dbDate.getTime());
     }
 }

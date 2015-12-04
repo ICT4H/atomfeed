@@ -58,4 +58,15 @@
             <column name="category" type="varchar(255)"></column>
         </createTable>
     </changeSet>
+    <changeSet id="ict4h-atomfeed-server-6" context="setup" author="angshu, dubey">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="date_created" tableName="event_records" schemaName="${schemaName}"/>
+            </not>
+        </preConditions>
+        <comment>Creating column date_created for queue table. This indicates the time event was raised or created.</comment>
+        <addColumn tableName="event_records" schemaName="${schemaName}">
+            <column name="date_created" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP(6)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

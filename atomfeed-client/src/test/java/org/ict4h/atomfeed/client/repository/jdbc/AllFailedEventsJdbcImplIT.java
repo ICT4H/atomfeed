@@ -85,7 +85,8 @@ public class AllFailedEventsJdbcImplIT extends IntegrationTest {
         allFailedEvents.addOrUpdate(modifiedFailedEvent);
         failedEventDb = allFailedEvents.get(feedUri, event.getId());
 
-        assertFailedEvent(modifiedFailedEvent, failedEventDb);
+        // the error in failed events table is always the original error. Subsequent retry errors are in the retry table
+        assertEquals(errorMessage, failedEventDb.getErrorMessage());
 
         allFailedEvents.remove(modifiedFailedEvent);
         failedEventDb = allFailedEvents.get(feedUri, event.getId());

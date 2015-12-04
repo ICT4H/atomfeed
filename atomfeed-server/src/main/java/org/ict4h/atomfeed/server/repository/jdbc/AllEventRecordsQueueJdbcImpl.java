@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class AllEventRecordsQueueJdbcImpl implements AllEventRecordsQueue {
@@ -28,7 +29,7 @@ public class AllEventRecordsQueueJdbcImpl implements AllEventRecordsQueue {
         PreparedStatement stmt = null;
         try {
             connection = provider.getConnection();
-            String insertSql = String.format("insert into %s (uuid, title, uri, object,category) values (?, ?, ?, ?,?)",
+            String insertSql = String.format("insert into %s (uuid, title, uri, object,category, timestamp) values (?, ?, ?, ?, ?, ?)",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records_queue"));
             stmt = connection.prepareStatement(insertSql);
             stmt.setString(1, eventRecord.getUuid());
@@ -36,17 +37,12 @@ public class AllEventRecordsQueueJdbcImpl implements AllEventRecordsQueue {
             stmt.setString(3, eventRecord.getUri());
             stmt.setString(4, eventRecord.getContents());
             stmt.setString(5, eventRecord.getCategory());
+            stmt.setTimestamp(6, new Timestamp(eventRecord.getTimeStamp().getTime()));
             stmt.executeUpdate();
-            //connection.commit();
         } catch (SQLException e) {
             throw new AtomFeedRuntimeException(e);
         } finally {
             close(stmt);
-//            try {
-//                provider.closeConnection(connection);
-//            } catch (SQLException e) {
-//                throw new AtomFeedRuntimeException(e);
-//            }
         }
     }
 

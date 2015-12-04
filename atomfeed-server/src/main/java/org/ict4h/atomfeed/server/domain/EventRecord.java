@@ -52,16 +52,21 @@ public class EventRecord {
     @XmlTransient
     private String category;
 
+
+    @Column(name = "date_created", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @XmlTransient
+    private Date dateCreated;
+
     public EventRecord() { }
 
-    public EventRecord(String uuid, String title, String uri, String serializedContents, Date timeStamp, String category) {
+    public EventRecord(String uuid, String title, String uri, String serializedContents, Date dateCreated, String category) {
         this.uuid = uuid;
         this.title = title;
         this.category = category;
         this.uri = uri;
         this.serializedContents = serializedContents;
-        //note: this is not the date used. the date will be assigned by database
-        this.timeStamp = timeStamp;
+        this.dateCreated = dateCreated;
     }
 
     public Integer getId() {
@@ -77,7 +82,7 @@ public class EventRecord {
     }
 
     public Date getTimeStamp() {
-        return timeStamp;
+        return timeStamp != null ? timeStamp : new Date();
     }
 
     public String getTagUri() {
@@ -96,11 +101,14 @@ public class EventRecord {
     public String toString() {
         return "EventRecord [id=" + id + ", uuid=" + uuid + ", title=" + title
                 + ", timeStamp=" + timeStamp + ", uri=" + uri + ", contents="
-                + serializedContents + "]";
+                + serializedContents + ", dateCreated=" + dateCreated + "]";
     }
 
     public String getCategory() {
         return category;
     }
 
+    public Date getDateCreated() {
+        return dateCreated;
+    }
 }

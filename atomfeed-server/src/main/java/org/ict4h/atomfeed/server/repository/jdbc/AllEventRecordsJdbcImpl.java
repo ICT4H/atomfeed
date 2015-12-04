@@ -8,13 +8,11 @@ import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
+import org.joda.time.DateTime;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
+import java.util.Date;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -32,7 +30,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         PreparedStatement stmt = null;
         try {
             connection = provider.getConnection();
-            String insertSql = String.format("insert into %s (uuid, title, uri, object,category) values (?, ?, ?, ?,?)",
+            String insertSql = String.format("insert into %s (uuid, title, uri, object,category, date_created) values (?, ?, ?, ?,?,?)",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
             stmt = connection.prepareStatement(insertSql);
             stmt.setString(1, eventRecord.getUuid());
@@ -40,18 +38,21 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             stmt.setString(3, eventRecord.getUri());
             stmt.setString(4, eventRecord.getContents());
             stmt.setString(5, eventRecord.getCategory());
+            stmt.setTimestamp(6, getSqlTimeStamp(eventRecord));
             stmt.executeUpdate();
-            //connection.commit();
         } catch (SQLException e) {
             throw new AtomFeedRuntimeException(e);
         } finally {
             close(stmt);
-//            try {
-//                provider.closeConnection(connection);
-//            } catch (SQLException e) {
-//                throw new AtomFeedRuntimeException(e);
-//            }
         }
+    }
+
+    private Timestamp getSqlTimeStamp(EventRecord eventRecord) {
+        java.util.Date timeStamp = eventRecord.getDateCreated();
+        if (timeStamp == null) {
+            timeStamp = new Date();
+        }
+        return new Timestamp(timeStamp.getTime());
     }
 
     @Override
@@ -61,7 +62,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         ResultSet rs = null;
         try {
             connection = provider.getConnection();
-            String sql = String.format("select id, uuid, title, timestamp, uri, object, category from %s where uuid = ?",
+            String sql = String.format("select id, uuid, title, timestamp, uri, object, category, date_created from %s where uuid = ?",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
             stmt = connection.prepareStatement(sql);
             stmt.setString(1, uuid);
@@ -208,14 +209,14 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
     private PreparedStatement buildSelectStatement(Connection connection, TimeRange timeRange, String category) throws SQLException {
         String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
         if (isBlank(category)) {
-            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where timestamp BETWEEN ? AND ? order by timestamp asc",
+            String sql = String.format("select id, uuid, title, timestamp, uri, object, date_created from %s where timestamp BETWEEN ? AND ? order by timestamp asc",
                     tableName);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setTimestamp(1, timeRange.getStartTimestamp());
             statement.setTimestamp(2, timeRange.getEndTimestamp());
             return statement;
         } else {
-            String sql = String.format("select id, uuid, title, timestamp, uri, object from %s where category = ? AND timestamp BETWEEN ? AND ? order by timestamp asc",
+            String sql = String.format("select id, uuid, title, timestamp, uri, object, date_created from %s where category = ? AND timestamp BETWEEN ? AND ? order by timestamp asc",
                     tableName);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, category);
@@ -241,14 +242,14 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         String tableName = JdbcUtils.getTableName(schema, "event_records");
         if (isBlank(category)) {
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object from %s where id > ? order by id asc limit ? offset ?", tableName));
+                    String.format("select id, uuid, title, timestamp, uri, object, date_created from %s where id > ? order by id asc limit ? offset ?", tableName));
             statement.setInt(1, startId);
             statement.setInt(2, limit);
             statement.setInt(3, offset);
             return statement;
         } else {
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object, category from %s where id > ? and category = ? order by id asc limit ? offset ?",
+                    String.format("select id, uuid, title, timestamp, uri, object, category, date_created from %s where id > ? and category = ? order by id asc limit ? offset ?",
                             tableName));
             statement.setInt(1, startId);
             statement.setString(2, category);

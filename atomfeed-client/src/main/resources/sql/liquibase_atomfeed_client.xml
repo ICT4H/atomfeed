@@ -28,4 +28,26 @@
             <column name="title" type="varchar(255)"></column>
         </createTable>
     </changeSet>
+    <changeSet id="ict4h-atomfeed-client-3" context="setup" author="angshu, dubey">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="tags" tableName="failed_events" schemaName="${schemaName}"/>
+            </not>
+        </preConditions>
+        <comment>Creating column tags for failed_events table. This is same as atom spec feed.entry.categories.</comment>
+        <addColumn tableName="failed_events" schemaName="${schemaName}">
+            <column name="tags" type="varchar(255)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="ict4h-atomfeed-client-3" context="setup" author="angshu, dubey">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="tags" tableName="failed_events" schemaName="${schemaName}"/>
+            </not>
+        </preConditions>
+        <comment>Creating column tags for failed_events table. This is same as atom spec feed.entry.categories.</comment>
+        <addColumn tableName="failed_events" schemaName="${schemaName}">
+            <column name="tags" type="varchar(255)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

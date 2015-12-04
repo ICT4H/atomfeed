@@ -22,8 +22,6 @@ import java.util.Date;
 import java.util.List;
 
 public class AtomFeedClient implements FeedClient {
-    private static final int FAILED_EVENTS_PROCESS_BATCH_SIZE = 5;
-
     private static Logger logger = Logger.getLogger(AtomFeedClient.class);
 
     private AllFeeds allFeeds;
@@ -255,12 +253,16 @@ public class AtomFeedClient implements FeedClient {
     class FailedEventsFetcher implements AFTransactionWork<List<FailedEvent>> {
         @Override
         public List<FailedEvent> execute() {
-            return allFailedEvents.getOldestNFailedEvents(feedUri.toString(), FAILED_EVENTS_PROCESS_BATCH_SIZE, atomFeedProperties.getFailedEventMaxRetry());
+            return allFailedEvents.getOldestNFailedEvents(feedUri.toString(), getProcessBatchSizeForFailedEvents(), atomFeedProperties.getFailedEventMaxRetry());
         }
         @Override
         public PropagationDefinition getTxPropagationDefinition() {
             return PropagationDefinition.PROPAGATION_REQUIRED;
         }
+    }
+
+    private int getProcessBatchSizeForFailedEvents() {
+        return atomFeedProperties.getFailedEventsBatchProcessSize();
     }
 
 }

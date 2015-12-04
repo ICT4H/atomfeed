@@ -8,6 +8,7 @@ public class AtomFeedProperties {
     private boolean controlsEventProcessing = true;
     private int maxFailedEvents = 5;
     private int failedEventMaxRetry = 5;
+    private int failedEventsBatchProcessSize = 5;
 
     private static Logger logger = Logger.getLogger(AtomFeedProperties.class);
 
@@ -55,4 +56,11 @@ public class AtomFeedProperties {
         this.failedEventMaxRetry = failedEventMaxRetry;
     }
 
+    public int getFailedEventsBatchProcessSize() {
+        return failedEventsBatchProcessSize;
+    }
+
+    public void setFailedEventsBatchProcessSize(int failedEventsBatchProcessSize) {
+        this.failedEventsBatchProcessSize = failedEventsBatchProcessSize;
+    }
 }

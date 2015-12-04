@@ -152,7 +152,9 @@ public class EventFeedServiceImpl implements EventFeedService {
             final Entry entry = new Entry();
             entry.setId(eventRecord.getTagUri());
             entry.setTitle(eventRecord.getTitle());
+            entry.setPublished(eventRecord.getTimeStamp());
             entry.setUpdated(eventRecord.getTimeStamp());
+            entry.setCreated(getDateCreated(eventRecord));
             entry.setContents(generateContents(eventRecord));
             String category = eventRecord.getCategory();
             if(category != null){
@@ -162,6 +164,10 @@ public class EventFeedServiceImpl implements EventFeedService {
         }
 
         return entryList;
+    }
+
+    private Date getDateCreated(EventRecord eventRecord) {
+        return eventRecord.getDateCreated() != null ? eventRecord.getDateCreated() : eventRecord.getTimeStamp();
     }
 
     private List getCategories(String categoryName) {
