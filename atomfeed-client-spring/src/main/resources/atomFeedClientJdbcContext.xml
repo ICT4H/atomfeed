@@ -16,10 +16,10 @@
         <constructor-arg ref="dataSource"/>
     </bean>
 
-    <bean id="webClient" class="org.ict4h.atomfeed.client.repository.datasource.WebClient"/>
+    <bean id="webClient" class="org.ict4h.atomfeed.client.repository.datasource.DefaultHttpClient"/>
 
     <bean id="allFeeds" class="org.ict4h.atomfeed.client.repository.AllFeeds">
-        <constructor-arg type="org.ict4h.atomfeed.client.repository.datasource.WebClient" ref="webClient"/>
+        <constructor-arg type="org.ict4h.atomfeed.client.repository.datasource.DefaultHttpClient" ref="webClient"/>
     </bean>
 
     <bean id="allMarkers" class="org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl">

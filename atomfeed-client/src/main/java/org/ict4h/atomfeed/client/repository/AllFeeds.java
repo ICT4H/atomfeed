@@ -5,25 +5,26 @@ import com.sun.syndication.io.WireFeedInput;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.AtomFeedProperties;
-import org.ict4h.atomfeed.client.repository.datasource.WebClient;
+import org.ict4h.atomfeed.client.repository.datasource.DefaultHttpClient;
+import org.ict4h.atomfeed.client.repository.datasource.HttpClient;
 
 import java.io.StringReader;
 import java.net.URI;
 import java.util.Map;
 
 public class AllFeeds {
-    private WebClient webClient;
+    private HttpClient httpClient;
     private AtomFeedProperties atomFeedProperties = new AtomFeedProperties();
     private Map<String, String> clientCookies;
 
     private static Logger logger = Logger.getLogger(AllFeeds.class);
 
     protected AllFeeds() {
-        this.webClient = new WebClient();
+        this.httpClient = new DefaultHttpClient();
     }
 
-    public AllFeeds(WebClient webClient) {
-        this.webClient = webClient;
+    public AllFeeds(HttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     public AllFeeds(AtomFeedProperties atomFeedProperties, Map<String, String> clientCookies) {
@@ -32,11 +33,17 @@ public class AllFeeds {
         this.clientCookies = clientCookies;
     }
 
+    public AllFeeds(HttpClient httpClient, AtomFeedProperties atomFeedProperties, Map<String, String> clientCookies) {
+        this.httpClient = httpClient;
+        this.atomFeedProperties = atomFeedProperties;
+        this.clientCookies = clientCookies;
+    }
+
     public Feed getFor(URI uri) {
     	if (uri == null) return null;
 
         logger.info(String.format("Reading URI - %s", uri));
-        String responseString = webClient.fetch(uri, atomFeedProperties, clientCookies);
+        String responseString = httpClient.fetch(uri, atomFeedProperties, clientCookies);
         logger.debug(responseString);
         responseString.trim().replaceFirst("^([\\W]+)<", "<");
 

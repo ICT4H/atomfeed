@@ -10,11 +10,11 @@ import java.util.Map;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class WebClientStub extends WebClient {
+public class HttpClientStub implements HttpClient {
     private EventResource eventResource;
     private HttpServletRequest httpServletRequest;
 
-    public WebClientStub(EventResource eventResource) {
+    public HttpClientStub(EventResource eventResource) {
         this.eventResource = eventResource;
         httpServletRequest = mock(HttpServletRequest.class);
     }

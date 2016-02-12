@@ -11,6 +11,7 @@ public class AtomFeedProperties {
     private int failedEventsBatchProcessSize = 5;
 
     private static Logger logger = Logger.getLogger(AtomFeedProperties.class);
+    private boolean redirectionHandled = false;
 
     public int getReadTimeout() {
         return readTimeout;
@@ -62,5 +63,13 @@ public class AtomFeedProperties {
 
     public void setFailedEventsBatchProcessSize(int failedEventsBatchProcessSize) {
         this.failedEventsBatchProcessSize = failedEventsBatchProcessSize;
+    }
+
+    public boolean isRedirectionHandled() {
+        return redirectionHandled;
+    }
+
+    public void setRedirectionHandled(boolean redirectionHandled) {
+        this.redirectionHandled = redirectionHandled;
     }
 }
