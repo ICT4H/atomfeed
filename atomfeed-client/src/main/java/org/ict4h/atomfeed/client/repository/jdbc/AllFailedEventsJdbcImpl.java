@@ -1,5 +1,6 @@
 package org.ict4h.atomfeed.client.repository.jdbc;
 
+import com.sun.syndication.feed.atom.Category;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.Configuration;
@@ -89,7 +90,9 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         if (!StringUtils.isBlank(tags)) {
             String[] eventTags = tags.split(",");
             for (String eventTag : eventTags) {
-                event.getCategories().add(eventTag);
+                final Category category = new Category();
+                category.setTerm(eventTag);
+                event.getCategories().add(category);
             }
         }
     }
@@ -128,7 +131,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setInt(6, errorMessage.hashCode());
             statement.setString(7, failedEvent.getEvent().getTitle());
             statement.setInt(8, failedEvent.getRetries());
-            statement.setString(9, getCategories(failedEvent.getEvent()));
+            statement.setString(9, getEventCategories(failedEvent.getEvent()));
             statement.executeUpdate();
             logger.info(String.format("Created a new %s", failedEvent.toString()));
         } catch (SQLException e) {
@@ -138,9 +141,20 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         }
     }
 
-    private String getCategories(Event event) {
-        if (event.getCategories() != null) {
-            return StringUtils.join(event.getCategories(), ",");
+    private String getEventCategories(Event event) {
+        final List categories = event.getCategories();
+        if (categories != null) {
+            StringBuilder tags = new StringBuilder();
+            for (Object category : categories) {
+                if (category instanceof Category) {
+                    tags.append(((Category) category).getTerm() + ",");
+                }
+            }
+            String tagList = tags.toString();
+            if (!StringUtils.isBlank(tagList)) {
+                //return StringUtils.join(categories, ",");
+                return tagList.endsWith(",") ? tagList.substring(0, tagList.length() - 1) : tagList;
+            }
         }
         return "";
     }
