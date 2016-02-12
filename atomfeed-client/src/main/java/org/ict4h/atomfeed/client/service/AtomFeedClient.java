@@ -132,9 +132,12 @@ public class AtomFeedClient implements FeedClient {
     }
 
     private void handleFailedEvent(Entry entry, URI feedUri, Exception e, Feed feed, Event event) {
-        allFailedEvents.addOrUpdate(new FailedEvent(feedUri.toString(), event, Util.getExceptionString(e), 0));
-        if (atomFeedProperties.controlsEventProcessing())
-            allMarkers.put(this.feedUri, entry.getId(), Util.getViaLink(feed));
+        final URI viaLink = Util.getViaLink(feed);
+        final String errorMessage = String.format("Failed processing event in feed [%s] \n", viaLink.toString()).concat(Util.getExceptionString(e));
+        allFailedEvents.addOrUpdate(new FailedEvent(feedUri.toString(), event, errorMessage, 0));
+        if (atomFeedProperties.controlsEventProcessing()) {
+            allMarkers.put(this.feedUri, entry.getId(), viaLink);
+        }
     }
 
     private class FailedEventCounter implements AFTransactionWork<Integer> {
