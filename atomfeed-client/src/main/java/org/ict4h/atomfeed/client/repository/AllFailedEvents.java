@@ -21,4 +21,6 @@ public interface AllFailedEvents {
     void insert(FailedEventRetryLog failedEventRetryLog);
 
     public List<FailedEvent> getFailedEvents(String feedUri);
+
+    public FailedEvent getByEventId(String eventId);
 }
