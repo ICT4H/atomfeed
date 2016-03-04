@@ -55,7 +55,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         }
         return null;
     }
-//added on 3/3/16
+
     public FailedEvent getByEventId(String eventId) {
         Connection connection;
         PreparedStatement statement = null;
@@ -334,4 +334,47 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         }
     }
 
+    public List<FailedEventRetryLog> getFailedEventRetryLogs(String eventId){
+        Connection connection;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionProvider.getConnection();
+            String sql = String.format(
+                    "select id,feed_uri,failed_at,error_message,event_id,event_content from %s where event_id = ?",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "failed_event_retry_log"));
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, eventId);
+            resultSet = statement.executeQuery();
+
+            List<FailedEventRetryLog> failedEventRetryLogList=mapFailedEventRetryLogFromResultSet(resultSet);
+            if (failedEventRetryLogList != null && !failedEventRetryLogList.isEmpty()) {
+                return failedEventRetryLogList;
+            }
+            logger.info(String.format("Reading failed event -  eventId=%s", eventId));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(statement, resultSet);
+        }
+        return null;
+
+    }
+
+
+    private List<FailedEventRetryLog> mapFailedEventRetryLogFromResultSet(ResultSet resultSet) {
+        List<FailedEventRetryLog> failedEventRetryLogList=new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                FailedEventRetryLog failedEventRetryLog= new FailedEventRetryLog(resultSet.getString(2),resultSet.getLong(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6));
+                failedEventRetryLogList.add(failedEventRetryLog);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed while mapping failedEvents from database", e);
+        }
+        return failedEventRetryLogList;
+    }
+
+
 }
+
