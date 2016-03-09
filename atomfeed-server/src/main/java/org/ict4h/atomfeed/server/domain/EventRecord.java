@@ -56,7 +56,7 @@ public class EventRecord {
     @Column(name = "date_created", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @XmlTransient
-    private Date dateCreated;
+    private Date dateCreated = new Date();
 
     public EventRecord() { }
 
