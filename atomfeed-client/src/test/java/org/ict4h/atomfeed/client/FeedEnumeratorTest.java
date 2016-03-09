@@ -7,6 +7,7 @@ import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.service.FeedEnumerator;
+import org.ict4h.atomfeed.client.util.Util;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,9 +43,9 @@ public class FeedEnumeratorTest {
         secondFeedUri = new URI("http://host/patients/2");
         firstFeedUri = new URI("http://host/patients/1");
 
-        last.setOtherLinks(Arrays.asList(new Link[]{getLink("prev-archive", secondFeedUri)}));
-        second.setOtherLinks(Arrays.asList(getLink("prev-archive", firstFeedUri), getLink("next-archive", recentFeedUri)));
-        first.setOtherLinks(Arrays.asList(new Link[]{getLink("next-archive", secondFeedUri)}));
+        last.setOtherLinks(Arrays.asList(new Link[]{getLink("prev-archive", secondFeedUri), getLink("via", recentFeedUri)}));
+        second.setOtherLinks(Arrays.asList(getLink("prev-archive", firstFeedUri), getLink("next-archive", recentFeedUri), getLink("via", secondFeedUri)));
+        first.setOtherLinks(Arrays.asList(new Link[]{getLink("next-archive", secondFeedUri), getLink("via", firstFeedUri)}));
 
         when(allFeedsMock.getFor(notificationsUri)).thenReturn(last);
         when(allFeedsMock.getFor(recentFeedUri)).thenReturn(last);
@@ -129,5 +130,24 @@ public class FeedEnumeratorTest {
     public void shouldThrowExceptionWhenLastReadIdNotPresent() throws URISyntaxException {
         Marker marker = new Marker(notificationsUri, "7", firstFeedUri);
         new FeedEnumerator(allFeedsMock, marker);
+    }
+
+    @Test
+    public void shouldVerifyThatCurrentFeedPointsToTheRightURIWhileReadingEntries() throws URISyntaxException {
+        Marker marker = new Marker(notificationsUri, null, null);
+        FeedEnumerator feedEnumerator = new FeedEnumerator(allFeedsMock, marker);
+        int idx = 0;
+        for(Entry entry : feedEnumerator) {
+            idx++;
+            if (idx == 5) {
+                assertEquals(firstFeedUri, Util.getViaLink(feedEnumerator.getCurrentFeed()));
+            }
+            if (idx == 7) {
+                assertEquals(secondFeedUri, Util.getViaLink(feedEnumerator.getCurrentFeed()));
+            }
+            if (idx == 11) {
+                assertEquals(recentFeedUri, Util.getViaLink(feedEnumerator.getCurrentFeed()));
+            }
+        }
     }
 }

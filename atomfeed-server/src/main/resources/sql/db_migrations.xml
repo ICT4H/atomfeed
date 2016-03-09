@@ -103,6 +103,7 @@
         </createIndex>
     </changeSet>
     <changeSet id="9" context="setup" author="angshu, dubey">
+        <validCheckSum>3:6501c89cc91d7f2751b557eda804c8bd</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists columnName="date_created" tableName="event_records" schemaName="${schemaName}"/>
@@ -110,7 +111,7 @@
         </preConditions>
         <comment>Creating column date_created for queue table. This indicates the time event was raised or created.</comment>
         <addColumn tableName="event_records" schemaName="${schemaName}">
-            <column name="date_created" type="timestamp" defaultValueDate="CURRENT_TIMESTAMP(6)"></column>
+            <column name="date_created" type="timestamp"></column>
         </addColumn>
     </changeSet>
 </databaseChangeLog>
