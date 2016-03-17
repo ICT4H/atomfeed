@@ -366,7 +366,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         List<FailedEventRetryLog> failedEventRetryLogList=new ArrayList<>();
         try {
             while (resultSet.next()) {
-                FailedEventRetryLog failedEventRetryLog= new FailedEventRetryLog(resultSet.getString(2),resultSet.getLong(3),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6));
+                FailedEventRetryLog failedEventRetryLog= new FailedEventRetryLog(resultSet.getString(2),resultSet.getTimestamp(3).getTime(),resultSet.getString(4),resultSet.getString(5),resultSet.getString(6));
                 failedEventRetryLogList.add(failedEventRetryLog);
             }
         } catch (Exception e) {
