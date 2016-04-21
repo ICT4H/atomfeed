@@ -5,14 +5,14 @@
     <parent>
         <artifactId>atomfeed</artifactId>
         <groupId>org.ict4h</groupId>
-        <version>1.9.2</version>
+        <version>1.9.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
 
     </parent>
 
     <groupId>org.ict4h</groupId>
     <artifactId>atomfeed-spring-server</artifactId>
-    <version>1.9.2</version>
+    <version>1.9.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
