@@ -95,8 +95,10 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement = connection.prepareStatement(sql);
             statement.setString(1, feedUri);
             resultSet = statement.executeQuery();
+            //logger.info("In getFailedEvents.... "+resultSet.next());
             List<FailedEvent> failedEvents = mapFailedEventsFromResultSet(resultSet);
             if ((failedEvents != null) && !failedEvents.isEmpty()) {
+                logger.debug("returning failedEvents");
                 return failedEvents;
             }
             logger.info(String.format("Reading failed event - feedUri=%s ", feedUri));
@@ -124,9 +126,14 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
 
     private List<FailedEvent> mapFailedEventsFromResultSet(ResultSet resultSet) {
         List<FailedEvent> failedEvents = new ArrayList<>();
+        logger.info("in mapping function !");
         try {
+            logger.info("in try block !!");
+            //logger.info("resultSet : "+resultSet.next());
             while (resultSet.next()) {
+                logger.info("before event constructor ! ");
                 Event event = new Event(resultSet.getString(5), resultSet.getString(6), resultSet.getString(7));
+                logger.info("after event constructor ..");
                 setEventCategories(event, resultSet.getString(9));
                 FailedEvent failedEvent = new FailedEvent(resultSet.getString(2), event,
                         resultSet.getString(4), resultSet.getTimestamp(3).getTime(), resultSet.getInt(8));
@@ -296,8 +303,9 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         ResultSet resultSet = null;
         try {
             connection = connectionProvider.getConnection();
-            statement = connection.prepareStatement(String.format("select count(*) from %s",
+            statement = connection.prepareStatement(String.format("select count(*) from %s where feed_uri = ?",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE)));
+            statement.setString(1, feedUri);
             resultSet = statement.executeQuery();
 
             int numberOfFailedEvents = resultSet.next() ? resultSet.getInt(1) : 0;
