@@ -26,8 +26,14 @@ public class EventRecordsPublishingService {
     private static List<EventRecord> mapToEventRecords(List<EventRecordQueueItem> queueItemList) {
         List<EventRecord> eventRecords = new ArrayList<>();
         for (EventRecordQueueItem eventRecordQueueItem : queueItemList) {
-            EventRecord eventRecord = new EventRecord(eventRecordQueueItem.getUuid(), eventRecordQueueItem.getTitle(),
-                    eventRecordQueueItem.getUri(), eventRecordQueueItem.getContents(), eventRecordQueueItem.getTimeStamp(), eventRecordQueueItem.getCategory());
+            EventRecord eventRecord =
+                new EventRecord(eventRecordQueueItem.getUuid(),
+                    eventRecordQueueItem.getTitle(),
+                    eventRecordQueueItem.getUri(),
+                    eventRecordQueueItem.getContents(),
+                    eventRecordQueueItem.getTimeStamp(),
+                    eventRecordQueueItem.getCategory(),
+                    eventRecordQueueItem.getTags());
             eventRecords.add(eventRecord);
         }
         return eventRecords;

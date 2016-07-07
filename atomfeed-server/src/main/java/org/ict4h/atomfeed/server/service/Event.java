@@ -20,6 +20,8 @@ public class Event {
 
     private String category;
 
+    private String tags;
+
 
     public Event(String uuid, String title, DateTime timeStamp, URI uri, String serializedContents, String category) {
         this.uuid = uuid;
@@ -32,6 +34,11 @@ public class Event {
 
     public Event(String uuid, String title, DateTime timeStamp, String uriString, String serializedContents, String category) throws URISyntaxException {
         this(uuid, title, timeStamp, new URI(uriString), serializedContents, category);
+    }
+
+    public Event(String uuid, String title, DateTime timeStamp, URI uri, String serializedContents, String category, String tags) {
+        this(uuid, title, timeStamp, uri, serializedContents, category);
+        this.tags = tags;
     }
 
     public String getUuid() {
@@ -56,5 +63,9 @@ public class Event {
 
     public String getCategory() {
         return category;
+    }
+
+    public String getTags() {
+        return tags;
     }
 }

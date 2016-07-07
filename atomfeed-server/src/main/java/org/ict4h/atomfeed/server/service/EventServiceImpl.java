@@ -22,8 +22,8 @@ public class EventServiceImpl implements EventService {
                 event.getUri(),
                 event.getContents(),
                 eventTime,
-                event.getCategory());
-
+                event.getCategory(),
+                event.getTags());
         allEventRecordsQueue.add(eventRecordQueueItem);
     }
 }

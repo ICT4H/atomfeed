@@ -1,11 +1,13 @@
 package org.ict4h.atomfeed.server.domain;
 
+
+import org.apache.commons.lang3.StringUtils;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.net.URI;
 import java.util.Date;
 
 @Entity
@@ -58,6 +60,10 @@ public class EventRecord {
     @XmlTransient
     private Date dateCreated = new Date();
 
+    @Column(name = "tags")
+    @XmlTransient
+    private String tags;
+
     public EventRecord() { }
 
     public EventRecord(String uuid, String title, String uri, String serializedContents, Date dateCreated, String category) {
@@ -67,6 +73,12 @@ public class EventRecord {
         this.uri = uri;
         this.serializedContents = serializedContents;
         this.dateCreated = dateCreated;
+        this.tags = category;
+    }
+
+    public EventRecord(String uuid, String title, String uri, String serializedContents, Date dateCreated, String category, String tags) {
+        this(uuid, title, uri, serializedContents, dateCreated, category);
+        setTags(tags);
     }
 
     public Integer getId() {
@@ -101,7 +113,7 @@ public class EventRecord {
     public String toString() {
         return "EventRecord [id=" + id + ", uuid=" + uuid + ", title=" + title
                 + ", timeStamp=" + timeStamp + ", uri=" + uri + ", contents="
-                + serializedContents + ", dateCreated=" + dateCreated + "]";
+                + serializedContents + ", dateCreated=" + dateCreated + ", tags=" + tags + "]";
     }
 
     public String getCategory() {
@@ -110,5 +122,16 @@ public class EventRecord {
 
     public Date getDateCreated() {
         return dateCreated;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    //NOTE: intentionally kept private
+    private void setTags(String tags) {
+        if (!StringUtils.isBlank(tags)) {
+            this.tags = tags;
+        }
     }
 }

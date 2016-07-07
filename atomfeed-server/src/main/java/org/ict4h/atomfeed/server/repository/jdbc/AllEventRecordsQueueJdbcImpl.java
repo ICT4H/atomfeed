@@ -17,6 +17,7 @@ import java.util.List;
 
 public class AllEventRecordsQueueJdbcImpl implements AllEventRecordsQueue {
 
+    private static final String FIELD_LIST = "id, uuid, title, timestamp, uri, object, category, tags";
     private JdbcConnectionProvider provider;
 
     public AllEventRecordsQueueJdbcImpl(JdbcConnectionProvider provider) {
@@ -29,7 +30,7 @@ public class AllEventRecordsQueueJdbcImpl implements AllEventRecordsQueue {
         PreparedStatement stmt = null;
         try {
             connection = provider.getConnection();
-            String insertSql = String.format("insert into %s (uuid, title, uri, object,category, timestamp) values (?, ?, ?, ?, ?, ?)",
+            String insertSql = String.format("insert into %s (uuid, title, uri, object,category, timestamp, tags) values (?, ?, ?, ?, ?, ?, ?)",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records_queue"));
             stmt = connection.prepareStatement(insertSql);
             stmt.setString(1, eventRecord.getUuid());
@@ -38,6 +39,7 @@ public class AllEventRecordsQueueJdbcImpl implements AllEventRecordsQueue {
             stmt.setString(4, eventRecord.getContents());
             stmt.setString(5, eventRecord.getCategory());
             stmt.setTimestamp(6, new Timestamp(eventRecord.getTimeStamp().getTime()));
+            stmt.setString(7, eventRecord.getTags());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new AtomFeedRuntimeException(e);
@@ -53,7 +55,7 @@ public class AllEventRecordsQueueJdbcImpl implements AllEventRecordsQueue {
         ResultSet rs = null;
         try {
             connection = provider.getConnection();
-            String sql = String.format("select id, uuid, title, timestamp, uri, object, category from %s where uuid = ?",
+            String sql = String.format("select " + FIELD_LIST + " from %s where uuid = ?",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records_queue"));
             stmt = connection.prepareStatement(sql);
             stmt.setString(1, uuid);
@@ -92,7 +94,7 @@ public class AllEventRecordsQueueJdbcImpl implements AllEventRecordsQueue {
         ResultSet rs = null;
         try {
             connection = provider.getConnection();
-            String sql = String.format("select id, uuid, title, timestamp, uri, object, category from %s",
+            String sql = String.format("select " + FIELD_LIST + " from %s",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records_queue"));
             stmt = connection.prepareStatement(sql);
             rs = stmt.executeQuery();
@@ -108,7 +110,6 @@ public class AllEventRecordsQueueJdbcImpl implements AllEventRecordsQueue {
     public void delete(String uuid) {
         Connection connection;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         try {
             connection = provider.getConnection();
             String sql = String.format("delete from %s where uuid = ?",

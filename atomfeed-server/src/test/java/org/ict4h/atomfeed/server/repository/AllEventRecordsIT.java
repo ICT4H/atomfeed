@@ -21,9 +21,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static junit.framework.Assert.assertEquals;
@@ -83,7 +81,7 @@ public class AllEventRecordsIT extends IntegrationTest {
         System.out.println("executing shouldAddEventRecordAndFetchByUUID");
         String uuid = UUID.randomUUID().toString();
         Date dateCreated = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").parse("10-10-2015 12:35:00");
-        EventRecord eventRecordAdded = new EventRecord(uuid, "title", "http://uri", null, dateCreated, "category");
+        EventRecord eventRecordAdded = new EventRecord(uuid, "title", "http://uri", null, dateCreated, "category", "tag1,tag2");
         allEventRecords.add(eventRecordAdded);
         EventRecord eventRecordFetched = allEventRecords.get(uuid);
         assertEquals(eventRecordAdded.getUuid(), eventRecordFetched.getUuid());
@@ -91,6 +89,13 @@ public class AllEventRecordsIT extends IntegrationTest {
         assertEquals(eventRecordAdded.getCategory(), eventRecordFetched.getCategory());
         assertTrue((new Date()).after(eventRecordFetched.getTimeStamp()));
         assertEquals(dateCreated, eventRecordFetched.getDateCreated());
+        assertTrue("Tags are not same", assertTagsAreSame(new String[]{"tag1", "tag2"}, eventRecordFetched));
+    }
+
+    private boolean assertTagsAreSame(String[] expectedTags, EventRecord eventRecordFetched) {
+        HashSet<String> expected = new HashSet<String>(Arrays.asList(expectedTags));
+        HashSet<String> actual = new HashSet<String>(Arrays.asList(eventRecordFetched.getTags().split(",")));
+        return expected.equals(actual);
     }
 
     @Test

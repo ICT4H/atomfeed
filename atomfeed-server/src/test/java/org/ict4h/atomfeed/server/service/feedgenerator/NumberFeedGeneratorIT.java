@@ -71,7 +71,7 @@ public class NumberFeedGeneratorIT extends IntegrationTest {
     @Test
     public void shouldGetFeed() throws Exception {
         generateData(3, "Cat-0");
-        generateData(2, "Cat-1");
+        generateData(2, "Cat-1", "tag1, tag2");
         generateData(13, "Cat-0");
         generateData(12, "Cat-1");
         assertEquals(5, feedGenerator.getFeedForId(1, "Cat-1").getEvents().size());
@@ -193,12 +193,18 @@ public class NumberFeedGeneratorIT extends IntegrationTest {
 
     }
 
-    private void generateData(int total, String eventCategory) throws URISyntaxException {
+    private void generateData(int total, String eventCategory, String... tagList) throws URISyntaxException {
         for (int i = 0; i < total; i++) {
             String uuid = UUID.randomUUID().toString();
             String category = StringUtils.isBlank(eventCategory) ? (((i % 2) == 0) ? "Cat-0" : "Cat-1") : eventCategory;
-            EventRecord eventRecordAdded = new EventRecord(uuid, "title-" + i, "http://uri/" + i, "content-" + uuid, new Date(), category);
-            allEventRecords.add(eventRecordAdded);
+            EventRecord recordToAdd = null;
+            if (tagList.length > 0) {
+                final String tags = StringUtils.join(tagList, ",");
+                recordToAdd = new EventRecord(uuid, "title-" + i, "http://uri/" + i, "content-" + uuid, new Date(), category, tags);
+            } else {
+                recordToAdd = new EventRecord(uuid, "title-" + i, "http://uri/" + i, "content-" + uuid, new Date(), category);
+            }
+            allEventRecords.add(recordToAdd);
         }
     }
 

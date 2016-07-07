@@ -70,4 +70,26 @@
             <column name="date_created" type="timestamp"></column>
         </addColumn>
     </changeSet>
+    <changeSet id="ict4h-atomfeed-server-7" context="setup" author="angshu">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="tags" tableName="event_records_queue" schemaName="${schemaName}"/>
+            </not>
+        </preConditions>
+        <comment>Creating column tags for queue table. Each event can be tagged with multiple tags; as comma separated strings</comment>
+        <addColumn tableName="event_records_queue" schemaName="${schemaName}">
+            <column name="tags" type="varchar(255)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="ict4h-atomfeed-server-8" context="setup" author="angshu">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="tags" tableName="event_records" schemaName="${schemaName}"/>
+            </not>
+        </preConditions>
+        <comment>Creating column tags for event_records table. Each event can be tagged with multiple tags; as comma separated strings</comment>
+        <addColumn tableName="event_records" schemaName="${schemaName}">
+            <column name="tags" type="varchar(255)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -1,6 +1,7 @@
 package org.ict4h.atomfeed.server.service;
 
 import com.sun.syndication.feed.atom.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.server.domain.EventFeed;
 import org.ict4h.atomfeed.server.domain.EventRecord;
@@ -157,9 +158,17 @@ public class EventFeedServiceImpl implements EventFeedService {
             entry.setCreated(getDateCreated(eventRecord));
             entry.setContents(generateContents(eventRecord));
             String category = eventRecord.getCategory();
-            if(category != null){
-                entry.setCategories(getCategories(category));
+            final String[] tagList = StringUtils.split(eventRecord.getTags(), ",");
+            if ((tagList != null) && (tagList.length > 0)) {
+                List taggedCategories = getCategories(tagList);
+                if (category != null) {
+                    taggedCategories.add(category);
+                }
+                entry.setCategories(taggedCategories);
+            } else if (category != null) {
+                entry.setCategories(getCategories(new String[]{category}));
             }
+
             entryList.add(entry);
         }
 
@@ -170,11 +179,13 @@ public class EventFeedServiceImpl implements EventFeedService {
         return eventRecord.getDateCreated() != null ? eventRecord.getDateCreated() : eventRecord.getTimeStamp();
     }
 
-    private List getCategories(String categoryName) {
+    private List getCategories(String[] categoryList) {
         List categories = new ArrayList<Category>();
-        Category category = new Category();
-        category.setTerm(categoryName);
-        categories.add(category);
+        for (String cat : categoryList) {
+            Category eventCategory = new Category();
+            eventCategory.setTerm(cat);
+            categories.add(eventCategory);
+        }
         return categories;
     }
 

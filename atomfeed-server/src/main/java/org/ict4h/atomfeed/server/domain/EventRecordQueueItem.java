@@ -1,5 +1,7 @@
 package org.ict4h.atomfeed.server.domain;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -52,6 +54,11 @@ public class EventRecordQueueItem {
     @XmlTransient
     private String category;
 
+    @Column(name="tags")
+    @XmlTransient
+    private String tags;
+
+
     public EventRecordQueueItem() { }
 
     public EventRecordQueueItem(String uuid, String title, URI uri, String serializedContents, String category) {
@@ -61,15 +68,17 @@ public class EventRecordQueueItem {
         this.uri = uri == null ? null : uri.toString();
         this.serializedContents = serializedContents;
         this.timeStamp = new Date();
+        this.tags = category;
     }
 
     public EventRecordQueueItem(String uuid, String title, URI uri, String serializedContents, Date timeStamp, String category) {
-        this.uuid = uuid;
-        this.title = title;
-        this.category = category;
-        this.uri = uri == null ? null : uri.toString();
-        this.serializedContents = serializedContents;
+        this(uuid, title, uri, serializedContents, category);
         this.timeStamp = (timeStamp != null) ? timeStamp : new Date();
+    }
+
+    public EventRecordQueueItem(String uuid, String title, URI uri, String serializedContents, Date timeStamp, String category, String tags) {
+        this(uuid, title, uri, serializedContents, timeStamp, category);
+        setTags(tags);
     }
 
     public Integer getId() {
@@ -100,15 +109,30 @@ public class EventRecordQueueItem {
         return serializedContents;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public String getTags() {
+        return tags;
+    }
 
     @Override
     public String toString() {
-        return "EventRecordQueueItem [id=" + id + ", uuid=" + uuid + ", title=" + title
-                + ", timeStamp=" + timeStamp + ", uri=" + uri + ", contents="
-                + serializedContents + "]";
+        return "EventRecordQueueItem{" +
+                "id=" + id + ", uuid='" + uuid + ", title='" + title +
+                ", timeStamp=" + timeStamp + ", uri='" + uri +
+                ", serializedContents='" + serializedContents +
+                ", category='" + category +
+                ", tags='" + tags + '}';
     }
 
-    public String getCategory() {
-        return category;
+    //NOTE: intentionally kept private
+    private void setTags(String tags) {
+        if (StringUtils.isBlank(tags)) return;
+        String normalizedTagString = StringUtils.normalizeSpace(tags);
+        if (!StringUtils.isBlank(normalizedTagString)) {
+            this.tags = this.category + "," + normalizedTagString;
+        }
     }
 }

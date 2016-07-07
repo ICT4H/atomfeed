@@ -18,6 +18,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class AllEventRecordsJdbcImpl implements AllEventRecords {
 
+    private static final String FIELD_LIST = "id, uuid, title, timestamp, uri, object, date_created, category, tags";
+
     private JdbcConnectionProvider provider;
 
     public AllEventRecordsJdbcImpl(JdbcConnectionProvider provider) {
@@ -30,7 +32,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         PreparedStatement stmt = null;
         try {
             connection = provider.getConnection();
-            String insertSql = String.format("insert into %s (uuid, title, uri, object,category, date_created) values (?, ?, ?, ?,?,?)",
+            String insertSql = String.format("insert into %s (uuid, title, uri, object,category, date_created, tags) values (?, ?, ?, ?, ?, ?, ?)",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
             stmt = connection.prepareStatement(insertSql);
             stmt.setString(1, eventRecord.getUuid());
@@ -39,6 +41,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
             stmt.setString(4, eventRecord.getContents());
             stmt.setString(5, eventRecord.getCategory());
             stmt.setTimestamp(6, getSqlTimeStamp(eventRecord));
+            stmt.setString(7, eventRecord.getTags());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new AtomFeedRuntimeException(e);
@@ -62,7 +65,7 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         ResultSet rs = null;
         try {
             connection = provider.getConnection();
-            String sql = String.format("select id, uuid, title, timestamp, uri, object, category, date_created from %s where uuid = ?",
+            String sql = String.format("select " + FIELD_LIST + " from %s where uuid = ?",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records"));
             stmt = connection.prepareStatement(sql);
             stmt.setString(1, uuid);
@@ -209,14 +212,14 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
     private PreparedStatement buildSelectStatement(Connection connection, TimeRange timeRange, String category) throws SQLException {
         String tableName = JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "event_records");
         if (isBlank(category)) {
-            String sql = String.format("select id, uuid, title, timestamp, uri, object, date_created from %s where timestamp BETWEEN ? AND ? order by timestamp asc",
+            String sql = String.format("select " + FIELD_LIST + " from %s where timestamp BETWEEN ? AND ? order by timestamp asc",
                     tableName);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setTimestamp(1, timeRange.getStartTimestamp());
             statement.setTimestamp(2, timeRange.getEndTimestamp());
             return statement;
         } else {
-            String sql = String.format("select id, uuid, title, timestamp, uri, object, date_created from %s where category = ? AND timestamp BETWEEN ? AND ? order by timestamp asc",
+            String sql = String.format("select " + FIELD_LIST + " from %s where category = ? AND timestamp BETWEEN ? AND ? order by timestamp asc",
                     tableName);
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, category);
@@ -242,14 +245,14 @@ public class AllEventRecordsJdbcImpl implements AllEventRecords {
         String tableName = JdbcUtils.getTableName(schema, "event_records");
         if (isBlank(category)) {
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object, date_created from %s where id > ? order by id asc limit ? offset ?", tableName));
+                    String.format("select " + FIELD_LIST + " from %s where id > ? order by id asc limit ? offset ?", tableName));
             statement.setInt(1, startId);
             statement.setInt(2, limit);
             statement.setInt(3, offset);
             return statement;
         } else {
             PreparedStatement statement = connection.prepareStatement(
-                    String.format("select id, uuid, title, timestamp, uri, object, category, date_created from %s where id > ? and category = ? order by id asc limit ? offset ?",
+                    String.format("select " + FIELD_LIST + " from %s where id > ? and category = ? order by id asc limit ? offset ?",
                             tableName));
             statement.setInt(1, startId);
             statement.setString(2, category);
