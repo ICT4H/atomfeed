@@ -162,7 +162,7 @@ public class EventFeedServiceImpl implements EventFeedService {
             if ((tagList != null) && (tagList.length > 0)) {
                 List taggedCategories = getCategories(tagList);
                 if (category != null) {
-                    taggedCategories.add(category);
+                    taggedCategories.addAll(getCategories(new String[] {category}));
                 }
                 entry.setCategories(taggedCategories);
             } else if (category != null) {
