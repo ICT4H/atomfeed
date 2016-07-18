@@ -1,8 +1,13 @@
 package org.ict4h.atomfeed.server.service;
 
-import com.sun.syndication.feed.atom.*;
+import com.sun.syndication.feed.atom.Category;
+import com.sun.syndication.feed.atom.Content;
+import com.sun.syndication.feed.atom.Entry;
+import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.feed.atom.Generator;
+import com.sun.syndication.feed.atom.Link;
+import com.sun.syndication.feed.atom.Person;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.server.domain.EventFeed;
 import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.EventRecordComparator;
@@ -11,7 +16,13 @@ import org.ict4h.atomfeed.server.service.feedgenerator.FeedGenerator;
 import org.joda.time.DateTime;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 public class EventFeedServiceImpl implements EventFeedService {
 
@@ -19,9 +30,8 @@ public class EventFeedServiceImpl implements EventFeedService {
     private static final String LINK_TYPE_SELF = "self";
     private static final String LINK_TYPE_VIA = "via";
     private static final String ATOMFEED_MEDIA_TYPE = "application/vnd.atomfeed+xml";
-    private final Logger logger = Logger.getLogger(this.getClass());
 
-	private FeedGenerator feedGenerator;
+    private final FeedGenerator feedGenerator;
     private ResourceBundle bundle;
 
     public EventFeedServiceImpl(FeedGenerator generator) {
@@ -68,7 +78,6 @@ public class EventFeedServiceImpl implements EventFeedService {
                 .build();
     }
 
-
     private List<Person> getAuthors() {
         Person person = new Person();
         person.setName(getPropertyWithDefault("feed.author","Atomfeed"));
@@ -80,7 +89,7 @@ public class EventFeedServiceImpl implements EventFeedService {
     }
     
     private List<Link> generatePagingLinks(URI requestUri, EventFeed feed, String category) {
-        ArrayList<Link> links = new ArrayList<Link>();
+        ArrayList<Link> links = new ArrayList<>();
         int feedCount = feedGenerator.getRecentFeed(category).getId();
 
         if (feed.getId() < feedCount) {
@@ -147,7 +156,7 @@ public class EventFeedServiceImpl implements EventFeedService {
     }
 
     private List<Entry> getEntries(List<EventRecord> eventRecordList) {
-        List<Entry> entryList = new ArrayList<Entry>();
+        List<Entry> entryList = new ArrayList<>();
 
         for (EventRecord eventRecord : eventRecordList) {
             final Entry entry = new Entry();
@@ -160,7 +169,7 @@ public class EventFeedServiceImpl implements EventFeedService {
             String category = eventRecord.getCategory();
             final String[] tagList = StringUtils.split(eventRecord.getTags(), ",");
             if ((tagList != null) && (tagList.length > 0)) {
-                List taggedCategories = getCategories(tagList);
+                List<Category> taggedCategories = getCategories(tagList);
                 if (category != null) {
                     taggedCategories.addAll(getCategories(new String[] {category}));
                 }
@@ -179,8 +188,8 @@ public class EventFeedServiceImpl implements EventFeedService {
         return eventRecord.getDateCreated() != null ? eventRecord.getDateCreated() : eventRecord.getTimeStamp();
     }
 
-    private List getCategories(String[] categoryList) {
-        List categories = new ArrayList<Category>();
+    private List<Category> getCategories(String[] categoryList) {
+        List<Category> categories = new ArrayList<>();
         for (String cat : categoryList) {
             Category eventCategory = new Category();
             eventCategory.setTerm(cat);
