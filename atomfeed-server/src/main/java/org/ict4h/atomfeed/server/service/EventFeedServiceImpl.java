@@ -159,16 +159,7 @@ public class EventFeedServiceImpl implements EventFeedService {
             entry.setContents(generateContents(eventRecord));
             String category = eventRecord.getCategory();
             final String[] tagList = StringUtils.split(eventRecord.getTags(), ",");
-            if ((tagList != null) && (tagList.length > 0)) {
-                List taggedCategories = getCategories(tagList);
-                if (category != null) {
-                    taggedCategories.addAll(getCategories(new String[] {category}));
-                }
-                entry.setCategories(taggedCategories);
-            } else if (category != null) {
-                entry.setCategories(getCategories(new String[]{category}));
-            }
-
+            entry.setCategories(getCategories(tagList, category));
             entryList.add(entry);
         }
 
@@ -179,13 +170,23 @@ public class EventFeedServiceImpl implements EventFeedService {
         return eventRecord.getDateCreated() != null ? eventRecord.getDateCreated() : eventRecord.getTimeStamp();
     }
 
-    private List getCategories(String[] categoryList) {
-        List categories = new ArrayList<Category>();
-        for (String cat : categoryList) {
+    private List<Category> getCategories(String[] tagList, String category) {
+        HashSet<String> categorySet = new HashSet<>();
+        if ((tagList != null) && (tagList.length > 0)) {
+            categorySet.addAll(Arrays.asList(tagList));
+        }
+
+        if (!StringUtils.isBlank(category)) {
+            categorySet.add(category);
+        }
+
+        List<Category> categories = new ArrayList<>();
+        for (String aCat : categorySet) {
             Category eventCategory = new Category();
-            eventCategory.setTerm(cat);
+            eventCategory.setTerm(aCat);
             categories.add(eventCategory);
         }
+
         return categories;
     }
 

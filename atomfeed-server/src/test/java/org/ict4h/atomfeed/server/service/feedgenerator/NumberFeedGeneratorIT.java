@@ -1,18 +1,22 @@
 package org.ict4h.atomfeed.server.service.feedgenerator;
 
+import com.sun.syndication.feed.atom.Category;
+import com.sun.syndication.feed.atom.Entry;
+import com.sun.syndication.feed.atom.Feed;
 import org.apache.commons.lang3.StringUtils;
 import org.ict4h.atomfeed.IntegrationTest;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.jdbc.JdbcUtils;
 import org.ict4h.atomfeed.server.domain.EventRecord;
-import org.ict4h.atomfeed.server.repository.ChunkingEntries;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsOffsetMarkers;
+import org.ict4h.atomfeed.server.repository.ChunkingEntries;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsOffsetMarkersJdbcImpl;
 import org.ict4h.atomfeed.server.repository.jdbc.ChunkingEntriesJdbcImpl;
+import org.ict4h.atomfeed.server.service.EventFeedService;
+import org.ict4h.atomfeed.server.service.EventFeedServiceImpl;
 import org.ict4h.atomfeed.server.service.NumberOffsetMarkerServiceImpl;
 import org.ict4h.atomfeed.transaction.AFTransactionManager;
-import org.ict4h.atomfeed.transaction.AFTransactionWork;
 import org.ict4h.atomfeed.transaction.AFTransactionWorkWithoutResult;
 import org.junit.After;
 import org.junit.Before;
@@ -22,10 +26,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class NumberFeedGeneratorIT extends IntegrationTest {
 
@@ -80,6 +84,27 @@ public class NumberFeedGeneratorIT extends IntegrationTest {
         assertEquals(5, feedGenerator.getFeedForId(3, "Cat-0").getEvents().size());
         assertEquals(4, feedGenerator.getFeedForId(3, "Cat-1").getEvents().size());
         assertEquals(1, feedGenerator.getFeedForId(4, "Cat-0").getEvents().size());
+    }
+
+    @Test
+    public void shouldGetEntriesWithUniqueCategories() throws Exception {
+        generateData(5, "Cat-1", "tag1,tag2,tag1");
+        final EventFeedService eventFeedService = new EventFeedServiceImpl(feedGenerator);
+        final Feed sunAtomFeed = eventFeedService.getRecentFeed(new URI("http://example.org/feed/Cat-1/recent"), "Cat-1");
+        assertEquals(5, sunAtomFeed.getEntries().size());
+        final Entry atomEntry = (Entry) sunAtomFeed.getEntries().get(0);
+        final List atomEntryCategories = atomEntry.getCategories();
+        assertEquals(3, atomEntryCategories.size());
+        List<String> tagList = new ArrayList<>();
+        for (Object atomEntryCategory : atomEntryCategories) {
+            tagList.add(((Category) atomEntryCategory).getTerm());
+        }
+        Object[] actualList = tagList.toArray();
+        Arrays.sort(actualList);
+
+        String[] expectedList = new String[] {"Cat-1", "tag1", "tag2"};
+        Arrays.sort(expectedList);
+        assertTrue("Category list should be same", Arrays.equals(actualList, expectedList));
     }
 
     @Test
