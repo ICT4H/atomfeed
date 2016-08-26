@@ -32,15 +32,25 @@
             <column name="title" type="varchar(255)"></column>
         </addColumn>
     </changeSet>
-    <changeSet id="102" author="Sudhakar, Abishek">
-        <validCheckSum>3:b5cc640e5bdcf23514b3fc1a6c73d25f</validCheckSum>
+    <changeSet id="102-1" author="Jaswanth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="failed_events" columnName="retries" schemaName="${schemaName}"/>
+            </not>
+        </preConditions>
         <addColumn tableName="failed_events" schemaName="${schemaName}" >
             <column name="retries" type="int"
                     defaultValueNumeric="0">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
-
+    </changeSet>
+    <changeSet id="102-2" author="Jaswanth">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="failed_event_retry_log" schemaName="${schemaName}"/>
+            </not>
+        </preConditions>
         <createTable tableName="failed_event_retry_log" schemaName="${schemaName}">
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
