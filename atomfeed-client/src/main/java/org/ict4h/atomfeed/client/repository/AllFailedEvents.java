@@ -9,22 +9,22 @@ import java.util.List;
 
 public interface AllFailedEvents {
 
-    public FailedEvent get(String feedUri, String eventId);
+    FailedEvent get(String feedUri, String eventId);
 
-    public void addOrUpdate(FailedEvent failedEvent);
+    void addOrUpdate(FailedEvent failedEvent);
 
-    public List<FailedEvent> getOldestNFailedEvents(String feedUri, int numberOfFailedEvents, int failedEventMaxRetry);
+    List<FailedEvent> getOldestNFailedEvents(String feedUri, int numberOfFailedEvents, int failedEventMaxRetry);
 
-    public int getNumberOfFailedEvents(String feedUri);
+    int getNumberOfFailedEvents(String feedUri);
 
     void remove(FailedEvent failedEvent);
 
     void insert(FailedEventRetryLog failedEventRetryLog);
 
-    public List<FailedEvent> getFailedEvents(String feedUri);
+    List<FailedEvent> getFailedEvents(String feedUri);
 
-    public FailedEvent getByEventId(String eventId);
+    FailedEvent getByEventId(String eventId);
 
-    public List<FailedEventRetryLog> getFailedEventRetryLogs(String eventId);
+    List<FailedEventRetryLog> getFailedEventRetryLogs(String eventId);
 
 }

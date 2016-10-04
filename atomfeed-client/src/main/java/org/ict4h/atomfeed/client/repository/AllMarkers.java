@@ -6,7 +6,7 @@ import java.net.URI;
 import java.util.List;
 
 public interface AllMarkers {
-    public Marker get(URI feedUri);
-    public void put(URI feedUri, String entryId, URI entryFeedUri);
-    public List<Marker> getMarkerList();
+    Marker get(URI feedUri);
+    void put(URI feedUri, String entryId, URI entryFeedUri);
+    List<Marker> getMarkerList();
 }
