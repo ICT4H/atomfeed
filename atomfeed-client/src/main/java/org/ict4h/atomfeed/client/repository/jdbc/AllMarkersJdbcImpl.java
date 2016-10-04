@@ -50,6 +50,30 @@ public class AllMarkersJdbcImpl implements AllMarkers {
         return null;
     }
 
+    public List<Marker> getMarkerList(){
+        Connection connection;
+        PreparedStatement stmt = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionProvider.getConnection();
+            String sql = String.format("select feed_uri, last_read_entry_id, feed_uri_for_last_read_entry from %s",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "markers"));
+            stmt = connection.prepareStatement(sql);
+            resultSet = stmt.executeQuery();
+            List<Marker> markers = mapMarkersFromResultSet(resultSet);
+            if ((markers != null) && !markers.isEmpty()) {
+
+                return markers;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(stmt, resultSet);
+        }
+        return null;
+
+    }
+
     private List<Marker> mapMarkersFromResultSet(ResultSet resultSet) {
         List<Marker> markers = new ArrayList<>();
         try {
