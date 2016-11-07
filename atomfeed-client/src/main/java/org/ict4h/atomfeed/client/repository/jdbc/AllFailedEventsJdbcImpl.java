@@ -56,6 +56,55 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         return null;
     }
 
+    public FailedEvent getByEventId(String eventId) {
+        Connection connection;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionProvider.getConnection();
+            String sql = String.format(
+                    "select " + QUERY_FIELD_LIST + " from %s where event_id = ?",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "failed_events"));
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, eventId);
+            resultSet = statement.executeQuery();
+            List<FailedEvent> failedEvents = mapFailedEventsFromResultSet(resultSet);
+            if (!failedEvents.isEmpty()) {
+                return failedEvents.get(0);
+            }
+            logger.info(String.format("Reading failed event -  eventId=%s", eventId));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(statement, resultSet);
+        }
+        return null;
+    }
+
+
+    public List<FailedEvent> getFailedEvents(String feedUri) {
+        Connection connection;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionProvider.getConnection();
+            String sql = String.format("select " + QUERY_FIELD_LIST + " from %s where feed_uri = ?",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "failed_events"));
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, feedUri);
+            resultSet = statement.executeQuery();
+            List<FailedEvent> failedEvents = mapFailedEventsFromResultSet(resultSet);
+            if (!failedEvents.isEmpty()) {
+                return failedEvents;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(statement, resultSet);
+        }
+        return null;
+    }
+
     private void closeAll(PreparedStatement stmt, ResultSet rs) {
         try {
             if (rs != null) {
@@ -85,6 +134,7 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         }
         return failedEvents;
     }
+
 
     private void setEventCategories(Event event, String tags) {
         if (!StringUtils.isBlank(tags)) {
@@ -133,7 +183,6 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setInt(8, failedEvent.getRetries());
             statement.setString(9, getEventCategories(failedEvent.getEvent()));
             statement.executeUpdate();
-            logger.info(String.format("Created a new %s", failedEvent.toString()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -180,7 +229,6 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setString(5, failedEventRetryLog.getEventId());
             statement.setString(6, failedEventRetryLog.getEventContent());
             statement.executeUpdate();
-            logger.info(String.format("Created a new %s", failedEventRetryLog.toString()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -202,7 +250,6 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             statement.setString(2, failedEvent.getFeedUri());
             statement.setString(3, failedEvent.getEventId());
             statement.executeUpdate();
-            logger.info(String.format("Updated %s", failedEvent.toString()));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -227,7 +274,6 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
             resultSet = statement.executeQuery();
 
             List<FailedEvent> failedEvents = mapFailedEventsFromResultSet(resultSet);
-            logger.info(String.format("Loaded %d failed events for %s", failedEvents.size(), feedUri));
             return failedEvents;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -243,12 +289,12 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         ResultSet resultSet = null;
         try {
             connection = connectionProvider.getConnection();
-            statement = connection.prepareStatement(String.format("select count(*) from %s",
+            statement = connection.prepareStatement(String.format("select count(*) from %s where feed_uri = ?",
                     JdbcUtils.getTableName(Configuration.getInstance().getSchema(), FAILED_EVENTS_TABLE)));
+            statement.setString(1, feedUri);
             resultSet = statement.executeQuery();
 
             int numberOfFailedEvents = resultSet.next() ? resultSet.getInt(1) : 0;
-            logger.info(String.format("There are %d failed events for %s", numberOfFailedEvents, feedUri));
             return numberOfFailedEvents;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -261,7 +307,6 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
     public void remove(FailedEvent failedEvent) {
         deleteRecords(FAILED_EVENTS_TABLE, failedEvent.getFeedUri(), failedEvent.getEventId());
         deleteRecords(FAILED_EVENT_RETRY_LOG_TABLE, failedEvent.getFeedUri(), failedEvent.getEventId());
-        logger.info(String.format("Deleted failed event and retry logs for %s", failedEvent.toString()));
     }
 
     private void deleteRecords(String tableName, String feedUri, String eventId) {
@@ -281,4 +326,46 @@ public class AllFailedEventsJdbcImpl implements AllFailedEvents {
         }
     }
 
+    public List<FailedEventRetryLog> getFailedEventRetryLogs(String eventId) {
+        Connection connection;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = connectionProvider.getConnection();
+            String sql = String.format(
+                    "select id,feed_uri,failed_at,error_message,event_id,event_content from %s where event_id = ?",
+                    JdbcUtils.getTableName(Configuration.getInstance().getSchema(), "failed_event_retry_log"));
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, eventId);
+            resultSet = statement.executeQuery();
+
+            List<FailedEventRetryLog> failedEventRetryLogList = mapFailedEventRetryLogFromResultSet(resultSet);
+            if (!failedEventRetryLogList.isEmpty()) {
+                return failedEventRetryLogList;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeAll(statement, resultSet);
+        }
+        return null;
+
+    }
+
+
+    private List<FailedEventRetryLog> mapFailedEventRetryLogFromResultSet(ResultSet resultSet) {
+        List<FailedEventRetryLog> failedEventRetryLogList = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                FailedEventRetryLog failedEventRetryLog = new FailedEventRetryLog(resultSet.getString(2), resultSet.getTimestamp(3).getTime(), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6));
+                failedEventRetryLogList.add(failedEventRetryLog);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed while mapping failedEvents from database", e);
+        }
+        return failedEventRetryLogList;
+    }
+
+
 }
+
