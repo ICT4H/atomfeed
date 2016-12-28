@@ -1,9 +1,9 @@
 package org.ict4h.atomfeed.server.service;
 
-import org.joda.time.DateTime;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 
 public class Event {
 
@@ -11,8 +11,7 @@ public class Event {
 
     private String title;
 
-    // Not sure if we should have a dependency on another lib here.
-    private DateTime timeStamp;
+    private LocalDateTime timeStamp;
 
     private URI uri;
 
@@ -23,7 +22,7 @@ public class Event {
     private String tags;
 
 
-    public Event(String uuid, String title, DateTime timeStamp, URI uri, String serializedContents, String category) {
+    public Event(String uuid, String title, LocalDateTime timeStamp, URI uri, String serializedContents, String category) {
         this.uuid = uuid;
         this.timeStamp = timeStamp;
         this.uri = uri;
@@ -32,11 +31,11 @@ public class Event {
         this.category = category;
     }
 
-    public Event(String uuid, String title, DateTime timeStamp, String uriString, String serializedContents, String category) throws URISyntaxException {
+    public Event(String uuid, String title, LocalDateTime timeStamp, String uriString, String serializedContents, String category) throws URISyntaxException {
         this(uuid, title, timeStamp, new URI(uriString), serializedContents, category);
     }
 
-    public Event(String uuid, String title, DateTime timeStamp, URI uri, String serializedContents, String category, String tags) {
+    public Event(String uuid, String title, LocalDateTime timeStamp, URI uri, String serializedContents, String category, String tags) {
         this(uuid, title, timeStamp, uri, serializedContents, category);
         this.tags = tags;
     }
@@ -45,7 +44,7 @@ public class Event {
         return uuid;
     }
 
-    public DateTime getTimeStamp() {
+    public LocalDateTime getTimeStamp() {
         return timeStamp;
     }
 

@@ -1,6 +1,12 @@
 package org.ict4h.atomfeed.server.service;
 
-import com.sun.syndication.feed.atom.*;
+import com.sun.syndication.feed.atom.Category;
+import com.sun.syndication.feed.atom.Content;
+import com.sun.syndication.feed.atom.Entry;
+import com.sun.syndication.feed.atom.Feed;
+import com.sun.syndication.feed.atom.Generator;
+import com.sun.syndication.feed.atom.Link;
+import com.sun.syndication.feed.atom.Person;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.server.domain.EventFeed;
@@ -8,10 +14,20 @@ import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.EventRecordComparator;
 import org.ict4h.atomfeed.server.domain.FeedBuilder;
 import org.ict4h.atomfeed.server.service.feedgenerator.FeedGenerator;
-import org.joda.time.DateTime;
 
 import java.net.URI;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 public class EventFeedServiceImpl implements EventFeedService {
 
@@ -118,9 +134,15 @@ public class EventFeedServiceImpl implements EventFeedService {
 
     private Date newestEventDate(List<EventRecord> eventRecordList) {
         if(eventRecordList.isEmpty()){
-            return new DateTime().toDateMidnight().toDate();
+            return toDateMidnight();
         }
         return Collections.max(eventRecordList, new EventRecordComparator()).getTimeStamp();
+    }
+
+    //TODO: extract to common date utils and write test?
+    private Date toDateMidnight() {
+        LocalDateTime midnight = LocalDateTime.of(LocalDate.now(ZoneId.systemDefault()), LocalTime.MIDNIGHT);
+        return Date.from(midnight.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     private Link getLink(String href, String rel, String type) {

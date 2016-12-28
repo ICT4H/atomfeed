@@ -8,7 +8,6 @@ import org.ict4h.atomfeed.server.domain.EventRecord;
 import org.ict4h.atomfeed.server.domain.chunking.time.TimeRange;
 import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
 import org.ict4h.atomfeed.server.repository.AllEventRecords;
-import org.joda.time.DateTime;
 
 import java.sql.*;
 import java.util.*;

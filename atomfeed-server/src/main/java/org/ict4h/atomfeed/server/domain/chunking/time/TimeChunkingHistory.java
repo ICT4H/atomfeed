@@ -1,12 +1,15 @@
 package org.ict4h.atomfeed.server.domain.chunking.time;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
-import org.joda.time.Duration;
-import org.joda.time.LocalDateTime;
 
 public class TimeChunkingHistory {
     private List<TimeChunkingHistoryEntry> chunkingHistoryEntries = new ArrayList<TimeChunkingHistoryEntry>();
@@ -45,7 +48,8 @@ public class TimeChunkingHistory {
 
     public void add(Long startTime, Long interval) {
         enforceRightBoundOnPreviousEntry(startTime);
-        TimeChunkingHistoryEntry historyEntry = new TimeChunkingHistoryEntry(new LocalDateTime(startTime), null, new Duration(interval));
+        LocalDateTime start = Instant.ofEpochMilli(startTime).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        TimeChunkingHistoryEntry historyEntry = new TimeChunkingHistoryEntry( start, null, Duration.of(interval, ChronoUnit.MILLIS));
         chunkingHistoryEntries.add(historyEntry);
     }
 

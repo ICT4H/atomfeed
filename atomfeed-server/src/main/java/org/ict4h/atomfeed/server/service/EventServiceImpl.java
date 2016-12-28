@@ -3,6 +3,8 @@ package org.ict4h.atomfeed.server.service;
 import org.ict4h.atomfeed.server.domain.EventRecordQueueItem;
 import org.ict4h.atomfeed.server.repository.AllEventRecordsQueue;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 
@@ -15,7 +17,7 @@ public class EventServiceImpl implements EventService {
     }
 
     public void notify(Event event) {
-        Date eventTime = event.getTimeStamp() != null ? event.getTimeStamp().toDate() : new Date();
+        Date eventTime = event.getTimeStamp() != null ? toDefaultZoneDate(event.getTimeStamp()) : new Date();
         EventRecordQueueItem eventRecordQueueItem = new EventRecordQueueItem(
                 event.getUuid(),
                 event.getTitle(),
@@ -25,5 +27,9 @@ public class EventServiceImpl implements EventService {
                 event.getCategory(),
                 event.getTags());
         allEventRecordsQueue.add(eventRecordQueueItem);
+    }
+
+    private Date toDefaultZoneDate(LocalDateTime dateTime) {
+        return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

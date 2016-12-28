@@ -1,9 +1,11 @@
 package org.ict4h.atomfeed.server.domain.chunking.time;
 
 import org.ict4h.atomfeed.server.exceptions.AtomFeedRuntimeException;
-import org.joda.time.Duration;
-import org.joda.time.LocalDateTime;
-import org.joda.time.Minutes;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class TimeChunkingHistoryEntry {
     private LocalDateTime startTime;
@@ -22,8 +24,8 @@ public class TimeChunkingHistoryEntry {
     }
 
     private int numberOfFeeds(LocalDateTime start, LocalDateTime end) {
-        int minutesElapsed = Minutes.minutesBetween(start, end).getMinutes();
-        long minutesInTheDuration = duration.getStandardMinutes();
+        long minutesElapsed = Duration.between(start,end).toMinutes();
+        long minutesInTheDuration = duration.toMinutes();
         return (int) (minutesElapsed / minutesInTheDuration);
     }
 
@@ -32,7 +34,7 @@ public class TimeChunkingHistoryEntry {
     }
 
     private LocalDateTime timeAtStartOf(int chunkNumber) {
-        return startTime.plusMinutes(chunkNumber * (int) duration.getStandardMinutes());
+        return startTime.plusMinutes(chunkNumber * (int) duration.toMinutes());
     }
 
     @Override
@@ -49,7 +51,7 @@ public class TimeChunkingHistoryEntry {
     }
 
     public void enforceRightBound(long rightBound) {
-        endTime = new LocalDateTime(rightBound);
+        endTime = Instant.ofEpochMilli(rightBound).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public long numberOfEncapsulatedFeeds() {

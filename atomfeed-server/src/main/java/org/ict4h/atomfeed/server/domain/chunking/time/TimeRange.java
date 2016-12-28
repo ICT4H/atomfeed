@@ -1,15 +1,16 @@
 package org.ict4h.atomfeed.server.domain.chunking.time;
 
-import org.joda.time.LocalDateTime;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class TimeRange {
     private Timestamp startTimestamp;
     private Timestamp endTimestamp;
 
     public TimeRange(LocalDateTime startTime, LocalDateTime endTime) {
-        this(new Timestamp(startTime.toDateTime().getMillis()),endTime == null ? null : new Timestamp(endTime.toDateTime().getMillis()));
+        this(Timestamp.valueOf(startTime),
+                endTime == null ? null : Timestamp.valueOf(endTime));
     }
 
     public TimeRange(Timestamp startTimestamp, Timestamp endTimestamp){
