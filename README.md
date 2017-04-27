@@ -1,7 +1,4 @@
-Atomfeed
-========
-
-[![Build Status](https://travis-ci.org/ICT4H/atomfeed.png)](https://travis-ci.org/ICT4H/atomfeed)
+# Atomfeed [![Build Status](https://travis-ci.org/ICT4H/atomfeed.svg?branch=master)](https://travis-ci.org/ICT4H/atomfeed)
 
 AtomFeed is an implementation of the [ATOM protocol](https://github.com/ICT4H/simplefeed) in Java. It consists of the following modules
 
