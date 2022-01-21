@@ -196,7 +196,7 @@
     <repositories>
         <repository>
             <id>central</id>
-            <url>http://repo1.maven.org/maven2</url>
+            <url>https://repo1.maven.org/maven2</url>
             <name>Repository for dependencies</name>
             <snapshots>
                 <enabled>true</enabled>
@@ -228,7 +228,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>central</id>
-            <url>http://repo1.maven.org/maven2</url>
+            <url>https://repo1.maven.org/maven2</url>
             <name>Repository for plugins</name>
         </pluginRepository>
     </pluginRepositories>

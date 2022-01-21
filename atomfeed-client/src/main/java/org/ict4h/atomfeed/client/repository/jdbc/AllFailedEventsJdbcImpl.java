@@ -2,7 +2,8 @@ package org.ict4h.atomfeed.client.repository.jdbc;
 
 import com.sun.syndication.feed.atom.Category;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AllFailedEventsJdbcImpl implements AllFailedEvents {
-    private static Logger logger = Logger.getLogger(AllFailedEventsJdbcImpl.class);
+    private static Logger logger = LogManager.getLogger(AllFailedEventsJdbcImpl.class);
     public static final String FAILED_EVENTS_TABLE = "failed_events";
     public static final String FAILED_EVENT_RETRY_LOG_TABLE = "failed_event_retry_log";
     public static final int ERROR_MSG_MAX_LEN = 4000;

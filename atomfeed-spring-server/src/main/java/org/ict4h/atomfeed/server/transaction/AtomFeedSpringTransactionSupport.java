@@ -1,6 +1,5 @@
 package org.ict4h.atomfeed.server.transaction;
 
-import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.ict4h.atomfeed.transaction.AFTransactionManager;
 import org.ict4h.atomfeed.transaction.AFTransactionWork;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AtomFeedSpringTransactionSupport implements AFTransactionManager, JdbcConnectionProvider {
-    private static Logger logger = Logger.getLogger(AtomFeedSpringTransactionSupport.class);
     private final DataSource dataSource;
     private PlatformTransactionManager transactionManager;
     private Map<AFTransactionWork.PropagationDefinition, Integer> propagationMap = new HashMap<AFTransactionWork.PropagationDefinition, Integer>();
