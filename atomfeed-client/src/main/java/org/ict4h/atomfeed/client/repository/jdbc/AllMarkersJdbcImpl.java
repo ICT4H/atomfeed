@@ -1,6 +1,7 @@
 package org.ict4h.atomfeed.client.repository.jdbc;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.client.domain.Marker;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AllMarkersJdbcImpl implements AllMarkers {
-    private static Logger logger = Logger.getLogger(AllMarkersJdbcImpl.class);
+    private static Logger logger = LogManager.getLogger(AllMarkersJdbcImpl.class);
     private JdbcConnectionProvider connectionProvider;
 
     public AllMarkersJdbcImpl(JdbcConnectionProvider connectionProvider) {

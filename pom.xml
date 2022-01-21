@@ -11,6 +11,7 @@
 
     <properties>
         <jetty.version>8.1.8.v20121106</jetty.version>
+        <log4jVersion>2.17.1</log4jVersion>
     </properties>
 
     <parent>
@@ -196,7 +197,7 @@
     <repositories>
         <repository>
             <id>central</id>
-            <url>http://repo1.maven.org/maven2</url>
+            <url>https://repo1.maven.org/maven2</url>
             <name>Repository for dependencies</name>
             <snapshots>
                 <enabled>true</enabled>
@@ -228,7 +229,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>central</id>
-            <url>http://repo1.maven.org/maven2</url>
+            <url>https://repo1.maven.org/maven2</url>
             <name>Repository for plugins</name>
         </pluginRepository>
     </pluginRepositories>
@@ -239,6 +240,16 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-server</artifactId>
                 <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4jVersion}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4jVersion}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
