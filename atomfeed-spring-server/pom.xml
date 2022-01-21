@@ -17,6 +17,7 @@
 
     <properties>
         <spring.version>3.1.0.RELEASE</spring.version>
+        <log4jVersion>2.17.1</log4jVersion>
     </properties>
 
     <repositories>
@@ -49,10 +50,12 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
+            <version>${log4jVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
+            <version>${log4jVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.ict4h</groupId>
