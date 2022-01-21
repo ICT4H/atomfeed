@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.ict4h</groupId>
     <artifactId>atomfeed</artifactId>
-    <version>1.9.4</version>
+    <version>1.9.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>atomfeed</name>
     <description>Atomfeed core libraries</description>
@@ -51,7 +51,16 @@
         <module>atomfeed-client-spring</module>
     </modules>
 
-
+    <distributionManagement>
+        <snapshotRepository>
+            <id>nexus-sonatype</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>nexus-sonatype</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <pluginManagement>
