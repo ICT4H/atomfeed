@@ -9,9 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.ict4h</groupId>
     <artifactId>atomfeed-client-spring</artifactId>
-    <version>1.10.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -59,7 +57,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.ict4h</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>atomfeed-client</artifactId>
             <version>${project.version}</version>
         </dependency>

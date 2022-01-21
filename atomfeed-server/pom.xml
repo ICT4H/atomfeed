@@ -8,9 +8,7 @@
         <version>1.10.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.ict4h</groupId>
     <artifactId>atomfeed-server</artifactId>
-    <version>1.10.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -115,14 +113,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.ict4h</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>atomfeed-commons</artifactId>
-            <version>1.10.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.ict4h</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>atomfeed-commons</artifactId>
-            <version>1.10.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
