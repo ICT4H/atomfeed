@@ -11,7 +11,7 @@ public class AtomFeedProperties {
     private int failedEventMaxRetry = 5;
     private int failedEventsBatchProcessSize = 5;
 
-    private static Logger logger = LogManager.getLogger(AtomFeedProperties.class);
+    private Logger logger = LogManager.getLogger(AtomFeedProperties.class);
     private boolean handleRedirection = false;
 
     public int getReadTimeout() {
