@@ -47,7 +47,7 @@ To integration test:
 Usage
 ------
 
-Atomfeed server, client and spring-server atrefacts have been been published to maven central.
+Atomfeed server, client and spring-server artefacts have been been published to maven central.
 
 To use atomfeed-server -
 
