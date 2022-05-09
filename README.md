@@ -9,7 +9,7 @@ AtomFeed is an implementation of the [ATOM protocol](https://github.com/ICT4H/si
 Design
 ------
 
-AtomFeed is designed to work in a clustered evnironment. Our only point of synchronisation is the database
+AtomFeed is designed to work in a clustered environment. Our only point of synchronisation is the database
 
 We allow for two different pagination strategies. Time and Number based pagination. 
 
