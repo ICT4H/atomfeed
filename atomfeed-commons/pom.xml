@@ -10,7 +10,7 @@
     <artifactId>atomfeed-commons</artifactId>
 
     <properties>
-        <log4jVersion>2.17.1</log4jVersion>
+        <commonsLangVersion>3.11</commonsLangVersion>
     </properties>
 
     <dependencies>
@@ -22,31 +22,31 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.9.5</version>
+            <version>${mockitoCore.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>${log4jVersion}</version>
+            <version>${log4j.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>${log4jVersion}</version>
+            <version>${log4j.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
+            <version>${commonsLangVersion}</version>
         </dependency>
 
     </dependencies>

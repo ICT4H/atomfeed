@@ -85,15 +85,15 @@ public class AtomFeedClientTest {
 
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
             @Override
-            public boolean matches(Object o) {
-                return ((Event) o).getId().equals(entry1.getId()) && ((Event) o).getFeedUri().equals(feedLink);
+            public boolean matches(Event event) {
+                return ((Event) event).getId().equals(entry1.getId()) && ((Event) event).getFeedUri().equals(feedLink);
             }
         }));
         verify(allMarkersMock).put(feedUri, entry1.getId(), new URI(feedLink));
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
             @Override
-            public boolean matches(Object o) {
-                return ((Event) o).getId().equals(entry2.getId());
+            public boolean matches(Event event) {
+                return ((Event) event).getId().equals(entry2.getId());
             }
         }));
         verify(allMarkersMock).put(feedUri, entry2.getId(), new URI(feedLink));
@@ -136,15 +136,15 @@ public class AtomFeedClientTest {
 
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
             @Override
-            public boolean matches(Object o) {
-                return ((Event) o).getId().equals(entry1.getId());
+            public boolean matches(Event event) {
+                return ((Event) event).getId().equals(entry1.getId());
             }
         }));
         verify(allMarkersMock, Mockito.never()).put(feedUri, entry1.getId(), new URI(feedLink));
         verify(eventWorker).process(argThat(new ArgumentMatcher<Event>() {
             @Override
-            public boolean matches(Object o) {
-                return ((Event) o).getId().equals(entry2.getId());
+            public boolean matches(Event event) {
+                return ((Event) event).getId().equals(entry2.getId());
             }
         }));
         verify(allMarkersMock, Mockito.never()).put(feedUri, entry2.getId(), new URI(feedLink));
@@ -155,7 +155,7 @@ public class AtomFeedClientTest {
         Feed feed = setupFeedWithTwoEvents();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(0);
-        doThrow(Exception.class).when(eventWorker).process(any(Event.class));
+        doThrow(RuntimeException.class).when(eventWorker).process(any(Event.class));
 
         FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, new AtomFeedProperties(), transactionManager, feedUri, eventWorker);
         feedClient.processEvents();
@@ -194,7 +194,7 @@ public class AtomFeedClientTest {
         Feed feed = setupFeedWithTwoEvents();
         when(allFeedsMock.getFor(feedUri)).thenReturn(feed);
         when(allFailedEvents.getNumberOfFailedEvents(feedUri.toString())).thenReturn(maxFailedEvents - 1, maxFailedEvents);
-        doThrow(Exception.class).when(eventWorker).process(any(Event.class));
+        doThrow(RuntimeException.class).when(eventWorker).process(any(Event.class));
 
         FeedClient feedClient = new AtomFeedClient(allFeedsMock, allMarkersMock, allFailedEvents, atomFeedProperties, transactionManager, feedUri, eventWorker);
         feedClient.processEvents();
