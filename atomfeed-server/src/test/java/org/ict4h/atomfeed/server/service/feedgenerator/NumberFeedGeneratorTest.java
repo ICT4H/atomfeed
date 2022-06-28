@@ -87,7 +87,7 @@ public class NumberFeedGeneratorTest {
     public void shouldRetrieveEmptyFeedForWhenRecentFeedIsQueriedForWithNoEventsPresent() {
         AllEventRecords eventRecords = mock(AllEventRecords.class);
         feedGenerator = new NumberFeedGenerator(eventRecords, allEventRecordsOffsetMarkers, allChunkingEntries);
-        stub(eventRecords.getTotalCountForCategory(anyString())).toReturn(0);
+        when(eventRecords.getTotalCountForCategory(anyString())).thenReturn(0);
         EventFeed feed = feedGenerator.getRecentFeed("");
 
         Assert.assertEquals(new Integer(0), feed.getId());

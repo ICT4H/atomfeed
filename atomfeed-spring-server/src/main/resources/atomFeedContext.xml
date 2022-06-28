@@ -40,7 +40,7 @@
         <aop:advisor advice-ref="noTxAdvice" pointcut-ref="eventFeeds"/>
     </aop:config>
 
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" >
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" >
         <property name="messageConverters">
             <list>
                 <bean class = "org.springframework.http.converter.StringHttpMessageConverter">
