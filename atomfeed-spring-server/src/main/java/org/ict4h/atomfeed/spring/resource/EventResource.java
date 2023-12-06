@@ -1,7 +1,7 @@
 package org.ict4h.atomfeed.spring.resource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ict4h.atomfeed.server.service.EventFeedService;
 import org.ict4h.atomfeed.server.service.helper.EventFeedServiceHelper;
 import org.ict4h.atomfeed.server.transaction.AtomFeedSpringTransactionSupport;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 public class EventResource {
     private EventFeedService eventFeedService;
     private AtomFeedSpringTransactionSupport atomTxManager;
-    private static Logger logger = LogManager.getLogger(EventResource.class);
+    private static Logger logger = LoggerFactory.getLogger(EventResource.class);
 
     @Autowired
     public EventResource(EventFeedService eventFeedService, AtomFeedSpringTransactionSupport atomTxManager) {

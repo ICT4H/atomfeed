@@ -2,8 +2,8 @@ package org.ict4h.atomfeed.client.service;
 
 import com.sun.syndication.feed.atom.Entry;
 import com.sun.syndication.feed.atom.Feed;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.domain.FailedEvent;
 import org.ict4h.atomfeed.client.domain.FailedEventRetryLog;
@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 public class AtomFeedClient implements FeedClient {
-    private static Logger logger = LogManager.getLogger(AtomFeedClient.class);
+    private static Logger logger = LoggerFactory.getLogger(AtomFeedClient.class);
 
     private AllFeeds allFeeds;
     private AtomFeedProperties atomFeedProperties;

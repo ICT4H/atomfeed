@@ -2,8 +2,8 @@ package org.ict4h.atomfeed.client.repository;
 
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.WireFeedInput;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.ict4h.atomfeed.client.exceptions.AtomFeedClientException;
 import org.ict4h.atomfeed.client.AtomFeedProperties;
 import org.ict4h.atomfeed.client.repository.datasource.DefaultHttpClient;
@@ -18,7 +18,7 @@ public class AllFeeds {
     private AtomFeedProperties atomFeedProperties = new AtomFeedProperties();
     private Map<String, String> clientCookies;
 
-    private static Logger logger = LogManager.getLogger(AllFeeds.class);
+    private static Logger logger = LoggerFactory.getLogger(AllFeeds.class);
 
     protected AllFeeds() {
         this.httpClient = new DefaultHttpClient();

@@ -12,7 +12,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <log4jVersion>2.17.1</log4jVersion>
+        <slf4jVersion>2.0.9</slf4jVersion>
     </properties>
 
     <!--<properties>-->
@@ -130,16 +130,9 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4jVersion}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4jVersion}</version>
-            <scope>provided</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4jVersion}</version>
         </dependency>
         <dependency>
 			<groupId>org.mockito</groupId>
