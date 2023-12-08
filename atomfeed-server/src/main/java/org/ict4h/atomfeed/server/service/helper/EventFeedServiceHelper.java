@@ -3,7 +3,7 @@ package org.ict4h.atomfeed.server.service.helper;
 import com.sun.syndication.feed.atom.Feed;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.WireFeedOutput;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import org.ict4h.atomfeed.server.service.EventFeedService;
 import org.ict4h.atomfeed.transaction.AFTransactionManager;
 import org.ict4h.atomfeed.transaction.AFTransactionWork;
