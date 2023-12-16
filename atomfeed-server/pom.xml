@@ -28,7 +28,7 @@
         <repository>
             <id>javax.transaction</id>
             <name>Repository for javax transaction API</name>
-            <url>http://mvnrepository.com/artifact/javax.transaction/jta/1.1</url>
+            <url>https://mvnrepository.com/artifact/javax.transaction/jta/1.1</url>
         </repository>
     </repositories>
 
