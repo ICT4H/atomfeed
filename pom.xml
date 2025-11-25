@@ -13,12 +13,6 @@
         <jetty.version>8.1.8.v20121106</jetty.version>
     </properties>
 
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
-
 
     <licenses>
         <license>
