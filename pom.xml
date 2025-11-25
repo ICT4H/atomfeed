@@ -51,17 +51,6 @@
         <module>atomfeed-client-spring</module>
     </modules>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>nexus-sonatype</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>nexus-sonatype</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-    </distributionManagement>
-
     <build>
         <pluginManagement>
             <plugins>
@@ -132,6 +121,15 @@
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.5.2</version>
             </plugin>
+            <plugin>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.7.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<publishingServerId>nexus-sonatype</publishingServerId>
+				</configuration>
+			</plugin>
         </plugins>
     </build>
 
